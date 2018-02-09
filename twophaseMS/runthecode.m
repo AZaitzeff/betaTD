@@ -13,14 +13,12 @@ new=[];
 z=1;
 
 tic;updateregion1;toc;
-e=cputime-t
 
 [clusterlist,~,labels] = unique(map);
 N=numel(clusterlist);
 current=clusterlist;
 M=numel(current);
 tic;updateregion2;toc;
-e=cputime-t
 
 for iter=1:5
      [current,~,labels] = unique(new);
