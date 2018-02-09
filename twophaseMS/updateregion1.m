@@ -3,7 +3,7 @@ smallest=10;
 for i=1:M
     part=current(i);
     region=(map==part);
-    [u]=oneregion(region,fEBSDq,fBSE,0,fidEBSD,fidBSE,region,0);
+    [u]=oneregion(region,EBSD,CI,0,0,fid,region,0);
     newregion1=region.*(u<.5);
     newregion2=region.*(u>=.5);
     diff1=sum(sum(newregion1));

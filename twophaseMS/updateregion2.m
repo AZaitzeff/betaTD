@@ -14,7 +14,7 @@ for i=1:M
         if part1~=part2 && overlap>0
 
             region=region1+region2;
-            [u]=oneregion(region,fEBSDq,fBSE,0,fidEBSD,fidBSE,region1,0);
+            [u]=oneregion(region,EBSD,CI,0,0,fid,region1,0);
             newregion1=region.*(u>.5);
             newregion2=region.*(u<=.5);
 

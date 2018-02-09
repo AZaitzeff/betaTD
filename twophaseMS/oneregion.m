@@ -18,11 +18,12 @@ function [gridu]=oneregion(region,EBSD,CI,Img,bd,fid,uinb,plot)
         gridu=region;
     end
     if plot
+        figure('visible','off');
         subplot(121)
-        imagesc(Img(yb,xb,:));
+        imshow(Img(yb,xb,:));
         subplot(122)
-        imshow(1-bd(yb,xb,:));
-        contour(u, [.5 .5], 'r');hold on;contour(z, [.5 .5], 'w');
+        imshow(1-bd(yb,xb));hold on;
+        contour(u, [.5 .5], 'r');contour(z, [.5 .5], 'b');
         print(['test' num2str(fid)],'-dpng');
         close
     end
