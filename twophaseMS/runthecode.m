@@ -1,7 +1,7 @@
 load('../data/scan4subgrid.mat')
 addpath('../anglelib/')
 load('initial.mat')
-fid=50;
+fid=30;
 EBSD=EBSD(1:300,1:700,:);
 CI=CI(1:300,1:700);
 
@@ -11,7 +11,7 @@ current=clusterlist;
 M=numel(current);
 new=[];
 z=1;
-
+ 
 tic;updateregion1;toc;
 
 [clusterlist,~,labels] = unique(map);
