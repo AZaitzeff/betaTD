@@ -127,7 +127,7 @@ for t = 1:nt % Main time loop
     
 
 
-    rhs = (backwardx(zfunb.*u_x./Du)*invh + backwardy(zfunb.*u_y./Du)*invh).*(2-CIb)-fid*CIb.*Xb;
+    rhs = (backwardx(zfunb.*u_x./Du)*invh + backwardy(zfunb.*u_y./Du)*invh)-fid*CIb.*Xb;
     
     u = u + dt*rhs;
     u(u<0)=0;

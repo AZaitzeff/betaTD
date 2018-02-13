@@ -1,7 +1,7 @@
 load('../data/scan4subgrid.mat')
 addpath('../anglelib/')
 load('initial.mat')
-for fid=[100,150,200,250]
+for fid=[75,100,125,150,200]
     %EBSD=EBSD(1:300,1:700,:);
     %CI=CI(1:300,1:700);
     EBSD=EBSD(31:180,31:180,:);
