@@ -3,10 +3,11 @@ addpath('../anglelib/')
 load('initial.mat')
 EBSD=EBSD(31:130,71:170,:);
 CI=CI(31:130,71:170);
-map=map(31:130,71:170);
+map1=map(31:130,71:170);
 for fid=[75,100,125,150,200]
     %EBSD=EBSD(1:300,1:700,:);
     %CI=CI(1:300,1:700);
+    map=map1;
     
 
 
