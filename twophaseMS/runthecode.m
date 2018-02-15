@@ -1,9 +1,8 @@
 
-parpool(8);
-parfor section=1:8
-    EBSDtemp=load('../data/scan4subgrid.mat')
+for section=1:8
+    EBSDtemp=load('../data/scan4subgrid.mat');
     addpath('../anglelib/')
-    mapall=load('initial.mat')
+    mapall=load('initial.mat');
     fid=150;
     factor=15;
     i=mod(section-1,2)+1;
