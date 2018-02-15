@@ -1,19 +1,19 @@
-function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm, Num_of_clusters)
+function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters)
     Pm = cat(3, Pm, -Pm);
     %%% Duplicate the Euler Angles
     No = size(Pm,3);
     N = size(X,1);
     p = size(X,2);
-    
+    total=sum(CI);
     % Precompute the xAp, yAp for invAp_fast
     xAp=0.001:0.1:700;
     yAp = Ap(xAp, p);
     
     % Create container for estimated parameters
-    if(nargin<3)
+    if(nargin<4)
         Num_of_clusters=1;
     end
-    Num_of_init=5;
+    Num_of_init=6;
     Mu_All = zeros(Num_of_clusters, p, Num_of_init);
     Kappa_All = zeros(Num_of_clusters, Num_of_init);
     W_All = zeros(Num_of_clusters, Num_of_init);
@@ -51,27 +51,28 @@ function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm, Num_of_clusters)
             
             %%% M-step
             % estimate W
-            W = squeeze(sum(sum(R,1),2));
+            W = squeeze(sum(sum(R,2).*repmat(CI, [1,1,Num_of_clusters]),1));
             W = W / sum(W(:));
             
             for clu = 1:Num_of_clusters
                 % estimate Mu
                 tmpGamma = zeros(No, p);
+                
                 for j=1:No
-                    tmpGamma(j,:) = sum((Pm(:,:,j)'*X')'.*repmat(R(:,j,clu), [1 4]));
+                    tmpGamma(j,:) = sum((Pm(:,:,j)'*X')'.*repmat(CI.*R(:,j,clu), [1 4]));
                 end
                 Gamma = sum(tmpGamma,1);
                 
                 Mu(clu,:) = Gamma / norm(Gamma,2);
                 % estimate Kappa
-                Kappa(clu) = invAp(norm(Gamma,2)/(W(clu)*N), p, xAp, yAp);
+                Kappa(clu) = invAp(norm(Gamma,2)/(W(clu)*total), p, xAp, yAp);
             end
             
             % Calculate the Q function
             Phi = zeros(N,No,Num_of_clusters);
             for clu = 1:Num_of_clusters
                 for j=1:No
-                    Phi(:,j,clu) = W(clu)*VMFDensity(X, (Pm(:,:,j)*Mu(clu,:)')', Kappa(clu));
+                    Phi(:,j,clu) = CI'.*W(clu)*VMFDensity(X, (Pm(:,:,j)*Mu(clu,:)')', Kappa(clu));
                 end
             end
             L(ite) = sum(log(sum(sum(Phi+eps,3),2)));

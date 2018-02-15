@@ -54,6 +54,7 @@ end
 [m,n] = size(uin); %size of level set function
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[m*n,z]);
+CIflat=reshape(CI,[m*n,1]);
 CIb = buffer2(CI);
 EBSDflat=E313toq(EBSDflat);
 total=m*n;
@@ -89,10 +90,10 @@ for t = 1:nt % Main time loop
         
         if check1>7 && check2>7
             %Replace
-            [newg1, ~, ~, ~] = VMFEM(EBSDflat(find(mask1(:)),:), Pall);
-            [newg2, ~, ~, ~] = VMFEM(EBSDflat(find(mask2(:)),:), Pall);
-        elseif t<(interval*2.5)
-            [mu, ~, ~, ~]=VMFEM(EBSDflat(find(zfun(:)),:), Pall,2);
+            [newg1, ~, ~, ~] = VMFEM(EBSDflat(find(mask1(:)),:), Pall,CIflat);
+            [newg2, ~, ~, ~] = VMFEM(EBSDflat(find(mask2(:)),:), Pall,CIflat);
+        elseif t<(interval*1.5)
+            [mu, ~, ~, ~]=VMFEM(EBSDflat(find(zfun(:)),:), Pall,CIflat,2);
             newg1=mu(1,:);
             newg2=mu(2,:);
             newg1=newg1/norm(newg1);

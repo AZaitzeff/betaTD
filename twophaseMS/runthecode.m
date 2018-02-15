@@ -1,13 +1,18 @@
-load('../data/scan4subgrid.mat')
-addpath('../anglelib/')
-load('initial.mat')
-EBSD=EBSD(31:130,71:170,:);
-CI=CI(31:130,71:170);
-map1=map(31:130,71:170);
-for fid=[75,100,125,150,200]
-    %EBSD=EBSD(1:300,1:700,:);
-    %CI=CI(1:300,1:700);
-    map=map1;
+
+parpool(8);
+parfor section=1:8
+    EBSDtemp=load('../data/scan4subgrid.mat')
+    addpath('../anglelib/')
+    mapall=load('initial.mat')
+    fid=150;
+    factor=15;
+    i=mod(section-1,2)+1;
+    j=ceil(section/2);
+    rows=(max(i*150-factor,0):min((i+1)*150+factor,300));
+    cols=(max(j*175-factor,0):min((j+1)*175+factor,700));
+    EBSD=EBSDtemp.EBSD(rows,cols,:);
+    CI=EBSDtemp.CI(rows,cols);
+    map=mapall.map(rows,cols);
     
 
 
@@ -30,13 +35,21 @@ for fid=[75,100,125,150,200]
          M=numel(current);
          new=[];
          z=1;
-        updateregion1
-        save(['mapf' num2str(iter) num2str(fid) '.mat'],'map');
+         updateregion1
          [clusterlist,~,labels] = unique(map);
          N=numel(clusterlist);
          [current,~,labels] = unique(new);
          M=numel(current);
         updateregion2
-        save(['map' num2str(iter) num2str(fid) '.mat'],'map');
+        
     end
+    mapedge=zeros(size(map));
+    borders = srm_getborders(map);
+    mapedge(borders) = 1;
+    parsave(section, fid,map,mapedge);
+end
+
+
+function parsave(section, fid,map,mapedge)
+    save(['mappart' num2str(section) num2str(fid) '.mat'],'map','mapedge');
 end
