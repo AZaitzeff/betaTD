@@ -45,10 +45,5 @@ for section=1:8
     mapedge=zeros(size(map));
     borders = srm_getborders(map);
     mapedge(borders) = 1;
-    parsave(section, fid,map,mapedge);
-end
-
-
-function parsave(section, fid,map,mapedge)
     save(['mappart' num2str(section) num2str(fid) '.mat'],'map','mapedge');
 end

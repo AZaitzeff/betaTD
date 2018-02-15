@@ -90,10 +90,13 @@ for t = 1:nt % Main time loop
         
         if check1>7 && check2>7
             %Replace
-            [newg1, ~, ~, ~] = VMFEM(EBSDflat(find(mask1(:)),:), Pall,CIflat);
-            [newg2, ~, ~, ~] = VMFEM(EBSDflat(find(mask2(:)),:), Pall,CIflat);
+            indices=find(mask1(:));
+            [newg1, ~, ~, ~] = VMFEM(EBSDflat(indices,:), Pall,CIflat(indices));
+            indices=find(mask2(:));
+            [newg2, ~, ~, ~] = VMFEM(EBSDflat(indices,:), Pall,CIflat(indices));
         elseif t<(interval*1.5)
-            [mu, ~, ~, ~]=VMFEM(EBSDflat(find(zfun(:)),:), Pall,CIflat,2);
+            indices=find(zfun(:));
+            [mu, ~, ~, ~]=VMFEM(EBSDflat(indices,:), Pall,CIflat(indices),2);
             newg1=mu(1,:);
             newg2=mu(2,:);
             newg1=newg1/norm(newg1);
