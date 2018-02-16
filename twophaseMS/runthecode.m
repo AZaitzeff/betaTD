@@ -1,7 +1,7 @@
 
 
 
-parpool(5)
+parpool(4)
 parfor section=1:8
     
     EBSDtemp=load('../data/scan4subgrid.mat');
