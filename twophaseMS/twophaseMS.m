@@ -29,5 +29,5 @@ function twophaseMS(EBSD,CI,map,fid,section)
     mapedge=zeros(size(map));
     borders = srm_getborders(map);
     mapedge(borders) = 1;
-    save(['mappart' num2str(section) num2str(fid) '.mat'],'map','mapedge');
+    save(['results/mappart' num2str(section) num2str(fid) '.mat'],'map','mapedge');
 end
