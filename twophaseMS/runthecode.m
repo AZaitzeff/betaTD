@@ -2,13 +2,13 @@
 
 
 parpool(5)
-parfor section=1:9
+parfor section=1:8
     
     EBSDtemp=load('../data/scan4subgrid.mat');
     addpath('../anglelib/')
     mapall=load('initial.mat');
     fid=150;
-    factor=15;
+    factor=50;
     if section==9
         rows=1:300
         cols=1:700
@@ -22,7 +22,9 @@ parfor section=1:9
     EBSD=EBSDtemp.EBSD(rows,cols,:);
     CI=EBSDtemp.CI(rows,cols);
     map=mapall.map(rows,cols);
+    tic;
     twophaseMS(EBSD,CI,map,fid,section);
+    toc;
 
     
 end
