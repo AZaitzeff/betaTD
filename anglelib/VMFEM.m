@@ -1,4 +1,4 @@
-function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters)
+function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters,Num_of_init)
     Pm = cat(3, Pm, -Pm);
     %%% Duplicate the Euler Angles
     No = size(Pm,3);
@@ -13,7 +13,10 @@ function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters)
     if(nargin<4)
         Num_of_clusters=1;
     end
-    Num_of_init=6;
+    if(nargin<5)
+        Num_of_init=8;
+    end
+    
     Mu_All = zeros(Num_of_clusters, p, Num_of_init);
     Kappa_All = zeros(Num_of_clusters, Num_of_init);
     W_All = zeros(Num_of_clusters, Num_of_init);

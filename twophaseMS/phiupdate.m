@@ -96,7 +96,7 @@ for t = 1:nt % Main time loop
             [newg2, ~, ~, ~] = VMFEM(EBSDflat(indices,:), Pall,CIflat(indices));
         elseif t<(interval*1.5)
             indices=find(zfun(:));
-            [mu, ~, ~, ~]=VMFEM(EBSDflat(indices,:), Pall,CIflat(indices),2);
+            [mu, ~, ~, ~]=VMFEM(EBSDflat(indices,:), Pall,CIflat(indices),2,16);
             newg1=mu(1,:);
             newg2=mu(2,:);
             newg1=newg1/norm(newg1);
