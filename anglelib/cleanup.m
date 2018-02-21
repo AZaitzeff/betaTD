@@ -1,6 +1,6 @@
 [clusterlist,~,labels] = unique(map);
 N=numel(clusterlist);
-smallest=16;
+smallest=20;
 for i=1:N
     part1=clusterlist(i);
     region1=(map==part1);
