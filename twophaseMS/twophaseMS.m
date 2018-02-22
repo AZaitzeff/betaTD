@@ -5,15 +5,16 @@ function twophaseMS(EBSD,CI,map,fid,section,filename)
     new=[];
     z=1;
 
-    tic;updateregion1;toc;
+    updateregion1;
 
     [clusterlist,~,labels] = unique(map);
     N=numel(clusterlist);
     current=clusterlist;
     M=numel(current);
-    tic;updateregion2;toc;
+    updateregion2;
 
     for iter=1:5
+        iter
          [current,~,labels] = unique(new);
          M=numel(current);
          new=[];
