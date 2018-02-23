@@ -1,4 +1,4 @@
-function twophaseMS(EBSD,CI,map,fid,section,filename)
+function twophaseMS(EBSD,CI,map,fid,part,filename)
     [clusterlist,~,labels] = unique(map);
     current=clusterlist;
     M=numel(current);
@@ -28,5 +28,5 @@ function twophaseMS(EBSD,CI,map,fid,section,filename)
         
     end
     cleanup;
-    save(['results/' filename 'part' num2str(section) num2str(fid) '.mat'],'map');
+    save(['results/' filename 'part' num2str(part) num2str(fid) '.mat'],'map');
 end
