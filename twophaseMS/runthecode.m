@@ -1,8 +1,8 @@
 filename='test1';
-run2pMS(filename,[25,50,100,200],[1,200,347],[1,201,401]);
+run2pMS(filename,[50,100,200],200);
 
 filename='test2';
-run2pMS(filename,[25,50,100,200],[1,174,347,520],[1,201,401,601]);
+run2pMS(filename,[50,100,200],200);
 
 % parpool(5)
 % fids=[75,100,125,150,175];

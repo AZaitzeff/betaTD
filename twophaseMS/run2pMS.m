@@ -1,5 +1,16 @@
-function run2pMS(filename,fids,xranges,yranges)
-
+function run2pMS(filename,fids,factor)
+EBSDtemp=load(['../data/' filename 'alpha.mat']);
+[x,y]=size(EBSDtemp.CI);
+d=ceil(x/factor);
+xranges=ones(1,d+1);
+for i=1:d
+    xranges(i+1)=ceil(x/d*(i));
+end
+d=ceil(y/factor);
+yranges=ones(1,d+1);
+for i=1:d
+    yranges(i+1)=ceil(y/d*(i));
+end
 m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
