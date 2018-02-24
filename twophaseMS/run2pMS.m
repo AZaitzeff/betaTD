@@ -14,7 +14,7 @@ end
 m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
-parpool(6)
+parpool(10)
 %fids=[75,100,125,150,175];
 parfor section=1:total
     for fid=fids
