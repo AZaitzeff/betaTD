@@ -1,12 +1,12 @@
-function run2pMS(filename,fids,factor)
+function run2pMS(filename,fids,biggest)
 EBSDtemp=load(['../data/' filename 'alpha.mat']);
 [x,y]=size(EBSDtemp.CI);
-d=ceil(x/factor);
+d=ceil(x/biggest);
 xranges=ones(1,d+1);
 for i=1:d
     xranges(i+1)=ceil(x/d*(i));
 end
-d=ceil(y/factor);
+d=ceil(y/biggest);
 yranges=ones(1,d+1);
 for i=1:d
     yranges(i+1)=ceil(y/d*(i));
@@ -16,12 +16,13 @@ n=numel(yranges)-1;
 total=m*n;
 parpool(10)
 %fids=[75,100,125,150,175];
+factor=25;
 parfor section=1:total
     for fid=fids
         EBSDtemp=load(['../data/' filename 'alpha.mat']);
         addpath('../anglelib/')
         mapall=load(['../data/' filename 'ff.mat']);
-        factor=25;
+        
         i=mod(section-1,m)+1;
         j=ceil(section/m);
         rows=(max(xranges(i)-factor,1):min(xranges(i+1)+factor,xranges(end)));
@@ -37,5 +38,5 @@ parfor section=1:total
     end
 end
 
-puttogether(filename,fids,xranges,yranges)
+puttogether(filename,fids,xranges,yranges,factor)
 end

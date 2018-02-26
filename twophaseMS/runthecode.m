@@ -1,5 +1,5 @@
-filename='test1';
-run2pMS(filename,[50,100,200],200);
+%filename='test1';
+%run2pMS(filename,[50,100,200],200);
 
 filename='test2';
 run2pMS(filename,[50,100,200],200);

@@ -1,22 +1,20 @@
-function puttogether(filename,fids,xranges,yranges)
+function puttogether(filename,fids,xranges,yranges,factor)
 addpath('../anglelib/')
 numrows=xranges(end);
 numcols=yranges(end);
-m=numel(xranges);
-n=numel(yranges);
+m=numel(xranges)-1;
+n=numel(yranges)-1;
 total=m*n;
 for fid=fids
     
 mapall=zeros(numrows,numcols);
 betaEBSD=zeros(numrows*numcols,4);
-load(['../data/' filename 'alpha.mat']);
+
 z=1;
 for section=1:total
     
     load(['results/' filename 'part' num2str(section) num2str(fid)]);
     
-    factor=25;
-
 
     i=mod(section-1,m)+1;
     j=ceil(section/m);
@@ -47,10 +45,12 @@ for section=1:total
             z=z+1;
         end
     end
-                 
-    mapall(rowssmall,colssmall)=temp(factor+1-(i==1)*factor:factor+150-(i==1)*factor,factor+1-(j==1)*factor:factor+175-(j==1)*factor);    
+    mapall(rowssmall,colssmall)=temp(factor+1-(i==1)*factor:factor+xranges(i+1)-xranges(i)+1-(i==1)*factor,factor+1-(j==1)*factor:factor+yranges(j+1)-yranges(j)+1-(j==1)*factor);    
 
 end
+EBSDtemp=load(['../data/' filename 'alpha.mat']);
+EBSD=EBSDtemp.EBSD;
+CI=EBSDtemp.CI;
 [m,n,z]=size(EBSD);
 EBSDflat=reshape(EBSD, [m*n,z]);
 EBSDflat=E313toq(EBSDflat);
