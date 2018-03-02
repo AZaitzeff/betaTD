@@ -2,9 +2,9 @@ function puttogether(filename,fids,xranges,yranges,factor)
 addpath('../anglelib/')
 numrows=xranges(end);
 numcols=yranges(end);
-m=numel(xranges)-1;
-n=numel(yranges)-1;
-total=m*n;
+mr=numel(xranges)-1;
+nr=numel(yranges)-1;
+total=mr*nr;
 for fid=fids
     
 mapall=zeros(numrows,numcols);
@@ -16,8 +16,8 @@ for section=1:total
     load(['results/' filename 'part' num2str(section) num2str(fid)]);
     
 
-    i=mod(section-1,m)+1;
-    j=ceil(section/m);
+    i=mod(section-1,mr)+1;
+    j=ceil(section/mr);
     rows=(max(xranges(i)-factor,1):min(xranges(i+1)+factor,xranges(end)));
     cols=(max(yranges(j)-factor,1):min(yranges(j+1)+factor,yranges(end)));
     rowssmall=max(xranges(i),1):min(xranges(i+1),xranges(end));
