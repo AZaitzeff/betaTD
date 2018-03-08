@@ -1,4 +1,4 @@
-function [gridu]=oneregion(region,EBSD,CI,Img,bd,fid,uinb,plot)
+function [gridu,g1,g2]=oneregion(region,EBSD,CI,Img,bd,fid,uinb,g1,g2,plot)
     [n,m,~]=size(EBSD);
     area=sum(sum(region));
     if area>100
@@ -11,7 +11,7 @@ function [gridu]=oneregion(region,EBSD,CI,Img,bd,fid,uinb,plot)
         se = strel('disk',5);
         dilatedreg=imdilate(z,se);
         uin=uinb(yb,xb);
-        [u,g1,g2] = phiupdate(100000,1/(2*100^2),uin,z,dilatedreg,sEBSD,sCI,fid);
+        [u,g1,g2] = phiupdate(100000,1/(2*100^2),uin,z,dilatedreg,sEBSD,sCI,fid,g1,g2);
         gridu=zeros(n,m);
         gridu(yb,xb)=u;
     else

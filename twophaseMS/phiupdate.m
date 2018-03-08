@@ -1,4 +1,4 @@
-function [uo,g1,g2] = phiupdate(nt,dt,uin,zfun,cnstrt,EBSD,CI,fid)
+function [uo,g1,g2] = phiupdate(nt,dt,uin,zfun,cnstrt,EBSD,CI,fid,g1,g2)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -59,18 +59,20 @@ CIb = buffer2(CI);
 EBSDflat=E313toq(EBSDflat);
 total=m*n;
 invh=100;
-g1=zeros(1,z);
-g1(1)=1;
-g2=zeros(1,z);
-g2(1)=1;
 tol=.01; %measuring distance
-area=sum(sum(zfun));
+area=sum(zfun(:));
 u = buffer2(uin);   % Size is now (m+4)x(n+4). adds zero derivative boudary conditions
 zfunb = buffer2(zfun);
 cnstrtb = buffer2(cnstrt);
 interval=2000;
 region0=zfun.*(u(3:m+2,3:n+2)>.5);
+region1=zfun.*(u(3:m+2,3:n+2)>.5);
+newregion1=region1;
 flag=0;
+numsub=500;
+newg1=g1;
+newg2=g2;
+
 for t = 1:nt % Main time loop
 
     % Difference quotients:  
@@ -90,17 +92,54 @@ for t = 1:nt % Main time loop
         
         if check1>7 && check2>7
             %Replace
-            indices=find(mask1(:));
-            [newg1, ~, ~, ~] = VMFEM(EBSDflat(indices,:), Pall,CIflat(indices));
-            indices=find(mask2(:));
-            [newg2, ~, ~, ~] = VMFEM(EBSDflat(indices,:), Pall,CIflat(indices));
-        elseif t<(interval*1.5)
+            val=sum(sum(abs(newregion1-region1)))/area;
+            if val>.05
+                indices=find(mask1(:));
+                if numsub<numel(indices)*3/4
+                    newind=datasample(indices,numsub,'Weights',CIflat(indices));
+                    CItemp=ones(size(CIflat(newind)));
+                else
+                    newind=indices;
+                    CItemp=CIflat(newind);
+                end
+                [newg1, ~, ~, ~] = VMFEM(EBSDflat(newind,:), Pall,CItemp);
+                indices=find(mask2(:));
+                if numsub<numel(indices)*3/4
+                    newind=datasample(indices,numsub,'Weights',CIflat(indices));
+                    CItemp=ones(size(CIflat(newind)));
+                else
+                    newind=indices;
+                    CItemp=CIflat(newind);
+                end
+                [newg2, ~, ~, ~] = VMFEM(EBSDflat(newind,:), Pall,CItemp);
+                region1=zfun.*(u(3:m+2,3:n+2)>.5);
+            end
+        elseif t<(interval*.5)
             indices=find(zfun(:));
-            [mu, ~, ~, ~]=VMFEM(EBSDflat(indices,:), Pall,CIflat(indices),2,16);
+            if numsub<numel(indices)*3/4
+                newind=datasample(indices,numsub,'Weights',CIflat(indices));
+                CItemp=ones(size(CIflat(newind)));
+            else
+                newind=indices;
+                CItemp=CIflat(newind);
+            end
+            [mu, ~, ~, ~,~]=VMFEM(EBSDflat(newind,:), Pall,CItemp,2,20);
             newg1=mu(1,:);
             newg2=mu(2,:);
             newg1=newg1/norm(newg1);
             newg2=newg2/norm(newg2);
+            if sum(CIflat(indices)'.*alpbmetric(EBSDflat(indices,:),newg1))>sum(CIflat(indices)'.*alpbmetric(EBSDflat(indices,:),newg2))
+                temp=newg1;
+                newg1=newg2;
+                newg2=temp;
+            end
+            %ratio=(sum(CIflat(newind(Cind==1))'.*alpbmetric(EBSDflat(newind(Cind==1),:),newg1))+...
+            %    sum(CIflat(newind(Cind==2))'.*alpbmetric(EBSDflat(newind(Cind==2),:),newg2)))/...
+            %    sum(CIflat(newind)'.*alpbmetric(EBSDflat(newind,:),g1));
+            %if ratio>.85
+            %    break
+            %end
+            
             %newg1=newg1';
             %newg2=newg2';
 
@@ -138,6 +177,7 @@ for t = 1:nt % Main time loop
     u(u>1)=1;
     u=u.*cnstrtb;
     u=upbuffer2(u);
+    newregion1=zfun.*(u(3:m+2,3:n+2)>.5);
 end
 
 

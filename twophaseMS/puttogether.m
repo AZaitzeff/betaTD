@@ -50,21 +50,14 @@ for section=1:total
 end
 EBSDtemp=load(['../data/' filename 'alpha.mat']);
 EBSD=EBSDtemp.EBSD;
+[m,n,~]=size(EBSD);
 CI=EBSDtemp.CI;
-[m,n,z]=size(EBSD);
-EBSDflat=reshape(EBSD, [m*n,z]);
-EBSDflat=E313toq(EBSDflat);
-CIflat=reshape(CI, [m*n,1]);
+[dict]=estimatebetas(EBSD,CI,mapall,[],0,10000);
 [clusterlist,~,~] = unique(mapall);
-T=alphatobetatrans();
-Pm=getsymmetries('cubic');
-Pall=zeros(4,4,144);
-for i=1:144
-    Pall(:,:,i)=T(:,:,mod(i-1,6)+1)'*Pm(:,:,ceil(i/6));
-end
+
 for z=clusterlist'
-    zfun=find(z==mapall);
-    [mu, ~, ~, ~] = VMFEM(EBSDflat(zfun,:), Pall,CIflat(zfun),1,16);
+    mu=dict(z);
+    zfun=(z==mapall);
     for i=1:4
         betaEBSD(zfun,i)=mu(i);
     end

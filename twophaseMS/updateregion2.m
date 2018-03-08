@@ -12,9 +12,10 @@ for i=1:M
 
         %if ~sum((find(part2==current)<=i)) && overlap>0
         if part1~=part2 && overlap>0
-
+            g1=dict(part1);
+            g2=dict(part2);
             region=region1+region2;
-            [u]=oneregion(region,EBSD,CI,0,0,fid,region1,0);
+            [u,g1,g2]=oneregion(region,EBSD,CI,0,0,fid,region1,g1,g2,0);
             newregion1=region.*(u>.5);
             newregion2=region.*(u<=.5);
 
@@ -24,6 +25,11 @@ for i=1:M
             numPixels = cellfun(@numel,PixelIdxList);
             if numel(PixelIdxList)==1
                 map(PixelIdxList{1})=part1;
+                if sum(newregion1(:))>sum(newregion2(:))
+                    dict(part1)=g1;
+                else
+                    dict(part1)=g2;
+                end
             else
             
             
@@ -55,13 +61,16 @@ for i=1:M
                     z=z+1;
                     new(z)=part2;
                     z=z+1;
+                    
                     if origover1<origover2
                         map(PixelIdxList{1})=part1;
                         map(PixelIdxList{2})=part2;
                     else
                         map(PixelIdxList{1})=part2;
                         map(PixelIdxList{2})=part1;
-                     end
+                    end
+                    dict(part1)=g1;
+                    dict(part2)=g2;
                 end
             end
         end
