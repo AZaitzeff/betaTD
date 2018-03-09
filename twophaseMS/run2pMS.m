@@ -15,9 +15,9 @@ m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
 
-%fids=[75,100,125,150,175];
+fids=[75,100,125,150,175];
 factor=50;
-parfor section=1:total
+for section=1:total
     for fid=fids
         EBSDtemp=load(['../data/' filename 'alpha.mat']);
         addpath('../anglelib/')
