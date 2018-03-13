@@ -150,7 +150,21 @@ for t = 1:nt % Main time loop
             newg2=mu(2,:);
             newg1=newg1/norm(newg1);
             newg2=newg2/norm(newg2);
-            if sum(CIflat(indices)'.*alpbmetric(EBSDflat(indices,:),newg1))>sum(CIflat(indices)'.*alpbmetric(EBSDflat(indices,:),newg2))
+            if sum(maskbeta)==0
+                val1=sum(CItemp'.*alpbmetric(EBSDtemp,newg1));
+                val2=sum(CItemp'.*alpbmetric(EBSDtemp,newg2));
+
+            elseif sum(maskalpha)==0
+                val1=sum(CItemp'.*b2bmetric(EBSDtemp,newg1));
+                val2=sum(CItemp'.*b2bmetric(EBSDtemp,newg2));
+            else
+                val1=sum(CItemp(maskalpha)'.*alpbmetric(EBSDtemp(maskalpha,:),newg1));
+                val2=sum(CItemp(maskalpha)'.*alpbmetric(EBSDtemp(maskalpha,:),newg2));
+                val1=val1+sum(CItemp(maskbeta)'.*b2bmetric(EBSDtemp(maskbeta,:),newg1));
+                val2=val2+sum(CItemp(maskbeta)'.*b2bmetric(EBSDtemp(maskbeta,:),newg2));
+            end
+                
+            if val1>val2
                 temp=newg1;
                 newg1=newg2;
                 newg2=temp;
