@@ -1,6 +1,6 @@
-function twophaseMS(EBSD,CI,map,fid,section,filename)
+function twophaseMS(EBSD,CI,betas,map,fid,section,filename)
     subnum=500;
-    dict=estimatebetas(EBSD,CI,map,[],0,subnum);
+    dict=estimatebetas(EBSD,CI,betas,map,[],0,1,subnum);
     [clusterlist,~,labels] = unique(map);
     current=clusterlist;
     M=numel(current);
@@ -9,7 +9,7 @@ function twophaseMS(EBSD,CI,map,fid,section,filename)
 
     updateregion1;
     if numel(new)>0
-        dict=estimatebetas(EBSD,CI,map,new,dict,subnum);
+        dict=estimatebetas(EBSD,CI,betas,map,new,dict,1,subnum);
     end
     [clusterlist,~,labels] = unique(map);
     N=numel(clusterlist);
@@ -24,7 +24,7 @@ function twophaseMS(EBSD,CI,map,fid,section,filename)
          z=1;
          updateregion1
          if numel(new)>0
-            dict=estimatebetas(EBSD,CI,map,new,dict,subnum);
+            dict=estimatebetas(EBSD,CI,betas,map,new,dict,1,subnum);
          end
          [clusterlist,~,labels] = unique(map);
          N=numel(clusterlist);

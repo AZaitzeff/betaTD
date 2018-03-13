@@ -48,11 +48,12 @@ for section=1:total
     mapall(rowssmall,colssmall)=temp(factor+1-(i==1)*factor:factor+xranges(i+1)-xranges(i)+1-(i==1)*factor,factor+1-(j==1)*factor:factor+yranges(j+1)-yranges(j)+1-(j==1)*factor);    
 
 end
-EBSDtemp=load(['../data/' filename 'alpha.mat']);
+EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 EBSD=EBSDtemp.EBSD;
 [m,n,~]=size(EBSD);
 CI=EBSDtemp.CI;
-[dict]=estimatebetas(EBSD,CI,mapall,[],0,10000);
+betas=EBSDtemp.betas;
+[dict]=estimatebetas(EBSD,CI,betas,mapall,[],0,0,0);
 [clusterlist,~,~] = unique(mapall);
 
 for z=clusterlist'

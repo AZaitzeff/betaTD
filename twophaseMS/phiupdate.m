@@ -1,4 +1,4 @@
-function [uo,g1,g2] = phiupdate(nt,dt,uin,zfun,cnstrt,EBSD,CI,fid,g1,g2)
+function [uo,g1,g2] = phiupdate(nt,dt,uin,zfun,cnstrt,EBSD,CI,betas,fid,g1,g2)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -57,7 +57,9 @@ EBSDflat=reshape(EBSD,[m*n,z]);
 CIflat=reshape(CI,[m*n,1]);
 CIb = buffer2(CI);
 EBSDflat=E313toq(EBSDflat);
-total=m*n;
+betasflat=reshape(betas,[m*n,1]);
+betamask=betasflat==1;
+alphamask=betasflat==0;
 invh=100;
 tol=.01; %measuring distance
 area=sum(zfun(:));
@@ -95,35 +97,55 @@ for t = 1:nt % Main time loop
             val=sum(sum(abs(newregion1-region1)))/area;
             if val>.05
                 indices=find(mask1(:));
-                if numsub<numel(indices)*3/4
-                    newind=datasample(indices,numsub,'Weights',CIflat(indices));
-                    CItemp=ones(size(CIflat(newind)));
-                else
-                    newind=indices;
-                    CItemp=CIflat(newind);
-                end
-                [newg1, ~, ~, ~] = VMFEM(EBSDflat(newind,:), Pall,CItemp);
-                indices=find(mask2(:));
-                if numsub<numel(indices)*3/4
-                    newind=datasample(indices,numsub,'Weights',CIflat(indices));
-                    CItemp=ones(size(CIflat(newind)));
-                else
-                    newind=indices;
-                    CItemp=CIflat(newind);
-                end
-                [newg2, ~, ~, ~] = VMFEM(EBSDflat(newind,:), Pall,CItemp);
-                region1=zfun.*(u(3:m+2,3:n+2)>.5);
-            end
-        elseif t<(interval*.5)
-            indices=find(zfun(:));
-            if numsub<numel(indices)*3/4
+
                 newind=datasample(indices,numsub,'Weights',CIflat(indices));
                 CItemp=ones(size(CIflat(newind)));
-            else
-                newind=indices;
-                CItemp=CIflat(newind);
+                EBSDtemp=EBSDflat(newind,:);
+                maskalpha=alphamask(newind);
+                maskbeta=betamask(newind);
+                if sum(maskbeta)==0
+                    [newg1, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp);
+                elseif sum(maskalpha)==0
+                    [newg1, ~, ~, ~] = VMFEM(EBSDtemp, Pm,CItemp);
+                else
+                    [newg1, ~, ~, ~] = VMFEMz(EBSDtemp(maskalpha,:), Pall,CItemp(maskalpha),...
+                        EBSDtemp(maskbeta,:), Pm,CItemp(maskbeta));
+                end
+                indices=find(mask2(:));
+
+                newind=datasample(indices,numsub,'Weights',CIflat(indices));
+                CItemp=ones(size(CIflat(newind)));
+                EBSDtemp=EBSDflat(newind,:);
+                maskalpha=alphamask(newind);
+                maskbeta=betamask(newind);
+                if sum(maskbeta)==0
+                    [newg2, ~, ~, ~,~] = VMFEM(EBSDtemp, Pall,CItemp);
+                elseif sum(maskalpha)==0
+                    [newg2, ~, ~, ~,~] = VMFEM(EBSDtemp, Pm,CItemp);
+                else
+                    [newg2, ~, ~, ~] = VMFEMz(EBSDtemp(maskalpha,:), Pall,CItemp(maskalpha),...
+                        EBSDtemp(maskbeta,:), Pm,CItemp(maskbeta));
+                end
+                
+                region1=zfun.*(u(3:m+2,3:n+2)>.5);
             end
-            [mu, ~, ~, ~,~]=VMFEM(EBSDflat(newind,:), Pall,CItemp,2,20);
+        elseif t<(interval*1.5)
+            indices=find(zfun(:));
+
+            newind=datasample(indices,numsub,'Weights',CIflat(indices));
+            CItemp=ones(size(CIflat(newind)));
+            EBSDtemp=EBSDflat(newind,:);
+            maskalpha=alphamask(newind);
+            maskbeta=betamask(newind);
+            if sum(maskbeta)==0
+                [mu, ~, ~, ~,~] = VMFEM(EBSDtemp, Pall,CItemp,2,20);
+            elseif sum(maskalpha)==0
+                [mu, ~, ~, ~,~] = VMFEM(EBSDtemp, Pm,CItemp,2,20);
+            else
+                [mu, ~, ~, ~] = VMFEMz(EBSDtemp(maskalpha,:), Pall,CItemp(maskalpha),...
+                    EBSDtemp(maskbeta,:), Pm,CItemp(maskbeta),2,20);
+            end
+             
             newg1=mu(1,:);
             newg2=mu(2,:);
             newg1=newg1/norm(newg1);
@@ -148,7 +170,12 @@ for t = 1:nt % Main time loop
             g1=newg1;
             g2=newg2;
             X=zeros(m,n);
-            X(1:total)=alpbmetric(EBSDflat,g1)-alpbmetric(EBSDflat,g2);
+            if sum(betamask)>0
+                X(betamask)=b2bmetric(EBSDflat(betamask,:),g1)-b2bmetric(EBSDflat(betamask,:),g2);
+            end
+            if sum(alphamask)>0
+                X(alphamask)=alpbmetric(EBSDflat(alphamask,:),g1)-alpbmetric(EBSDflat(alphamask,:),g2);
+            end
             Xb=buffer2(X);
             region0=zfun.*(u(3:m+2,3:n+2)>.5);
             flag=0;

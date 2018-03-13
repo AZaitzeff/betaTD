@@ -1,5 +1,5 @@
 function run2pMS(filename,fids,biggest,numpar)
-EBSDtemp=load(['../data/' filename 'alpha.mat']);
+EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 [x,y]=size(EBSDtemp.CI);
 d=ceil(x/biggest);
 xranges=ones(1,d+1);
@@ -15,11 +15,10 @@ m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
 parpool(numpar)
-fids=[75,100,125,150,175];
 factor=50;
 parfor section=1:total
     for fid=fids
-        EBSDtemp=load(['../data/' filename 'alpha.mat']);
+        EBSDtemp=load(['../data/' filename 'EBSD.mat']);
         addpath('../anglelib/')
         mapall=load(['../data/' filename 'ff.mat']);
         
@@ -30,9 +29,10 @@ parfor section=1:total
 
         EBSD=EBSDtemp.EBSD(rows,cols,:);
         CI=EBSDtemp.CI(rows,cols);
+        betas=EBSDtemp.betas(rows,cols);
         map=mapall.map(rows,cols);
         tic;
-        twophaseMS(EBSD,CI,map,fid,section,filename);
+        twophaseMS(EBSD,CI,betas,map,fid,section,filename);
         toc;
 
     end

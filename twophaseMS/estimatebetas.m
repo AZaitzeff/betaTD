@@ -1,4 +1,4 @@
-function [dict]=estimatebetas(EBSD,CI,map,update,dict,numsub)
+function [dict]=estimatebetas(EBSD,CI,betas,map,update,dict,sub,numsub)
 if numel(update)==0
     dict = containers.Map('KeyType','int32','ValueType','any');
     [clusterlist,~,~] = unique(map);
@@ -9,6 +9,9 @@ end
 EBSDflat=reshape(EBSD, [m*n,z]);
 EBSDflat=E313toq(EBSDflat);
 CIflat=reshape(CI, [m*n,1]);
+betasflat=reshape(betas,[m*n,1]);
+betamask=betasflat==1;
+alphamask=betasflat==0;
 
 
 T=alphatobetatrans();
@@ -19,13 +22,23 @@ for i=1:144
 end
 for z=clusterlist'
     indices=find(z==map);
-    if numsub<numel(indices)*3/4
+    if sub
         newind=datasample(indices,numsub,'Weights',CIflat(indices));
         CItemp=ones(size(CIflat(newind)));
     else
         newind=indices;
-        CItemp=CIflat(newind);
+        CItemp=CIflat(indices);
     end
-    [mu, ~, ~, ~] = VMFEM(EBSDflat(newind,:), Pall,CItemp,1,16);
+    EBSDtemp=EBSDflat(newind,:);
+    maskalpha=alphamask(newind);
+    maskbeta=betamask(newind);
+    if sum(maskbeta)==0
+        [mu, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,16);
+    elseif sum(maskalpha)==0
+        [mu, ~, ~, ~] = VMFEM(EBSDtemp, Pm,CItemp,1,16);
+    else
+        [mu, ~, ~, ~] = VMFEMz(EBSDtemp(maskalpha,:), Pall,CItemp(maskalpha),...
+            EBSDtemp(maskbeta,:), Pm,CItemp(maskbeta),1,16);
+    end
     dict(z)=mu;
 end

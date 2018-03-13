@@ -15,7 +15,7 @@ for i=1:M
             g1=dict(part1);
             g2=dict(part2);
             region=region1+region2;
-            [u,g1,g2]=oneregion(region,EBSD,CI,0,0,fid,region1,g1,g2,0);
+            [u,g1,g2]=oneregion(region,EBSD,CI,betas,0,0,fid,region1,g1,g2,0);
             newregion1=region.*(u>.5);
             newregion2=region.*(u<=.5);
 
