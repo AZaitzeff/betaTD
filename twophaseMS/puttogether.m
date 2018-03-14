@@ -53,7 +53,8 @@ EBSD=EBSDtemp.EBSD;
 [m,n,~]=size(EBSD);
 CI=EBSDtemp.CI;
 betas=EBSDtemp.betas;
-[dict]=estimatebetas(EBSD,CI,betas,mapall,[],0,0,0);
+betas(:)=0;
+[dict]=estimatebetas(EBSD,CI,betas,mapall,[],0,1,500);
 [clusterlist,~,~] = unique(mapall);
 
 for z=clusterlist'

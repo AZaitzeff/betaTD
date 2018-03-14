@@ -31,6 +31,7 @@ parfor section=1:total
         CI=EBSDtemp.CI(rows,cols);
         betas=EBSDtemp.betas(rows,cols);
         map=mapall.map(rows,cols);
+        betas(:)=0;
         tic;
         twophaseMS(EBSD,CI,betas,map,fid,section,filename);
         toc;
