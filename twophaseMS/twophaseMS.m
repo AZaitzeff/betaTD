@@ -1,5 +1,6 @@
-function twophaseMS(EBSD,CI,betas,map,fid,section,filename)
+function twophaseMS(EBSD,CI,betas,map,fid,betathres,section,filename)
     subnum=500;
+    betas(CI<betathres)=0;
     dict=estimatebetas(EBSD,CI,betas,map,[],0,1,subnum);
     [clusterlist,~,labels] = unique(map);
     current=clusterlist;

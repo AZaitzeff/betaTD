@@ -1,4 +1,4 @@
-function puttogether(filename,fids,xranges,yranges,factor)
+function puttogether(filename,fids,betathres,xranges,yranges,factor)
 addpath('../anglelib/')
 numrows=xranges(end);
 numcols=yranges(end);
@@ -53,7 +53,7 @@ EBSD=EBSDtemp.EBSD;
 [m,n,~]=size(EBSD);
 CI=EBSDtemp.CI;
 betas=EBSDtemp.betas;
-betas(:)=0;
+betas(CI<betathres)=0;
 [dict]=estimatebetas(EBSD,CI,betas,mapall,[],0,1,500);
 [clusterlist,~,~] = unique(mapall);
 
