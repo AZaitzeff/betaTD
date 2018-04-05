@@ -1,4 +1,4 @@
-function puttogether(filename,fids,betathres,xranges,yranges,factor)
+function puttogether(filename,filesave,fids,betathres,xranges,yranges,factor)
 addpath('../anglelib/')
 numrows=xranges(end);
 numcols=yranges(end);
@@ -66,7 +66,7 @@ for z=clusterlist'
 end
 betaEBSD=qtoE313(betaEBSD);
 betaEBSD=reshape(betaEBSD,[m,n,3]);
-save(['results/' filename num2str(fid)],'mapall','betaEBSD');
+save(['results/' filesave num2str(fid)],'mapall','betaEBSD');
 end
 end
     

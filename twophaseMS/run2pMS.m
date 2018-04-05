@@ -1,4 +1,4 @@
-function run2pMS(filename,fids,biggest,numpar)
+function run2pMS(filename,filesave,fids,biggest,numpar,betathres)
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 [x,y]=size(EBSDtemp.CI);
 d=ceil(x/biggest);
@@ -40,5 +40,5 @@ parfor section=1:total
 end
 poolobj = gcp('nocreate');
 delete(poolobj);
-puttogether(filename,fids,betathres,xranges,yranges,factor)
+puttogether(filename,filesave,fids,betathres,xranges,yranges,factor)
 end
