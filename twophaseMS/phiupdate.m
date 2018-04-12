@@ -503,8 +503,6 @@ function y = DH(x,me)
 
 d = 0.0001;
 
-
-
 y = (H(x+d,me)-H(x-d,me))/(2*d);
 
 

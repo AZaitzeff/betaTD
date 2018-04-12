@@ -30,6 +30,7 @@ for i=1:M
                 else
                     dict(part1)=g2;
                 end
+                new(z)=part1;
             else
             
             
