@@ -30,7 +30,7 @@ for i=1:M
                 else
                     dict(part1)=g2;
                 end
-                new(z)=part1;
+                new2(z2)=part1;
             else
             
             
@@ -58,9 +58,9 @@ for i=1:M
                 origover1=sum(sum(abs(region1-region)))/sum(sum(region1));
                 origover2=sum(sum(abs(region2-region)))/sum(sum(region2));
                 if origover1>0 && origover2>0
-                    new(z)=part1;
+                    new2(z2)=part1;
                     z=z+1;
-                    new(z)=part2;
+                    new2(z2)=part2;
                     z=z+1;
                     
                     if origover1<origover2

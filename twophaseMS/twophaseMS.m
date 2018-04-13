@@ -16,6 +16,8 @@ function twophaseMS(EBSD,CI,betas,map,fid,betathres,section,filename)
     N=numel(clusterlist);
     current=clusterlist;
     M=numel(current);
+    new2=[];
+    z2=1;
     updateregion2;
 
     for iter=1:5
@@ -29,7 +31,10 @@ function twophaseMS(EBSD,CI,betas,map,fid,betathres,section,filename)
          end
          [clusterlist,~,labels] = unique(map);
          N=numel(clusterlist);
-         [current,~,labels] = unique(new);
+         [current,~,labels] = unique([new new2]);
+         
+         new2=[];
+         z2=1;
          M=numel(current);
         updateregion2
         
