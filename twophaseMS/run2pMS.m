@@ -21,7 +21,6 @@ parfor section=1:total
         EBSDtemp=load(['../data/' filename 'EBSD.mat']);
         addpath('../anglelib/')
         mapall=load(['../data/' filename 'ff.mat']);
-        
         i=mod(section-1,m)+1;
         j=ceil(section/m);
         rows=(max(xranges(i)-factor,1):min(xranges(i+1)+factor,xranges(end)));
