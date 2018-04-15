@@ -11,5 +11,5 @@
 %run2pMS(filename,'betat21',[50,100,150,200],400,4,1);
 
 filename='RX';
-run2pMS(filename,'beta50RX',[50,100,150,200],400,4,.5);
-run2pMS(filename,'betat1RX',[50,100,150,200],400,4,1);
+run2pMS(filename,'beta50RX',[50,100,150,200],800,4,.5);
+run2pMS(filename,'betat1RX',[50,100,150,200],800,4,1);

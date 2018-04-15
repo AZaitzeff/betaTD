@@ -15,7 +15,7 @@ m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
 parpool(numpar)
-factor=50;
+factor=100;
 parfor section=1:total
     for fid=fids
         EBSDtemp=load(['../data/' filename 'EBSD.mat']);
