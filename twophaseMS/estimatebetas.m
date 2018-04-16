@@ -27,9 +27,8 @@ for z=clusterlist'
         CItemp=CItemp+1;
     end
     if sub
-        
         newind=datasample(indices,numsub,'Weights',CItemp);
-        CItemp=CItemp*0+1;
+        CItemp=ones(numsub,1);
     else
         newind=indices;
     end
