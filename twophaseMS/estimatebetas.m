@@ -22,12 +22,16 @@ for i=1:144
 end
 for z=clusterlist'
     indices=find(z==map);
+    CItemp=CIflat(indices);
+    if sum(CIflat(indices))==0
+        CItemp=CItemp+1;
+    end
     if sub
-        newind=datasample(indices,numsub,'Weights',CIflat(indices));
-        CItemp=ones(size(CIflat(newind)));
+        
+        newind=datasample(indices,numsub,'Weights',CItemp);
+        CItemp=CItemp*0+1;
     else
         newind=indices;
-        CItemp=CIflat(indices);
     end
     EBSDtemp=EBSDflat(newind,:);
     maskalpha=alphamask(newind);
