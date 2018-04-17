@@ -21,7 +21,7 @@ function twophaseMS(EBSD,CI,betas,map,fid,betathres,section,filename)
     updateregion2;
 
     for iter=1:5
-         [current,~,labels] = unique(new);
+         [current,~,labels] = unique([new new2]);
          M=numel(current);
          new=[];
          z=1;
