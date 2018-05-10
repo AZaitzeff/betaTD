@@ -12,6 +12,7 @@ for i=1:M
 
         %if ~sum((find(part2==current)<=i)) && overlap>0
         if part1~=part2 && overlap>0
+            %save(['results/here' num2str(part1) 'p' num2str(part2) '.mat'],'map');
             g1=dict(part1);
             g2=dict(part2);
             region=region1+region2;
