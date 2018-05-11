@@ -10,9 +10,9 @@
 %run2pMS(filename,'betat250',[50,100,150,200],400,4,.5);
 %run2pMS(filename,'betat21',[200],400,4,1);
 
-%filename='RX';
+filename='RX';
 %run2pMS(filename,'beta50RX',[100,150,200],400,4,.5);
-%run2pMS(filename,'betat1RX',[100,150,200],400,4,1);
+run2pMS(filename,'beta1RX',[100,150,200,250],400,4,1);
 
-filename='sim';
-run2pMS(filename,'betatsim1',[100,200,300,400,500,600],300,4,1);
+%filename='sim';
+%run2pMS(filename,'betatsim1',[100,200,300,400,500,600],300,4,1);
