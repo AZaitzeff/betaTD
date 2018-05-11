@@ -15,4 +15,4 @@
 %run2pMS(filename,'betat1RX',[100,150,200],400,4,1);
 
 filename='sim';
-run2pMS(filename,'betatsim1',[50,100,150,200],300,4,1);
+run2pMS(filename,'betatsim1',[100,200,300,400,500,600],300,4,1);
