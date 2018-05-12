@@ -2,7 +2,7 @@
 smallest=10;
 for i=1:M
     part=current(i);
-    save(['results/here' num2str(part) '.mat'],'map');
+    %save(['results/here' num2str(part) '.mat'],'map');
     region=(map==part);
     g1=dict(part);
     [u,~,~]=oneregion(region,EBSD,CI,betas,0,0,fid,region,g1,[1,0,0,0],0);

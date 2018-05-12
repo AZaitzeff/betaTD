@@ -20,7 +20,7 @@ function twophaseMS(EBSD,CI,betas,map,fid,betathres,section,filename)
     new2=[];
     z2=1;
     updateregion2;
-    save(['results/phasetwo.mat'],'map','dict');
+    %save(['results/phasetwo.mat'],'map','dict');
     for iter=1:5
          [current,~,labels] = unique([new new2]);
          M=numel(current);
