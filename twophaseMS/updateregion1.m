@@ -1,5 +1,5 @@
 
-smallest=10;
+
 for i=1:M
     part=current(i);
     %save(['results/here' num2str(part) '.mat'],'map');

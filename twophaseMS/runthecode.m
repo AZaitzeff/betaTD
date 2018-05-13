@@ -3,7 +3,7 @@ filename='test1';
 %run2pMS(filename,'beta25',[50,100,150,200,250,300],500,4,.25);
 %run2pMS(filename,'beta50',[50,100,150,200,250,300],500,4,.5);
 %run2pMS(filename,'beta75',[50,100,150,200,250,300],500,4,.75);
-run2pMS(filename,'beta1',[20,50,100],500,4,1);
+run2pMS(filename,'beta1',[10,25,50,100,200,400,800],500,4,1);
 
 
 %filename='test2';
