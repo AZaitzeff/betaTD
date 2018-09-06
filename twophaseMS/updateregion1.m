@@ -4,7 +4,7 @@ for i=1:M
     %save(['results/here' num2str(part) '.mat'],'map');
     region=(map==part);
     g1=dict(part);
-    [u,~,~]=oneregion(region,EBSD,CI,betas,0,0,fid,region,g1,[1,0,0,0],options);
+    [u,~,~]=oneregion(region,EBSD,CI,betas,0,0,fid,region,g1,[1,0,0,0],options,0);
     newregion1=region.*(u<.5);
     newregion2=region.*(u>=.5);
     diff1=sum(sum(newregion1));
