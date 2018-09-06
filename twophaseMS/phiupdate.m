@@ -1,4 +1,4 @@
-function [uo,g1,g2] = phiupdate(nt,dt,uin,zfun,cnstrt,EBSD,CI,betas,fid,g1,g2)
+function [uo,g1,g2] = phiupdate(nt,dt,uin,zfun,cnstrt,EBSD,CI,betas,fid,g1,g2,options)
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -78,12 +78,19 @@ newg2=g2;
 for t = 1:nt % Main time loop
 
     % Difference quotients:  
+    
+    if options.square
+        u_x = forwardx(u)*invh;
 
-    u_x = forwardx(u)*invh;
+        u_y = forwardy(u)*invh;  
 
-    u_y = forwardy(u)*invh;  
-
-    Du = sqrt( u_x.^2 + u_y.^2 + me );
+        Du = sqrt( u_x.^2 + u_y.^2 + me );
+    else
+        u_1=differenceu(u,options.hex1f(1),options.hex1f(2),1)*invh;
+        u_2=differenceu(u,options.hex2f(1),options.hex2f(2),1)*invh;
+        u_3=differenceu(u,options.hex3f(1),options.hex3f(2),1)*invh;
+        Du=sqrt( u_1.^2 + u_2.^2+u_3.^2 + me );
+    end
     if mod(t,interval)==1
         
         mask1=zfun.*(u(3:m+2,3:n+2)>.5);
@@ -209,9 +216,16 @@ for t = 1:nt % Main time loop
 
     end
     
+    if options.square
+        grad_u=backwardx(zfunb.*u_x./Du)*invh + backwardy(zfunb.*u_y./Du)*invh;
+    else
+        temp1=differenceu(zfunb.*u_1./Du,options.hex1b(1),options.hex1b(2),-1)*invh;
+        temp2=differenceu(zfunb.*u_2./Du,options.hex2b(1),options.hex2b(2),-1)*invh;
+        temp3=differenceu(zfunb.*u_3./Du,options.hex3b(1),options.hex3b(2),-1)*invh;
+        grad_u=temp1+temp2+temp3;
+    end
 
-
-    rhs = (backwardx(zfunb.*u_x./Du)*invh + backwardy(zfunb.*u_y./Du)*invh)-fid*CIb.*Xb;
+    rhs = grad_u-fid*CIb.*Xb;
     
     u = u + dt*rhs;
     u(u<0)=0;
@@ -225,6 +239,7 @@ end
 
 uo = u(3:m+2,3:n+2);
 
+end
 
 function [ubo]=upbuffer2(ub)
 
@@ -274,7 +289,7 @@ ub(m+3,1:n+4)=ub(m+2,1:n+4);
 ub(m+4,1:n+4)=ub(m+2,1:n+4);
 
 ubo=ub;
-
+end
 
 
 function [ub]=buffer2(u)
@@ -315,7 +330,47 @@ ub(3:m+2,3:n+2)=u;  % Bulk part of ub is just u.
 
 ub=upbuffer2(ub);   % Fills in buffer layer via extension.
 
+end
 
+function [du]=differenceu(u,i,j,mul)
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% difference operator in the i,j-direction for the input
+
+% matrix u, which is assumed to be buffered (layer thickness 2).
+
+% mul = 1 forward -1 backwards
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Uses: upbuffer2.m
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+[m,n]=size(u);  % Buffered size.
+
+m=m-4;      % Find the unbuffered size.
+
+n=n-4;      % Find the unbuffered size.
+
+
+
+du=u;       % Initialization for dy.
+
+% Carry out the operation on unbuffered part of u: 
+
+du(3:m+2,3:n+2)=mul*( u((3:m+2)+i,(3:n+2)+j) - u(3:m+2,3:n+2) );
+
+
+
+
+
+% Update the buffer region:
+
+du=upbuffer2(du);
+end
 
 function [dy]=backwardy(u)
 
@@ -359,7 +414,7 @@ dy(3:m+2,3:n+2)=( u(3:m+2,3:n+2) - u(2:m+1,3:n+2) );
 
 dy=upbuffer2(dy);
 
-
+end
 
 function [dx]=backwardx(u)
 
@@ -403,7 +458,7 @@ dx(3:m+2,3:n+2)=( u(3:m+2,3:n+2) - u(3:m+2,2:n+1) );
 
 dx=upbuffer2(dx);
 
-
+end
 
 
 
@@ -449,7 +504,7 @@ dy(3:m+2,3:n+2)=( u(4:m+3,3:n+2) - u(3:m+2,3:n+2) );
 
 dy=upbuffer2(dy);
 
-
+end
 
 
 
@@ -494,31 +549,4 @@ dx(3:m+2,3:n+2)=( u(3:m+2,4:n+3) - u(3:m+2,3:n+2) );
 % Update the buffer region:
 
 dx=upbuffer2(dx);
-
-
-
-function y = DH(x,me)
-
-
-
-d = 0.0001;
-
-y = (H(x+d,me)-H(x-d,me))/(2*d);
-
-
-
-function y = H(x,me)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% function y = H(x,me)
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Approximate Heaviside function.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-y = (tanh(x/me)+1)/2;
+end

@@ -50,19 +50,21 @@ for section=1:total
 end
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 EBSD=EBSDtemp.EBSD;
-[m,n,~]=size(EBSD);
+[m,n,z]=size(EBSD);
 CI=EBSDtemp.CI;
 betas=EBSDtemp.betas;
 betas(CI<betathres)=0;
 [dict]=estimatebetas(EBSD,CI,betas,mapall,[],0,1,500);
 [clusterlist,~,~] = unique(mapall);
-
+alpha=reshape(EBSD, [m*n,z]);
+alpha=E313toq(alpha);
 for z=clusterlist'
     mu=dict(z);
-    zfun=(z==mapall);
-    for i=1:4
-        betaEBSD(zfun,i)=mu(i);
-    end
+    zfun=find(z==mapall);
+
+    [best,~]=alpbbeta(alpha(zfun,:),mu);
+    betaEBSD(zfun,:)=best;
+
 end
 betaEBSD=qtoE313(betaEBSD);
 betaEBSD=reshape(betaEBSD,[m,n,3]);

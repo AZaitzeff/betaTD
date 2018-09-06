@@ -1,4 +1,5 @@
 function twophaseMS(EBSD,CI,betas,map,fid,betathres,section,filename)
+    options.square=1;
     smallest=2;
     subnum=500;
     betas(CI<betathres)=0;
