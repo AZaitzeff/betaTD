@@ -15,7 +15,7 @@
 %run2pMS(filename,'beta1RX',[400,600,800],400,4,1);
 
 filename='AFone';
-run2pMS(filename,'AFoneseg',[200,400,800],400,4,1);
+run2pMS(filename,'AFoneseg',[1000,2000,3000],400,4,1);
 
 %filename='AFbig';
 %run2pMS(filename,'AFbigseg',[200,400,800],400,4,1);
