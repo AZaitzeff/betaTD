@@ -22,26 +22,30 @@ for i=1:144
 end
 for z=clusterlist'
     indices=find(z==map);
-    CItemp=CIflat(indices);
-    if sum(CIflat(indices))==0
-        CItemp=CItemp+1;
-    end
-    if sub
-        newind=datasample(indices,numsub,'Weights',CItemp);
-        CItemp=ones(numsub,1);
+    if numel(indices)>0
+        CItemp=CIflat(indices);
+        if sum(CIflat(indices))==0
+            CItemp=CItemp+1;
+        end
+        if sub
+            newind=datasample(indices,numsub,'Weights',CItemp);
+            CItemp=ones(numsub,1);
+        else
+            newind=indices;
+        end
+        EBSDtemp=EBSDflat(newind,:);
+        maskalpha=alphamask(newind);
+        maskbeta=betamask(newind);
+        if sum(maskbeta)==0
+            [mu, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,16);
+        elseif sum(maskalpha)==0
+            [mu, ~, ~, ~] = VMFEM(EBSDtemp, Pm,CItemp,1,16);
+        else
+            [mu, ~, ~, ~] = VMFEMz(EBSDtemp(maskalpha,:), Pall,CItemp(maskalpha),...
+                EBSDtemp(maskbeta,:), Pm,CItemp(maskbeta),1,16);
+        end
+        dict(z)=mu;
     else
-        newind=indices;
+        dict(z)=[1,0,0,0];
     end
-    EBSDtemp=EBSDflat(newind,:);
-    maskalpha=alphamask(newind);
-    maskbeta=betamask(newind);
-    if sum(maskbeta)==0
-        [mu, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,16);
-    elseif sum(maskalpha)==0
-        [mu, ~, ~, ~] = VMFEM(EBSDtemp, Pm,CItemp,1,16);
-    else
-        [mu, ~, ~, ~] = VMFEMz(EBSDtemp(maskalpha,:), Pall,CItemp(maskalpha),...
-            EBSDtemp(maskbeta,:), Pm,CItemp(maskbeta),1,16);
-    end
-    dict(z)=mu;
 end
