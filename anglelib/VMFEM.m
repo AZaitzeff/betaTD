@@ -1,4 +1,4 @@
-function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters,Num_of_init)
+function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters,Num_of_init,Mu,Kappa)
     Pm = cat(3, Pm, -Pm);
     %%% Duplicate the Euler Angles
     No = size(Pm,3);
@@ -25,18 +25,24 @@ function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters,Num_of_init)
     for init=1:Num_of_init   
         % Initialize Mu and Kappa
         R = zeros(N,No,Num_of_clusters);
+        
+        if(nargin<6)
+
+    
         Mu = zeros(Num_of_clusters, p);
         for clu = 1:Num_of_clusters
             mu = randn(1,p);
             mu = mu/norm(mu,2);
             Mu(clu,:) = mu(:)';
         end
+        
         %a=16;
         %Mu(1,:)=[1,0,0,0];
         %Mu(1,:)=[cos(pi/a),sin(pi/a),0,0];
         %Mu(2,:)=[cos(3*pi/a),sin(3*pi/a),0,0];
 
         Kappa = 50*ones(Num_of_clusters,1);
+        end
         W = (1/Num_of_clusters)*ones(Num_of_clusters,1);
         
         Num_of_iteration=30;
