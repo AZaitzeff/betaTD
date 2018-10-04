@@ -8,9 +8,9 @@ border2=30;
 border=border1+border2;
 nx=n1+2*border;
 ny=n2+2*border;
-Z = -ones(n1,n2); % Aux. variable, used in calling ls2vf2D.
-ind = find(Z<0);  % Aux. variable, used in calling ls2vf2D.
-[sub1,sub2] = ind2sub([n1 n2],ind); % Aux. variable, used in calling ls2vf2D.
+%Z = -ones(n1,n2); % Aux. variable, used in calling ls2vf2D.
+%ind = find(Z<0);  % Aux. variable, used in calling ls2vf2D.
+%[sub1,sub2] = ind2sub([n1 n2],ind); % Aux. variable, used in calling ls2vf2D.
 %indicator = 0*Z;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +36,7 @@ K=ifftshift(K);
 
   % Convolutions:
   for k=1:N
-    indicator = 0*Z;
+    %indicator = 0*Z;
     %vals = ls2vf2D(int32(sub1),int32(sub2),levelsets{k},Z);
     %indicator(ind) = vals;
     indicator=levelsets{k}>0;

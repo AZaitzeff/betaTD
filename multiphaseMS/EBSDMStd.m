@@ -25,7 +25,6 @@ for k=1:K
 end
 for t=1:MAXITER
 
-
 [ls]=td2dz(u,dt);
 phi=zeros(m,n,K);
 for k=1:K

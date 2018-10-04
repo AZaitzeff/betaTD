@@ -35,7 +35,9 @@ newdict={};
 newkappa={};
 %arr=[1,2,4,5,6];
 for i=1:K
-    u{i}=(reshape(r==i, [m n])*2.)-1;
+    temp=val;
+    temp(:,i)=[];
+    u{i}=(reshape(min(temp,[],2)-val(:,i), [m n]));
     %newdict{i}=dict(arr(i));
     newdict{i}=dict(i);
     newkappa{i}=kappa(i);
