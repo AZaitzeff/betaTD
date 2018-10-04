@@ -26,7 +26,7 @@ function [Mu, Kappa, W, logL, CIdx]=VMFEM(X, Pm,CI, Num_of_clusters,Num_of_init,
         % Initialize Mu and Kappa
         R = zeros(N,No,Num_of_clusters);
         
-        if(nargin<6)
+        if(nargin<6)||init>1
 
     
         Mu = zeros(Num_of_clusters, p);

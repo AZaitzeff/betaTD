@@ -1,6 +1,6 @@
 function energy=EBSDtdE(u,EBSD,CI,dict,fid)
 energy=0;
-dt=.01;
+dt=1/2^12;
 
 
 K=size(u,2);

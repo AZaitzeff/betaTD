@@ -1,7 +1,8 @@
-function runMStd(filename,filesave,fids,biggest,numpar,betathres,Ks)
+function runMStd(filename,filesave,fids,biggest,numpar,betathres,Ks,max_check)
 addpath('../anglelib/')
-max_check=3;
-
+if nargin<8
+    max_check=3;
+end
 if nargin<7
     Ks=[6,8,10];
 end

@@ -1,6 +1,8 @@
-function [u,dict]=EBSDMStd(u,EBSD,CI,dict,fid)
-endflag=0;
-dt=.01;
+function [u,dict,kappa]=EBSDMStd(u,EBSD,CI,dict,kappa,fid,DT)
+if nargin<6
+    DT=.02;
+end
+dt=DT;
 numsub=200;
 T=alphatobetatrans();
 Pm=getsymmetries('cubic');
@@ -17,7 +19,7 @@ CIflat=reshape(CI,[m*n,1]);
 S=u;
 changeu=u;
 lastu=u;
-MAXITER=200;
+MAXITER=1000;
 for k=1:K
     S{k}(:)=CIflat.*alpbmetric(EBSDflat,dict{k})';
 end
@@ -47,24 +49,30 @@ for k=1:K
         changeu{k}=u{k};
         mask1=u{k}>0;
         indices=find(mask1(:));
-        newind=datasample(indices,numsub,'Weights',CIflat(indices));
-        EBSDtemp=EBSDflat(newind,:);
-        CItemp=ones(size(CIflat(newind)));
-        [newg1, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp);
-        dict{k}=newg1;
-        S{k}(:)=CIflat.*alpbmetric(EBSDflat,dict{k})';
+        if sum(CIflat(indices))>1e-4
+            if numel(indices)>numsub
+                newind=datasample(indices,numsub,'Weights',CIflat(indices));
+                EBSDtemp=EBSDflat(newind,:);
+                CItemp=ones(size(CIflat(newind)));
+            else
+                EBSDtemp=EBSDflat(indices,:);
+                CItemp=CIflat(indices);
+            end
+            [newg1, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,3,dict{k},kappa{k});
+            dict{k}=newg1;
+            S{k}(:)=CIflat.*alpbmetric(EBSDflat,dict{k})';
+        end
     end
     end
 end
 if totalnum<1
-    endflag=endflag+1;
-    if endflag>1
+    dt=dt/2;
+    if dt<1/2^12
         break
     end
-else
-    endflag=0;
 end
 lastu=u;
 
 
 end
+t

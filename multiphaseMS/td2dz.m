@@ -3,7 +3,9 @@ function [levelsets] = td2dz(levelsets,dt)
 h=1/100;
 N = size(levelsets,2); % Number of phases.
 [n1,n2] = size(levelsets{1});
-border=30;
+border1=10;
+border2=30;
+border=border1+border2;
 nx=n1+2*border;
 ny=n2+2*border;
 Z = -ones(n1,n2); % Aux. variable, used in calling ls2vf2D.
@@ -37,7 +39,8 @@ K=ifftshift(K);
     indicator = 0*Z;
     vals = ls2vf2D(int32(sub1),int32(sub2),levelsets{k},Z);
     indicator(ind) = vals;
-    indicator=padarray(indicator,[border border]);
+    indicator=padarray(indicator,[border1 border1],'replicate');
+    indicator=padarray(indicator,[border2 border2]);
     
     convolution = real(ifft2( fft2(indicator) .* K ));
     % Convolution dropped into comparison functions it appears in:
