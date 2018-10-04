@@ -37,8 +37,9 @@ K=ifftshift(K);
   % Convolutions:
   for k=1:N
     indicator = 0*Z;
-    vals = ls2vf2D(int32(sub1),int32(sub2),levelsets{k},Z);
-    indicator(ind) = vals;
+    %vals = ls2vf2D(int32(sub1),int32(sub2),levelsets{k},Z);
+    %indicator(ind) = vals;
+    indicator=levelsets{k}>0;
     indicator=padarray(indicator,[border1 border1],'replicate');
     indicator=padarray(indicator,[border2 border2]);
     
