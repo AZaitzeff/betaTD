@@ -9,7 +9,7 @@ function [dict,kappa]=estimatebetas(EBSD,CI,betas,map,update,dict,sub,numsub,max
         numsub=200;
     end
     if nargin<9
-        max_init=4;
+        max_init=8;
     end
 if numel(update)==0
     dict = containers.Map('KeyType','int32','ValueType','any');
