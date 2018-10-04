@@ -22,6 +22,7 @@ end
 m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
+tic;
 parpool(numpar)
 factor=50;
 parfor section=1:total
@@ -45,4 +46,5 @@ parfor section=1:total
 end
 poolobj = gcp('nocreate');
 delete(poolobj);
+toc;
 puttogether(filename,filesave,fids,1,xranges,yranges,factor);
