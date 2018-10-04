@@ -4,7 +4,7 @@ function map=MStd(EBSD,CI,fid,Ks,filename,section,max_check)
 if nargin<7
     max_check=1;
 end
-
+DT=.02;
 [m,n,~]=size(EBSD);
 maxener=inf;
 bu={};
@@ -14,7 +14,7 @@ for K=Ks
 for ztest =1:max_check
 
 [u,newdict,newkappa]=initializeEBSD(EBSD,CI,K);
-[u,dict,~]=EBSDMStd(u,EBSD,CI,newdict,newkappa,fid);
+[u,dict,~]=EBSDMStd(u,EBSD,CI,newdict,newkappa,fid,DT);
 energy=EBSDtdE(u,EBSD,CI,dict,fid);
 if energy<maxener
     maxener=energy;

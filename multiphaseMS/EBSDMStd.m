@@ -1,5 +1,5 @@
 function [u,dict,kappa]=EBSDMStd(u,EBSD,CI,dict,kappa,fid,DT)
-if nargin<6
+if nargin<7
     DT=.02;
 end
 dt=DT;
