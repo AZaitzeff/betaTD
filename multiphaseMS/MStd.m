@@ -1,10 +1,13 @@
-function map=MStd(EBSD,CI,fid,Ks,filename,section,max_check)
+function map=MStd(EBSD,CI,fid,Ks,filename,section,max_check,DT)
 
 
 if nargin<7
     max_check=1;
 end
-DT=.02;
+if nargin<7
+    DT=.02;
+end
+
 [m,n,~]=size(EBSD);
 maxener=inf;
 bu={};
