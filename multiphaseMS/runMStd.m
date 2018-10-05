@@ -27,9 +27,7 @@ m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
 tic;
-if numpar>1
 parpool(numpar)
-end
 factor=100;
 parfor section=1:total
     for fid=fids
@@ -50,9 +48,7 @@ parfor section=1:total
 
     end
 end
-if numpar>1
 poolobj = gcp('nocreate');
 delete(poolobj);
-end
 toc;
 puttogether(filename,filesave,fids,1,xranges,yranges,factor);
