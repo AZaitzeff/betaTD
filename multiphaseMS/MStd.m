@@ -1,6 +1,6 @@
-function map=MStd(EBSD,CI,fid,Ks,filename,section,max_check,DT)
+function map=MStd(EBSD,CI,fid,fixed,filename,section,max_check,DT)
 
-
+K=prod(fixed);
 if nargin<7
     max_check=1;
 end
@@ -13,23 +13,20 @@ maxener=inf;
 bu={};
 bK=0;
 bdict=0;
-for K=Ks
 for ztest =1:max_check
 
-[u,newdict,newkappa]=initializeEBSD(EBSD,CI,K);
+[u,newdict,newkappa]=initializeEBSD(EBSD,CI,K,fixed);
 [u,dict,~]=EBSDMStd(u,EBSD,CI,newdict,newkappa,fid,DT);
 energy=EBSDtdE(u,EBSD,CI,dict,fid);
 if energy<maxener
     maxener=energy;
     bu=u;
-    bK=K;
     bdict=dict;
 end
 
 end
-end
 map=zeros(m,n);
-for i=1:bK
+for i=1:K
     map=map+(bu{i}>0)*i;
 end
 dict=bdict;

@@ -38,13 +38,14 @@ for k=1:K
     
 end
 totalnum=0;
-for k=1:K
+k=1;
+while k<=K
     ind=(u{k}(:)>0);
     totalnum=totalnum+sum(abs((lastu{k}(:)>0)-ind));
-    if sum(ind)>10
+    if sum(ind)>5
     num=sum(abs((changeu{k}(:)>0)-ind))/sum(ind);
     
-    if (num)>.05
+    if (num)>=.4
         changeu{k}=u{k};
         mask1=u{k}>0;
         indices=find(mask1(:));
@@ -57,11 +58,25 @@ for k=1:K
                 EBSDtemp=EBSDflat(indices,:);
                 CItemp=CIflat(indices);
             end
-            [newg1, ~, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,3,dict{k},kappa{k});
+            [newg1, kap, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,3,dict{k},kappa{k});
             dict{k}=newg1;
+            kappa{k}=kap;
             S{k}(:)=CIflat.*alpbmetric(EBSDflat,dict{k})';
         end
     end
+    k=k+1;
+    else
+        dict{k}=dict{K};
+        u{k}=u{K};
+        kappa{k}=kappa{K};
+        kappa(K)=[];
+        u(K)=[];
+        dict(K)=[];
+        changeu{k}=changeu{K};
+        lastu{k}=lastu{K};
+        S{k}=S{K};
+        S(K)=[];
+        K=K-1;
     end
 end
 if totalnum<1

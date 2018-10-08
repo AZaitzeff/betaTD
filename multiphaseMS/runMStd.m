@@ -1,10 +1,10 @@
-function runMStd(filename,filesave,fids,biggest,numpar,betathres,Ks,DT,max_check)
+function runMStd(filename,filesave,fids,biggest,numpar,betathres,fixed,DT,max_check)
 addpath('../anglelib/')
 if nargin<9
     max_check=3;
 end
 if nargin<7
-    Ks=[6,8,10];
+    fixed=[5,5];
 end
 if nargin<8
     DT=.02;
@@ -43,7 +43,7 @@ parfor section=1:total
         %betas=EBSDtemp.betas(rows,cols);
         
         tic;
-        MStd(EBSD,CI,fid,Ks,filename,section,max_check,DT);
+        MStd(EBSD,CI,fid,fixed,filename,section,max_check,DT);
         toc;
 
     end
