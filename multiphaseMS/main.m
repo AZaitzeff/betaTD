@@ -1,7 +1,7 @@
 
 
 filename='AFone';
-runMStd(filename,'AFoneseg2',[100,200,300,400],600,2,1,[[4,4];[5,5]],.02,1);
+runMStd(filename,'AFoneseg',[100,200,300,400],900,1,1,[[8,4];[10,5]],.02,1);
 
 %filename='AFbig';
 %runMStd(filename,'AFbigseg',[100,200,300,400],900,6,1,[[4,4];[5,5]],.02,1);

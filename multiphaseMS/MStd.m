@@ -24,13 +24,13 @@ if energy<maxener
     maxener=energy;
     bu=u;
     bdict=dict;
-    bK=K;
 end
 
 end
 end
 map=zeros(m,n);
-for i=1:bK
+total=size(bu,2);
+for i=1:total
     map=map+(bu{i}>0)*i;
 end
 dict=bdict;
