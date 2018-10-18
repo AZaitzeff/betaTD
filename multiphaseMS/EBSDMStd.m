@@ -79,10 +79,14 @@ while k<=K
         K=K-1;
     end
 end
-if totalnum<1
-    dt=dt/2;
+
+if totalnum<100
     if dt<1/2^12
-        break
+        if totalnum<2
+            break
+        end
+    else
+        dt=dt/2;
     end
 end
 lastu=u;

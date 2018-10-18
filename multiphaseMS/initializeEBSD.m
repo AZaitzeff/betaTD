@@ -1,20 +1,19 @@
-function [u,newdict,newkappa]=initializeEBSD(EBSD,CI,K,fixed)
-if nargin<4
-    fixed=[0,0];
-end
+function [u,newdict,newkappa]=initializeEBSD(EBSD,CI,Ks)
+
 h=1/100;
-[m,n,z]=size(EBSD);
+[m,n,~]=size(EBSD);
 x=(1:n)*h;
 y=(1:m)*h;
 [X,Y]=meshgrid(x,y);
 xs=zeros(m*n,2);
 xs(:,1)=X(:);
 xs(:,2)=Y(:);
-if prod(fixed)==K
+K=prod(Ks);
+if numel(Ks)==2
     center=zeros(K,2);
-    [xpts,ypts]=meshgrid(((1:fixed(1))-1/2)/fixed(1)*n*h,((1:fixed(2))-1/2)/fixed(2)*m*h);
-    center(:,1)=xpts(:);
-    center(:,2)=ypts(:);
+    [xpts,ypts]=meshgrid(((1:Ks(1))-1/2)/Ks(1)*n*h,((1:Ks(2))-1/2)/Ks(2)*m*h);
+    center(:,1)=xpts(:)+randn(K,1)*n*h/(Ks(1)*8);
+    center(:,2)=ypts(:)+randn(K,1)*m*h/(Ks(2)*8);
 else
 Db=0;
 for i=1:10
@@ -41,8 +40,9 @@ for i=1:K
     mapall=mapall+(reshape(r,[m n])==i)*i;
 end
 [dict,kappa]=estimatebetas(EBSD,CI,zeros(m,n),mapall,[],0,1,200,16);
-newdict={};
-newkappa={};
+newdict=cell(1,K);
+newkappa=cell(1,K);
+u=cell(1,K);
 %arr=[1,2,4,5,6];
 for i=1:K
     temp=val;

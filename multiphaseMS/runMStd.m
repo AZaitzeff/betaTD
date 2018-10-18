@@ -1,10 +1,7 @@
-function runMStd(filename,filesave,fids,biggest,numpar,betathres,fixed,DT,max_check)
+function runMStd(filename,filesave,fids,biggest,numpar,betathres,Ks,DT)
 addpath('../anglelib/')
-if nargin<9
-    max_check=3;
-end
 if nargin<7
-    fixed=[5,5];
+    Ks={[5,5],[5,5]};
 end
 if nargin<8
     DT=.02;
@@ -26,10 +23,9 @@ end
 m=numel(xranges)-1;
 n=numel(yranges)-1;
 total=m*n;
-tic;
 parpool(numpar)
-factor=100;
-parfor section=1:total
+factor=200;
+for section=1:total
     for fid=fids
         EBSDtemp=load(['../data/' filename 'EBSD.mat']);
         addpath('../anglelib/')
@@ -43,12 +39,11 @@ parfor section=1:total
         %betas=EBSDtemp.betas(rows,cols);
         
         tic;
-        MStd(EBSD,CI,fid,fixed,filename,section,max_check,DT);
+        MStd(EBSD,CI,fid,Ks,filename,section,DT);
         toc;
 
     end
 end
 poolobj = gcp('nocreate');
 delete(poolobj);
-toc;
 puttogether(filename,filesave,fids,1,xranges,yranges,factor);
