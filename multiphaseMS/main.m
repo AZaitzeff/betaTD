@@ -1,6 +1,6 @@
-filename='AFone';
-Ks={[8,4],[8,4],[8,4],[10,5],[10,5],[10,5]};
-runMStd(filename,'AFoneseg',[100,150,200],1000,6,1,Ks,.02);
+%filename='AFone';
+%Ks={[8,4],[8,4],[8,4],[10,5],[10,5],[10,5]};
+%runMStd(filename,'AFoneseg',[100,150,200],1000,6,1,Ks,.02);
 Ks={[6,6],[6,6],[6,6],[7,7],[7,7],[7,7]};
 filename='AFbig';
 runMStd(filename,'AFbigseg',[100,150,200],1000,6,1,Ks,.02);
