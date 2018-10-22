@@ -1,9 +1,12 @@
-function [u,dict,kappa]=EBSDMStd(u,EBSD,CI,dict,kappa,fid,DT)
+function [u,dict,kappa]=EBSDMStd(u,EBSD,CI,dict,kappa,fid,DT,numsub)
 if nargin<7
     DT=.02;
 end
+if nargin<8
+    numsub=120;
+end
 dt=DT;
-numsub=200;
+
 T=alphatobetatrans();
 Pm=getsymmetries('cubic');
 Pall=zeros(4,4,144);
@@ -16,25 +19,29 @@ K=size(u,2);
 EBSDflat=reshape(EBSD,[m*n,z]);
 EBSDflat=E313toq(EBSDflat);
 CIflat=reshape(CI,[m*n,1]);
-S=u;
+S=cell(1,K);
 changeu=u;
 lastu=u;
 MAXITER=1000;
 for k=1:K
-    S{k}(:)=CIflat.*alpbmetric(EBSDflat,dict{k})';
+    S{k}=1-u{k}*2;
 end
 for t=1:MAXITER
 
 [ls]=td2dz(u,dt);
 phi=zeros(m,n,K);
 for k=1:K
+    mask=(ls{k}<.99)&(ls{k}>.01)&((S{k}>.95)|(S{k}<-.01));
+    S{k}(mask)=CIflat(mask).*alpbmetric(EBSDflat(mask,:),dict{k})';
+end
+
+for k=1:K
     phi(:,:,k)=2/(sqrt(dt))*(1-ls{k})+fid*S{k};
 end
+
+[~,argmin]=min(phi,[],3);
 for k=1:K
-    temp=phi;
-    temp(:,:,k)=[];
-    tempmin=squeeze(max(-temp,[],3));
-    u{k}=(squeeze(-phi(:,:,k))-tempmin);
+    u{k}=argmin==k;
     
 end
 totalnum=0;
@@ -58,10 +65,10 @@ while k<=K
                 EBSDtemp=EBSDflat(indices,:);
                 CItemp=CIflat(indices);
             end
-            [newg1, kap, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,3,dict{k},kappa{k});
+            [newg1, kap, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,1,dict{k},kappa{k});
             dict{k}=newg1;
             kappa{k}=kap;
-            S{k}(:)=CIflat.*alpbmetric(EBSDflat,dict{k})';
+            S{k}=1-u{k}*2;
         end
     end
     k=k+1;

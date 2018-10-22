@@ -1,5 +1,7 @@
-function [u,newdict,newkappa]=initializeEBSD(EBSD,CI,Ks)
-
+function [u,newdict,newkappa]=initializeEBSD(EBSD,CI,Ks,numsub)
+if nargin<4
+    numsub=120;
+end
 h=1/100;
 [m,n,~]=size(EBSD);
 x=(1:n)*h;
@@ -36,19 +38,18 @@ for k=1:K
 end
 [~,r]=min(val,[],2);
 mapall=zeros(m,n);
+u=cell(1,K);
 for i=1:K
+    u{i}=(reshape(r,[m n])==i);
     mapall=mapall+(reshape(r,[m n])==i)*i;
 end
-[dict,kappa]=estimatebetas(EBSD,CI,zeros(m,n),mapall,[],0,1,200,16);
+[dict,kappa]=estimatebetas(EBSD,CI,zeros(m,n),mapall,[],0,1,numsub,10);
 newdict=cell(1,K);
 newkappa=cell(1,K);
-u=cell(1,K);
+
 %arr=[1,2,4,5,6];
+
 for i=1:K
-    temp=val;
-    temp(:,i)=[];
-    u{i}=(reshape(min(temp,[],2)-val(:,i), [m n]));
-    %newdict{i}=dict(arr(i));
     newdict{i}=dict(i);
     newkappa{i}=kappa(i);
 end

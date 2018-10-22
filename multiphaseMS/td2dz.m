@@ -48,7 +48,7 @@ K=ifftshift(K);
     %indicator = 0*Z;
     %vals = ls2vf2D(int32(sub1),int32(sub2),levelsets{k},Z);
     %indicator(ind) = vals;
-    indicator=levelsets{k}>0;
+    indicator=levelsets{k};
     if flag
         indicator=padarray(indicator,[n1 n2],'symmetric','post');
     else
