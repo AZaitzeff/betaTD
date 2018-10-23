@@ -9,8 +9,8 @@ if flag
     nx=2*n1;
     ny=2*n2;
 else
-    border1=10;
-    border2=30;
+    border1=20;
+    border2=20;
     border=border1+border2;
     nx=n1+2*border;
     ny=n2+2*border;
