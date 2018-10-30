@@ -1,49 +1,32 @@
-function runMStd(filename,filesave,fids,biggest,numpar,betathres,Ks,DT)
+function runMStd(filename,filesave,fid,numpar,betathres,Ks,dx,dy,dt,step,num)
 addpath('../anglelib/')
-if nargin<7
-    Ks={[5,5],[5,5]};
+if nargin<6
+    Ks=[5,5];
 end
 if nargin<8
-    DT=.02;
+    dx=1/100;
+    dy=1/100;
 end
-
+if nargin<9
+    dt=.02;
+end
+if nargin<10
+    step=1;
+end
+if nargin<11
+    num=1;
+end
+parpool(numpar)
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
-[x,y]=size(EBSDtemp.CI);
-d=ceil(x/biggest);
-xranges=ones(1,d+1);
-for i=1:d
-    xranges(i+1)=ceil(x/d*(i));
-end
-d=ceil(y/biggest);
-yranges=ones(1,d+1);
-for i=1:d
-    yranges(i+1)=ceil(y/d*(i));
-end
-m=numel(xranges)-1;
-n=numel(yranges)-1;
-total=m*n;
-parpool(numpar)
-factor=200;
-for section=1:total
-    for fid=fids
-        EBSDtemp=load(['../data/' filename 'EBSD.mat']);
-        addpath('../anglelib/')
-        i=mod(section-1,m)+1;
-        j=ceil(section/m);
-        rows=(max(xranges(i)-factor,1):min(xranges(i+1)+factor,xranges(end)));
-        cols=(max(yranges(j)-factor,1):min(yranges(j+1)+factor,yranges(end)));
+addpath('../anglelib/')
+EBSD=EBSDtemp.EBSD(rows,cols,:);
+CI=EBSDtemp.CI(rows,cols);
+%betas=EBSDtemp.betas(rows,cols);
+reestbeta=1;
+tic;
+MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,num,reestbeta);
+toc;
 
-        EBSD=EBSDtemp.EBSD(rows,cols,:);
-        CI=EBSDtemp.CI(rows,cols);
-        %betas=EBSDtemp.betas(rows,cols);
-        
-        tic;
-        MStd(EBSD,CI,fid,Ks,filename,section,DT);
-        toc;
-
-    end
-end
 poolobj = gcp('nocreate');
 delete(poolobj);
-puttogether(filename,filesave,fids,1,xranges,yranges,factor);

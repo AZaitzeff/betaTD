@@ -1,16 +1,20 @@
-function [levelsets] = td2dz(levelsets,dt,flag)
-if nargin<3
+function [levelsets] = td2dz(levelsets,dt,dx,dy,flag)
+if nargin<5
     flag=0;
 end
-h=1/100;
+if nargin<4
+    dx=1/100;
+    dy=1/100;
+end
+
 N = size(levelsets,2); % Number of phases.
 [n1,n2] = size(levelsets{1});
 if flag
     nx=2*n1;
     ny=2*n2;
 else
-    border1=20;
-    border2=20;
+    border1=30;
+    border2=10;
     border=border1+border2;
     nx=n1+2*border;
     ny=n2+2*border;
@@ -25,8 +29,8 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 nu = nx;
 nv = ny;
-du = 1/(nu*h);
-dv = 1/(nv*h);
+du = 1/(nu*dx);
+dv = 1/(nv*dy);
 u = [-nu/2:nu/2-1]*du;
 v = [-nv/2:nv/2-1]*dv;
 [uu,vv] = ndgrid(u,v);

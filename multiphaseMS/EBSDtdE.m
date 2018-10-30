@@ -1,17 +1,21 @@
-function energy=EBSDtdE(u,EBSD,CI,dict,fid)
+function energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dx,dy)
 energy=0;
 dt=1/2^12;
 
+K=max(mapall(:));
 
-K=size(u,2);
-[m,n]=size(u{1});%size of level set function
+[m,n]=size(mapall);%size of level set function
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[m*n,z]);
 EBSDflat=E313toq(EBSDflat);
 CIflat=reshape(CI,[m*n,1]);
+u=cell(1,K);
+    
+for k=1:K
+    u{k}=mapall==k;
+end
 
-
-[ls]=td2dz(u,dt);
+[ls]=td2dz(u,dt,dx,dy);
 
 for k=1:K
     ind=(u{k}(:)>0);
