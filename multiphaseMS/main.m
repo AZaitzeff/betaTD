@@ -1,7 +1,7 @@
 filename='AFone';
 runMStd(filename,'AFoneFT',300,6,1,[11,7],1/100,1/100,.08,1,6);
 runMStd(filename,'AFoneCT',300,6,1,[11,7],1/100,1/100,.08,-1,6);
-runMStd(filename,'AFoneboth',300,6,1,[11,7],1/100,1/100,.08,8,6);
+runMStd(filename,'AFoneboth',300,6,1,[11,7],1/100,1/100,.08,4,6);
 %Ks={[7,7],[7,7],[8,8],[8,8],[6,6],[6,6]};
 %filename='AFbig';
 %runMStd(filename,'AFbigseg',[100,150,200,300],1000,6,1,Ks,.02);

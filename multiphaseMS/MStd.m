@@ -42,7 +42,7 @@ else
     [smallmap,newdict,newkappa]=initializeEBSD(sEBSD,sCI,Ks);
     [smallmap,dict,kappa]=EBSDMStd(smallmap,sEBSD,sCI,newdict,newkappa,fid,dx*step,dy*step,dt,(2^-12)*step);
     mapall = imresize(smallmap, [m n], 'nearest');
-    dt2=dt/step;
+    dt2=dt/(2*step);
     [mapall,dict,~]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,dt2);
     energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy);
     enevec(i)=energy;

@@ -20,8 +20,8 @@ parpool(numpar)
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
-EBSD=EBSDtemp.EBSD(rows,cols,:);
-CI=EBSDtemp.CI(rows,cols);
+EBSD=EBSDtemp.EBSD;
+CI=EBSDtemp.CI;
 %betas=EBSDtemp.betas(rows,cols);
 reestbeta=1;
 tic;
