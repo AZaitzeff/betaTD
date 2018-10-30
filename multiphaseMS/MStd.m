@@ -27,12 +27,12 @@ enevec=zeros(1,num);
 maps=cell(1,num);
 dicts=cell(1,num);
 parfor i=1:num
-if step==0
+if step==1
     [mapall,newdict,newkappa]=initializeEBSD(EBSD,CI,Ks);
     [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt);
     energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dx,dy);
     enevec(i)=energy;
-elseif step<0
+elseif step<1
     [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks);
     [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt,10);
     energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy);
