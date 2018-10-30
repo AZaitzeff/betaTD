@@ -18,10 +18,6 @@ if nargin<11
 end
 [m,n,~]=size(EBSD);
 
-if step>1
-    sEBSD=EBSD(1:step:end,1:step:end,:);
-    sCI=CI(1:step:end,1:step:end,:);
-end
 
 enevec=zeros(1,num);
 maps=cell(1,num);
@@ -39,6 +35,8 @@ elseif step<1
     enevec(i)=energy;
     
 else
+    sEBSD=EBSD(1:step:end,1:step:end,:);
+    sCI=CI(1:step:end,1:step:end,:);
     [smallmap,newdict,newkappa]=initializeEBSD(sEBSD,sCI,Ks);
     [smallmap,dict,kappa]=EBSDMStd(smallmap,sEBSD,sCI,newdict,newkappa,fid,dx*step,dy*step,dt,(2^-12)*step);
     mapall = imresize(smallmap, [m n], 'nearest');
