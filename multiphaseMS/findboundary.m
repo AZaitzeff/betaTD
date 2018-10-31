@@ -1,4 +1,4 @@
-function [xdir,ydir,smallu,linind,slinind,m,n]=findboundary(u,r,disk,M,N)
+function [xdir,ydir,smallu,linind,slinind,m,n,xsizes,ysizes]=findboundary(u,r,disk,M,N,mexed)
 [row, column] = find(u);
 if isempty(row)
     xdir=0;
@@ -8,6 +8,8 @@ if isempty(row)
     slinind=0;
     m=-1;
     n=-1;
+    xsizes=0;
+    ysizes=0;
     return
 end
 maxr=max(row);
@@ -36,27 +38,18 @@ mask=findboundarypixels(smallu);
 %     return
 % end
 mask = imdilate(mask,disk);
+
 rl=sum(sum(mask,2)>0);
 cl=sum(sum(mask,1)>0);
 
-xdir = cell(1,rl);
-step=1;
-for i=1:m
-    [arrays,count]=decompose(mask(i,:));
-    if count>0
-        xdir{step}=[i,count,arrays];
-        step=step+1;
-    end
+if mexed
+    [xdir,ydir,xsizes,ysizes]=makerowcolmapsz_mex(mask,rl,cl,m,n);
+else
+    [xdir,ydir]=makerowcolmaps(mask,rl,cl,m,n);
+    xsizes=0;
+    ysizes=0;
 end
-ydir = cell(1,cl);
-step=1;
-for j=1:n
-    [arrays,count]=decompose(mask(:,j));
-    if count>0
-        ydir{step}=[j,count,arrays];
-        step=step+1;
-    end
-end
+
 [row,col]=find(mask);
 linind=sub2ind([M,N],row+miny-1,col+minx-1);
 slinind=sub2ind([m,n],row,col);

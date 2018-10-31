@@ -1,7 +1,7 @@
 function [intervals,count] = decompose(binseq)
 
-n = numel(binseq);
-intervals = {};
+n = size(binseq,2);
+intervals = cell(1,3);
 
 count = 0; % Number of patches.
 
@@ -26,7 +26,8 @@ while pos <= n
   if ( binseq(pos) == 0 ) || ( pos == n )
     if flag == 1 % If we have just exited a patch of 1's...
       flag = 0;
-      intervals{count} = patch(1:patchsize);
+      vec = patch(1:patchsize);
+      intervals{count}=vec;
       patch(1:patchsize) = 0;
     end
   end

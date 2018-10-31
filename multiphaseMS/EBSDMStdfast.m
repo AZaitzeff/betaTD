@@ -1,4 +1,4 @@
-function [mapall,dict,kappa]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,DT,rmspots,numsub)
+function [mapall,dict,kappa]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,DT,rmspots,mexed,numsub)
 if nargin<8
     dx=1/100;
     dy=1/100;
@@ -6,8 +6,11 @@ end
 if nargin<9
     DT=.02;
 end
-if nargin<11
+if nargin<12
     numsub=200;
+end
+if nargin<11
+    mexed=0;
 end
 if nargin<10
     rmspots=0;
@@ -31,7 +34,7 @@ changenum=zeros(1,K);
 curmin=ones(m,n)*fid*2;
 active=ones(1,K);
 for t=1:MAXITER
-[newmapall,curmin]=convandthres(mapall,curmin,dict,CIflat,EBSDflat,K,active,dx,dy,dt,fid,rmspots);
+[newmapall,curmin]=convandthres(mapall,curmin,dict,CIflat,EBSDflat,K,active,dx,dy,dt,fid,rmspots,mexed);
     
 k=1;
 new=newmapall(:)~=mapall(:);
@@ -53,15 +56,13 @@ while k<=K
         changenum(k)=0;
         indices=find(mask1(:));
         if sum(CIflat(indices))>1e-4
-            if numel(indices)>numsub
-                newind=datasample(indices,numsub,'Weights',CIflat(indices));
-                EBSDtemp=EBSDflat(newind,:);
-                CItemp=ones(size(CIflat(newind)));
+            newind=datasample(indices,numsub,'Weights',CIflat(indices));
+            EBSDtemp=EBSDflat(newind,:);
+            if mexed
+                [newg1, kap, ~] = VMFEMfast_mex(EBSDtemp, Pall,1,dict{k},kappa{k});
             else
-                EBSDtemp=EBSDflat(indices,:);
-                CItemp=CIflat(indices);
+                [newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict{k},kappa{k});
             end
-            [newg1, kap, ~, ~] = VMFEM(EBSDtemp, Pall,CItemp,1,1,dict{k},kappa{k});
             dict{k}=newg1;
             kappa{k}=kap;
         end

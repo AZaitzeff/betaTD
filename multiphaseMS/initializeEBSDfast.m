@@ -1,13 +1,13 @@
-function [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,numsub,check,subm,subn)
+function [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,Ks,check,subm,subn,mexed)
 if nargin<4
-    numsub=200;
-end
-if nargin<5
     check=16;
 end
-if nargin<7
+if nargin<6
     subn=50;
     subm=50;
+end
+if nargin<7
+    mexed=0;
 end
 [m,n,~]=size(EBSD);
 
@@ -36,11 +36,4 @@ smallmap=reshape(r,[subm subn]);
 %K=prod(Ks);
 %smallmap=(x-1)*Ks(2)+y';
 mapall = imresize(smallmap, [m n], 'nearest');
-[dict,kappa]=estimatebetas(EBSD,CI,zeros(m,n),mapall,[],0,1,numsub,check);
-newdict=cell(1,K);
-newkappa=cell(1,K);
-
-for i=1:K
-    newdict{i}=dict(i);
-    newkappa{i}=kappa(i);
-end
+[dict,kappa]=estimatebetasfast(EBSD,CI,mapall,check,mexed);

@@ -1,4 +1,4 @@
-function energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy)
+function energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed)
 energy=0;
 dt=1/2^12;
 K=max(mapall(:));
@@ -19,8 +19,12 @@ r=ceil(200*sqrt(dt));
 disk=strel('disk',r-1,4);
 for k=1:K
     temp=(mapall==k);
-    [xdir,ydir,smallu,~,~,hor,ver]=findboundary(temp,r,disk,M,N);
-    newu=ADI(smallu,dt,dx,dy,xdir,ydir,hor,ver);
+    [xdir,ydir,smallu,~,~,hor,ver,xsizes,ysizes]=findboundary(temp,r,disk,M,N,mexed);
+    if mexed
+        newu=ADIz_mex(smallu,dt,dx,dy,xdir,ydir,xsizes,ysizes,hor,ver);
+    else
+        newu=ADI(smallu,dt,dx,dy,xdir,ydir,hor,ver);
+    end
     mask=(smallu(:)==0);
     energy=energy+2/sqrt(dt)*sum(newu(mask));
 end

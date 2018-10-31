@@ -1,4 +1,4 @@
-function MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,num,reestbeta)
+function MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,num,reestbeta,mexed)
 
 if nargin<7
     dx=1/100;
@@ -16,6 +16,12 @@ end
 if nargin<11
     reestbeta=0;
 end
+if nargin<11
+    reestbeta=0;
+end
+if nargin<12
+    mexed=0;
+end
 [m,n,z]=size(EBSD);
 
 
@@ -29,9 +35,9 @@ if step==1
     energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dx,dy);
     enevec(i)=energy;
 elseif step<1
-    [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks);
-    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt,10);
-    energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy);
+    [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,50,50,mexed);
+    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt,10,mexed);
+    energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
     enevec(i)=energy;
     
 else
@@ -41,8 +47,8 @@ else
     [smallmap,dict,kappa]=EBSDMStd(smallmap,sEBSD,sCI,newdict,newkappa,fid,dx*step,dy*step,dt,(2^-12)*step);
     mapall = imresize(smallmap, [m n], 'nearest');
     dt2=dt/(2*step);
-    [mapall,dict,~]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,dt2);
-    energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy);
+    [mapall,dict,~]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,dt2,0,mexed);
+    energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
     enevec(i)=energy;
 end
 maps{i}=mapall;
