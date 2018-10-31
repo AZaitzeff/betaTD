@@ -88,6 +88,8 @@ while k<=K
     end
 end
 mapall=newmapall;
+imagesc(mapall)
+pause(1)
 totalnum=sum(new(:));
 if totalnum<2
     if dt<1/2^12

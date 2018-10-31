@@ -35,8 +35,8 @@ if step==1
     energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dx,dy);
     enevec(i)=energy;
 elseif step<1
-    [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,50,50,mexed);
-    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt,10,mexed);
+    [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,16,50,50,mexed);
+    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt,20,mexed);
     energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
     enevec(i)=energy;
     
