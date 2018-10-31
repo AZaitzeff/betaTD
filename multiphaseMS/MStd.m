@@ -16,7 +16,7 @@ end
 if nargin<11
     reestbeta=0;
 end
-[m,n,~]=size(EBSD);
+[m,n,z]=size(EBSD);
 
 
 enevec=zeros(1,num);
