@@ -6,8 +6,8 @@
 %      end
 % end
 
-for step=[4,8]
-for dt=[.08,.16]
+for step=[8,16]
+for dt=[.08,.16,.32]
     for fid=[100,150,200]
         name=['AFbig' num2str(dt*100) 'dt' num2str(step) 'step'];
         filename='AFbig';
