@@ -1,4 +1,4 @@
-function [mapall,dict,kappa]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,DT,rmspots,mexed,numsub)
+function [mapall,dict,kappa]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,DT,rmspots,dtstop,mexed,numsub)
 if nargin<8
     dx=1/100;
     dy=1/100;
@@ -6,11 +6,14 @@ end
 if nargin<9
     DT=.02;
 end
-if nargin<12
+if nargin<13
     numsub=200;
 end
-if nargin<11
+if nargin<12
     mexed=0;
+end
+if nargin<11
+    dtstop=2^(-12);
 end
 if nargin<10
     rmspots=0;
@@ -29,7 +32,7 @@ K=max(mapall(:));
 EBSDflat=reshape(EBSD,[m*n,z]);
 EBSDflat=E313toq(EBSDflat);
 CIflat=reshape(CI,[m*n,1]);
-MAXITER=1000;
+MAXITER=400;
 changenum=zeros(1,K);
 curmin=ones(m,n)*fid*2;
 active=ones(1,K);
@@ -43,7 +46,7 @@ while k<=K
     mask2=(mapall(:)==k);
     regsize=sum(mask1);
     change=sum(new(mask1|mask2));
-    if change<3
+    if change<3 && regsize>10
         active(k)=0;
         k=k+1;
     else
@@ -88,9 +91,11 @@ while k<=K
     end
 end
 mapall=newmapall;
+%imagesc(mapall)
+%pause(1)
 totalnum=sum(new(:));
 if totalnum<2
-    if dt<1/2^12
+    if dt<dtstop
         break
     else
         dt=dt/2;

@@ -1,6 +1,7 @@
 function [intervals,count,sizes] = decomposez(binseq)
-n = size(binseq,2);
-intervals = zeros(10,n);
+n=size(binseq,2);
+M=400;
+intervals = zeros(10,M);
 sizes=zeros(10,1);
 count = 0; % Number of patches.
 
@@ -14,6 +15,10 @@ while pos <= n
     if flag == 0 % This is a new patch of 1's.
       flag = 1;
       count = count + 1;
+      if count>10
+          count=10;
+          break
+      end
       patchsize = 1;
       patch(patchsize) = pos; % Record the position.
     else % We're in an existing patch of 1's.
@@ -25,8 +30,9 @@ while pos <= n
   if ( binseq(pos) == 0 ) || ( pos == n )
     if flag == 1 % If we have just exited a patch of 1's...
       flag = 0;
-      intervals(count,1:patchsize)=patch(1:patchsize);
-      sizes(count)=patchsize;
+      pathlength=min(patchsize,M);
+      intervals(count,1:pathlength)=patch(1:pathlength);
+      sizes(count)=pathlength;
       patch(1:patchsize) = 0;
     end
   end

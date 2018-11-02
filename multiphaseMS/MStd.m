@@ -17,25 +17,35 @@ if nargin<11
     mexed=0;
 end
 [m,n,~]=size(EBSD);
+%try
 
-if step==1
-    [mapall,newdict,newkappa]=initializeEBSD(EBSD,CI,Ks);
-    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt);
-    energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dx,dy);
-elseif step<1
-    [mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,16,50,50,mexed);
-    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,newdict,newkappa,fid,dx,dy,dt,20,mexed);
+    nt=log2(step);
+    for z=0:nt
+        cs=step/2^z;
+         
+        sEBSD=EBSD(1:cs:end,1:cs:end,:);
+        sCI=CI(1:cs:end,1:cs:end,:);
+        
+        if z==0
+            [mapall,dict,kappa]=initializeEBSDfast(sEBSD,sCI,Ks,16,50,50,mexed);
+        else
+            [m,n]=size(sCI);
+            mapall = imresize(mapall, [m n], 'nearest');
+        end
+        
+        if z==nt
+            dtstop=2^(-12);
+        else
+            dtstop=dt/(2^z)/8;
+        end
+        [mapall,dict,kappa]=EBSDMStdfast(mapall,sEBSD,sCI,dict,kappa,fid,dx*cs,dy*cs,dt/(2^z),ceil(20/cs),dtstop,mexed);
+    end
     energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
-    
-else
-    sEBSD=EBSD(1:step:end,1:step:end,:);
-    sCI=CI(1:step:end,1:step:end,:);
-    [smallmap,newdict,newkappa]=initializeEBSD(sEBSD,sCI,Ks);
-    [smallmap,dict,kappa]=EBSDMStd(smallmap,sEBSD,sCI,newdict,newkappa,fid,dx*step,dy*step,dt,(2^-12)*step);
-    mapall = imresize(smallmap, [m n], 'nearest');
-    dt2=dt/(2*step);
-    [mapall,dict,~]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,dt2,0,mexed);
-    energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
-end
+
+%catch
+%    mapall=zeros(m,n);
+%    dict={};
+%    energy=inf;
+%end
 save(['results/' filesave num2str(fid) num2str(num)],'mapall','dict','energy');
 end

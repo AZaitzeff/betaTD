@@ -5,9 +5,12 @@ nt=ceil(log2(T/dx^2));
 dt=T/2^nt;
 tempu=u;
 for iters=1:(nt+1)
-    xkey=1;
+    
+for xkey=1:2000
     xn=xsizes(xkey);
-while xn
+    if xn==0
+        break
+    end
     i=xdir(xkey,1);
     xcoor=xdir(xkey,2:xn+1);
     if i==1
@@ -29,13 +32,14 @@ while xn
 
 
     tempu(i,xcoor)=simthompson(dt,dx,z,hor);
-    xkey=xkey+1;
-    xn=xsizes(xkey);
 end
 u=tempu;
-ykey=1;
-ym=ysizes(ykey);
-while ym
+
+for ykey=1:2000
+    ym=ysizes(ykey);
+    if ym==0
+        break
+    end
     j=ydir(ykey,1);
     ycoor=ydir(ykey,2:ym+1);
     if j==1
@@ -56,8 +60,6 @@ while ym
     end
 
     tempu(ycoor,j)=simthompson(dt,dy,z,ver);
-    ykey=ykey+1;
-    ym=ysizes(ykey);
 end
 u=tempu;
 if iters>1
