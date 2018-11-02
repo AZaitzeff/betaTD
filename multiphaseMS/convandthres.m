@@ -7,7 +7,8 @@ if nargin<13
 end
 
 [M,N]=size(mapall);
-r=ceil(200*sqrt(dt));
+fac=1/(50*(dx+dy));
+r=ceil(fac*200*sqrt(dt));
 disk=strel('disk',r-1,4);
 newmapall=mapall;
 for k=1:K

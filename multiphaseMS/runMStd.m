@@ -51,6 +51,7 @@ vars=load(['results/' filesave num2str(fid) num2str(I)]);
 
 mapall=vars.mapall;
 dict=vars.dict;
+energy=vars.energy;
 if reestbeta
     [dict,~]=estimatebetasfast(EBSD,CI,mapall,24,mexed);
 end
@@ -67,7 +68,7 @@ for z=1:K
 end
 betaEBSD=qtoE313(betaEBSD);
 betaEBSD=reshape(betaEBSD,[m,n,3]);
-save(['results/' filesave num2str(fid)],'mapall','betaEBSD','dict');
+save(['results/' filesave num2str(fid)],'mapall','betaEBSD','dict','energy');
 
 for i=1:num
     delete(['results/' filesave num2str(fid) num2str(i) '.mat']);

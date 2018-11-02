@@ -91,8 +91,8 @@ while k<=K
     end
 end
 mapall=newmapall;
-%imagesc(mapall)
-%pause(1)
+imagesc(mapall)
+pause(1)
 totalnum=sum(new(:));
 if totalnum<2
     if dt<dtstop
