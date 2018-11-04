@@ -1,4 +1,4 @@
-function runMStd(filename,filesave,fid,numpar,betathres,Ks,dx,dy,dt,step,num,reestbeta,clean,mexed)
+function runMStd(filename,filesave,fid,numpar,betathres,Ks,dx,dy,dt,step,num,reestbeta,clean,subsample,mexed)
 addpath('../anglelib/')
 if nargin<6
     Ks=[5,5];
@@ -33,9 +33,15 @@ addpath('../anglelib/')
 EBSD=EBSDtemp.EBSD;
 CI=EBSDtemp.CI;
 clean=min(clean,.9);
+
 if clean>0
     [EBSD,CI]=cleanEBSDdata(EBSD,CI,clean);
 end
+if subsample>1
+    EBSD=EBSD(1:subsample:end,1:subsample:end,:);
+    CI=CI(1:subsample:end,1:subsample:end);
+end
+
 [m,n,z]=size(EBSD);
 %betas=EBSDtemp.betas(rows,cols);
 
