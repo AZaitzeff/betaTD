@@ -59,9 +59,6 @@ else
 end
 toc;
 
-if numpar>1
-    
-end
 
 enevec=zeros(1,num);
 for i=1:num
