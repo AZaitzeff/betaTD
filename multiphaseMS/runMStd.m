@@ -26,8 +26,6 @@ if nargin<14
     mexed=0;
 end
 
-parpool(numpar)
-
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
 EBSD=EBSDtemp.EBSD;
@@ -46,12 +44,24 @@ end
 %betas=EBSDtemp.betas(rows,cols);
 
 tic;
-parfor i=1:num
-MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,mexed);
+if numpar>1
+    parpool(numpar)
+    parfor i=1:num
+        MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,mexed);
+    end
+    poolobj = gcp('nocreate');
+    delete(poolobj);
+    
+else
+    for i=1:num
+        MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,mexed);
+    end
 end
 toc;
-poolobj = gcp('nocreate');
-delete(poolobj);
+
+if numpar>1
+    
+end
 
 enevec=zeros(1,num);
 for i=1:num

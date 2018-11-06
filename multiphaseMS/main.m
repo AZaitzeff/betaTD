@@ -5,15 +5,22 @@
 %          runMStd(filename,name,fid,12,1,[11,7],1/100,1/100,dt,4,24,1,-1,0,1);
 %      end
 % end
-for Ks=[[4,8];[5,9];[6,10]]'
 for step=[4]
-for dt=[.08,.16]
-    for fid=[150,200,250]
-        name=['AFbig' num2str(dt*100) 'dt' num2str(step) 'step' num2str(Ks(1)) 'Ks'];
+for dt=[.16]
+    for fid=[300,400]
+        name=['AFbig' num2str(dt*100) 'dt' num2str(step) 'step'];
         filename='AFbig';
-        runMStd(filename,name,fid,12,1,Ks,1/100,1/100,dt,step,24,1,.5,2,1);
+        runMStd(filename,name,fid,1,1,[6,10],1/100,1/100,dt,step,1,1,.5,2,1);
     end
 end
+end
+for step=[4]
+for dt=[.16]
+    for fid=[300,400]
+        name=['AFbig' num2str(dt*100) 'dt' num2str(step) 'stepl'];
+        filename='AFbig';
+        runMStd(filename,name,fid,1,1,[6,10],1/100,1/100,dt,step,1,1,.5,-1,1);
+    end
 end
 end
 % for dt=[.08,.16]

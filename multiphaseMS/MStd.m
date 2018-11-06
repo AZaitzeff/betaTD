@@ -17,7 +17,7 @@ if nargin<11
     mexed=0;
 end
 [m,n,~]=size(EBSD);
-try
+%try
 
     nt=log2(step);
     for z=0:nt
@@ -42,10 +42,10 @@ try
     end
     energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
 
-catch
-    mapall=zeros(m,n);
-    dict={};
-    energy=inf;
-end
+%catch
+%    mapall=zeros(m,n);
+%    dict={};
+%    energy=inf;
+%end
 save(['results/' filesave num2str(fid) num2str(num)],'mapall','dict','energy');
 end
