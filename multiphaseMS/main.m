@@ -6,8 +6,8 @@
 %      end
 % end
 for step=[4]
-for dt=[.16]
-    for fid=[300,400,500,600,700,800]
+for dt=[.08,.16]
+    for fid=[300,400,500]
         name=['AFbig' num2str(dt*100) 'dt' num2str(step) 'stepl'];
         filename='AFbig';
         runMStd(filename,name,fid,12,1,[11,7],1/100,1/100,dt,step,18,1,.3,-1,1);

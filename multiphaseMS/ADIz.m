@@ -4,7 +4,7 @@ dy2=dy*dy;
 nt=ceil(log2(T/dx^2));
 dt=T/2^nt;
 tempu=u;
-for iters=1:(nt+1)
+for iters=1:2*nt
     
 for xkey=1:2000
     xn=xsizes(xkey);
@@ -62,7 +62,8 @@ for ykey=1:2000
     tempu(ycoor,j)=simthompson(dt,dy,z,ver);
 end
 u=tempu;
-if iters>1
+
+if iters>2 && mod(iters,2)==0
     dt=dt*2;
 end
 end
