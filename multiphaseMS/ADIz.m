@@ -6,7 +6,7 @@ dt=T/2^nt;
 tempu=u;
 for iters=1:2*nt
     
-for xkey=1:2000
+for xkey=1:4000
     xn=xsizes(xkey);
     if xn==0
         break
@@ -35,7 +35,7 @@ for xkey=1:2000
 end
 u=tempu;
 
-for ykey=1:2000
+for ykey=1:4000
     ym=ysizes(ykey);
     if ym==0
         break

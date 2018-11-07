@@ -8,7 +8,7 @@ end
 
 [M,N]=size(mapall);
 fac=1/(50*(dx+dy));
-r=ceil(fac*400*sqrt(dt));
+r=ceil(fac*600*sqrt(dt));
 disk=strel('disk',r-1,4);
 newmapall=mapall;
 for k=1:K
@@ -24,7 +24,7 @@ for k=1:K
             else
                 newu=ADI(smallu,dt,dx,dy,xdir,ydir,m,n);
             end
-            mask=(newu(slinind)>.05) & (newu(slinind)<.975);
+            mask=(newu(slinind)>.025);
             slinind=slinind(mask);
             linind=linind(mask);
             S=2/sqrt(dt)*(-newu(slinind))+fid*CI(linind).*alpbmetric(EBSD(linind,:),dict{k})';

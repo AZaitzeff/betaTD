@@ -36,9 +36,9 @@ try
         if z==nt
             dtstop=2^(-12);
         else
-            dtstop=dt/(2^z)/8;
+            dtstop=dt/(4^(z+2));
         end
-        [mapall,dict,kappa]=EBSDMStdfast(mapall,sEBSD,sCI,dict,kappa,fid,dx*cs,dy*cs,dt/(2^z),ceil(20/cs),dtstop,mexed);
+        [mapall,dict,kappa]=EBSDMStdfast(mapall,sEBSD,sCI,dict,kappa,fid,dx*cs,dy*cs,dt/(4^z),ceil(20/cs),dtstop,mexed);
     end
     energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
 

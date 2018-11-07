@@ -6,8 +6,8 @@ codegen makerowcolmapsz -args {vectorType,(7),(7),(7),(7)}
 %%
 
 vectorType1 = coder.typeof(1, [2000 2000], [true true]);
-vectorType2 = coder.typeof(1, [2000 401], [false false]);
-vectorType3 = coder.typeof(1, [2000 1], [false false]);
+vectorType2 = coder.typeof(1, [4000 801], [false false]);
+vectorType3 = coder.typeof(1, [4000 1], [false false]);
 codegen ADIz -args {vectorType1,1,1,1,vectorType2,vectorType2,vectorType3,vectorType3,7,7}
 
 %%

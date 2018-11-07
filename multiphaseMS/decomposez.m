@@ -1,6 +1,6 @@
 function [intervals,count,sizes] = decomposez(binseq)
 n=size(binseq,2);
-M=400;
+M=800;
 intervals = zeros(10,M);
 sizes=zeros(10,1);
 count = 0; % Number of patches.
@@ -17,6 +17,7 @@ while pos <= n
       count = count + 1;
       if count>10
           count=10;
+          'warning count'
           break
       end
       patchsize = 1;
@@ -30,6 +31,9 @@ while pos <= n
   if ( binseq(pos) == 0 ) || ( pos == n )
     if flag == 1 % If we have just exited a patch of 1's...
       flag = 0;
+      if patchsize>M
+          'Warning patch to big'
+      end
       pathlength=min(patchsize,M);
       intervals(count,1:pathlength)=patch(1:pathlength);
       sizes(count)=pathlength;
