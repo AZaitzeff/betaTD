@@ -150,8 +150,10 @@ if totalnum<2
         u=cell(1,K);
         S=cell(1,K);
         for k=1:K
-            S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
             u{k}=mapall==k;
+            S{k}=1-u{k}*2;
+            S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
+            
         end
     else
         dt=dt/2;
