@@ -49,7 +49,7 @@ energy=EBSDtdE(mapall,EBSD,CI,dict,fid,(2^-12),dx,dy,enec);
 
 
 
-save(['AF' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt' num2str(i) num2str(j) 'part' num2str(ztest), ],'mapall','dict','kappa','energy')
+save(['results/AF' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt' num2str(i) num2str(j) 'part' num2str(ztest), ],'mapall','dict','kappa','energy')
 %addpath('../../../MATLAB/mtex-5.1.1/')
 %startup
 
