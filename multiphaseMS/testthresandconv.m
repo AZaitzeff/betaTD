@@ -3,13 +3,13 @@
 %startup
 
 addpath('../anglelib/')
-%load('../data/AFbigEBSD')
-%EBSD=EBSD(1:3:end,1:3:end,:);
-%CI=CI(1:3:end,1:3:end);
+load('../data/AFbigEBSD')
+EBSD=EBSD(1:3:end,1:3:end,:);
+CI=CI(1:3:end,1:3:end);
 %%
-load('../data/AFoneEBSD')
-EBSD=EBSD(1:2:end,1:2:end,:);
-CI=CI(1:2:end,1:2:end);
+%load('../data/AFoneEBSD')
+%EBSD=EBSD(1:2:end,1:2:end,:);
+%CI=CI(1:2:end,1:2:end);
 
 %Ks=[2,2];
 %[mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,200,16);
@@ -18,13 +18,14 @@ CI=CI(1:2:end,1:2:end);
 %%
 
 %lams=[300,350];
-lams=[300,400];
+%lams=[300,400];
+lams=[100,200,300];
 %dts=[.0005,.001,.0025];
 dt=2^-6;
 Ks=[10,6];
 %Ks=[6,6];
-dx=1/100*2;
-dy=1/100*2;
+dx=1/100*3;
+dy=1/100*3;
 enes=[0,1];%[1,2];
 %for i=1:2
 %    for j=1:4
@@ -52,10 +53,10 @@ toc;
 
 energy=EBSDtdE(mapall,EBSD,CI,dict,fid,(2^-12),dx,dy,enec);
 
-save(['results/AF' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt' num2str(ztest) ],'mapall','dict','kappa','energy')
+%save(['results/AF' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt' num2str(ztest) ],'mapall','dict','kappa','energy')
 
 
-%save(['results/AFbig' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt'  num2str(ztest) ],'mapall','dict','kappa','energy')
+save(['results/AFbig' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt'  num2str(ztest) ],'mapall','dict','kappa','energy')
 %addpath('../../../MATLAB/mtex-5.1.1/')
 %startup
 
