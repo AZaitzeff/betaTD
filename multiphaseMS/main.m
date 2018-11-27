@@ -1,5 +1,5 @@
 %  for dt=[.08,.16]
-%      for fid=[250,300,350]
+%      for fid=[250,300,350,400]
 %          name=['AFone' num2str(dt*100) 'dt'];
 %          filename='AFone';
 %          runMStd(filename,name,fid,12,1,[11,7],1/100,1/100,dt,4,24,1,-1,0,1);

@@ -1,55 +1,31 @@
-function [xdir,ydir,smallu,linind,slinind,m,n,xsizes,ysizes]=findboundary(u,r,disk,M,N,mexed)
-[row, column] = find(u);
-if isempty(row)
-    xdir=0;
-    ydir=0;
-    smallu=0;
-    linind=0;
-    slinind=0;
-    m=-1;
-    n=-1;
-    xsizes=0;
-    ysizes=0;
-    return
-end
-maxr=max(row);
-minr=min(row);
-minc=min(column);
-maxc=max(column);
-miny=max(minr-r,1);
-maxy=min(maxr+r,M);
-minx=max(minc-r,1);
-maxx=min(maxc+r,N);
+function [xdir,ydir,xsizes,ysizes,smallu,linind,slinind,m,n,sizex,sizey]=findboundary(u,k,w,bnds,xbc,ybc,M,N,sizex,sizey)
+minr=bnds(1);
+maxr=bnds(2);
+minc=bnds(3);
+maxc=bnds(4);
 
+miny=max(minr-(w+5),1);
+maxy=min(maxr+(w+5),M);
+minx=max(minc-(w+5),1);
+maxx=min(maxc+(w+5),N);
+m=maxy-miny+1;
+n=maxx-minx+1;
 indy=miny:maxy;
 indx=minx:maxx;
-smallu=u(indy,indx)*1;
-%miny
-[m,n]=size(smallu);
-mask=findboundarypixels(smallu);
-% if sum(mask(:)~=smallu(:))<10
-%     xdir=0;
-%     ydir=0;
-%     smallu=0;
-%     linind=0;
-%     slinind=0;
-%     m=-1;
-%     n=-1;
-%     return
-% end
-mask = imdilate(mask,disk);
+smallu=u(indy,indx)==k;
+%SE = strel('disk',w,4);
+%J = imdilate(smallu,SE);
+%[row,col]=find(J);
+%W=smallu*0-1;
+x=xbc-minx+1;
+y=ybc-miny+1;
 
-rl=sum(sum(mask,2)>0);
-cl=sum(sum(mask,1)>0);
-
-if mexed
-    [xdir,ydir,xsizes,ysizes]=makerowcolmapsz_mex(mask,rl,cl,m,n);
-else
-    [xdir,ydir]=makerowcolmaps(mask,rl,cl,m,n);
-    xsizes=0;
-    ysizes=0;
-end
-
-[row,col]=find(mask);
+[row,col]=zgrow(y,x,w,m,n);
+%[row,col] = pgrow3(int32(y),int32(x),w,int32(W));
 linind=sub2ind([M,N],row+miny-1,col+minx-1);
 slinind=sub2ind([m,n],row,col);
+mask=smallu*0;
+mask(slinind)=1;
+[xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
+
+

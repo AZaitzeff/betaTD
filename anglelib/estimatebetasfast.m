@@ -1,14 +1,13 @@
-function [dict,kappa]=estimatebetasfast(EBSD,CI,map,max_init,mexed)
-    numsub=200;
+function [dict,kappa]=estimatebetasfast(EBSD,CI,map,max_init,numsub)
     if nargin<4
         max_init=8;
     end
     if nargin<5
-        mexed=0;
+        numsub=200;
     end
     K = max(map(:));
-    dict=cell(1,K);
-    kappa=cell(1,K);
+    dict=zeros(K,4);
+    kappa=zeros(K,1);
 
 [m,n,z]=size(EBSD);
 EBSDflat=reshape(EBSD, [m*n,z]);
@@ -31,15 +30,12 @@ for z=1:K
         end
         newind=datasample(indices,numsub,'Weights',CItemp);
         EBSDtemp=EBSDflat(newind,:);
-        if mexed
-            [mu, kap, ~] = VMFEMfast_mex(EBSDtemp, Pall,max_init,[0,0,0,0],1);
-        else
-            [mu, kap, ~] = VMFEMfast(EBSDtemp, Pall,max_init,[0,0,0,0],1);
-        end
-        dict{z}=mu;
-        kappa{z}=kap;
+
+        [mu, kap, ~] = VMFEMfast(EBSDtemp, Pall,max_init,[0,0,0,0],1);
+        dict(z,:)=mu;
+        kappa(z)=kap;
     else
-        dict{z}=[1,0,0,0];
-        kappa{z}=1;
+        dict(z,:)=[1,0,0,0];
+        kappa(z)=1;
     end
 end

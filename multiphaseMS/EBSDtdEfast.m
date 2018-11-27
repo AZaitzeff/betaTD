@@ -1,32 +1,33 @@
-function energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed)
+function energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dt,dx,dy)
 energy=0;
-dt=1/2^12;
 K=max(mapall(:));
 [M,N]=size(mapall);%size of level set function
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
 EBSDflat=E313toq(EBSDflat);
-CIflat=reshape(CI,[M*N,1]);
 
+
+[xbdcor,ybdcor,sizebdcor,coords,sizecor,minmaxrowcol]=  bndcoords(mapall,K);
 for k=1:K
-    ind=(mapall(:)==k);
-    if sum(ind)>0
-        energy=energy+sum(fid*CIflat(ind).*alpbmetric(EBSDflat(ind,:),dict{k})');
-    end
+    linind=coords(k,1:sizecor(k));
+    energy=energy+sum(fid*CI(linind).*alpbmetric(EBSDflat(linind,:),dict(k,:)));  
 end
-
-r=ceil(200*sqrt(dt));
-disk=strel('disk',r-1,4);
+w=ceil(fac*600*sqrt(dt));
 for k=1:K
-    temp=(mapall==k);
-    [xdir,ydir,smallu,~,~,hor,ver,xsizes,ysizes]=findboundary(temp,r,disk,M,N,mexed);
-    if mexed
-        newu=ADIz_mex(smallu,dt,dx,dy,xdir,ydir,xsizes,ysizes,hor,ver);
-    else
-        newu=ADI(smallu,dt,dx,dy,xdir,ydir,hor,ver);
-    end
-    mask=(smallu(:)==0);
-    energy=energy+2/sqrt(dt)*sum(newu(mask));
+    
+
+        total=sizebdcor(k);
+        [xdir,ydir,xsizes,ysizes,smallu,~,~,m,n]=findboundary(newmapall,k,w,minmaxrowcol(k,:),xbdcor(k,1:total)',ybdcor(k,1:total)',M,N);
+
+
+
+        newu=TSz(smallu*1,dt,10,dx,dy,xdir,ydir,xsizes,ysizes,m,n);
+        %mask=(newu(slinind)>.025 & newu(slinind)<.995);
+        %slinind=slinind(mask);
+        %linind=linind(mask);
+        ind=smallu==0;
+        energy=energy+sum(newu(ind))/sqrt(dt);
+
 end
 
 

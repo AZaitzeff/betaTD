@@ -1,25 +1,27 @@
-function [mapall,dict,kappa]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,dx,dy,DT,rmspots,dtstop,mexed,numsub)
+function [mapall,dict,kappa]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,DT,dx,dy,dtstop,nt,numsub)
+
+%TO DO: store fidelity cals in a smaller matrix. map to lower indices. see
+%if boundary stays within a certian region
+
 if nargin<8
     dx=1/100;
     dy=1/100;
 end
-if nargin<9
+if nargin<7
     DT=.02;
 end
-if nargin<13
-    numsub=200;
+if nargin<11
+    nt=5;
 end
 if nargin<12
-    mexed=0;
-end
-if nargin<11
-    dtstop=2^(-12);
+    numsub=400;
 end
 if nargin<10
-    rmspots=0;
+    dtstop=2^(-12);
 end
 dt=DT;
-
+%mult=ceil(log2(DT/dtstop));
+%fid=fid/2^(mult/2);
 T=alphatobetatrans();
 Pm=getsymmetries('cubic');
 Pall=zeros(4,4,144);
@@ -31,74 +33,117 @@ K=max(mapall(:));
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[m*n,z]);
 EBSDflat=E313toq(EBSDflat);
-CIflat=reshape(CI,[m*n,1]);
 MAXITER=1000;
-changenum=zeros(1,K);
 curmin=ones(m,n)*fid*2;
 active=ones(1,K);
+[xbdcor,ybdcor,sizebdcor,coords1,sizecor1,minmaxrowcol]=  bndcoords(mapall,K);
+coordsfix=coords1;
+sizecorfix=sizecor1;
+[M,N]=size(mapall);
+fac=1/(50*(dx+dy));
+w=ceil(fac*400*sqrt(dt));
+%w1=ceil(fac*400*sqrt(dt));
+%w2=ceil(fac*800*sqrt(dt));
+
 for t=1:MAXITER
-[newmapall,curmin]=convandthres(mapall,curmin,dict,CIflat,EBSDflat,K,active,dx,dy,dt,fid,rmspots,mexed);
+
+newmapall=mapall;
+for k=1:K
     
+    if active(k)
+        total=sizebdcor(k);
+        if total>5
+            [xdir,ydir,xsizes,ysizes,smallu,linind,slinind,m,n]=findboundary(newmapall,k,w,minmaxrowcol(k,:),xbdcor(k,1:total)',ybdcor(k,1:total)',M,N);
+        
+        
+        
+            newu=TSz(smallu*1,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n);
+            %mask=(newu(slinind)>.025 & newu(slinind)<.995);
+            %slinind=slinind(mask);
+            %linind=linind(mask);
+            S=2/sqrt(dt)*(-newu(slinind))+fid*CI(linind).*alpbmetric(EBSDflat(linind,:),dict(k,:));
+            [minval,I]=findminz(curmin(linind),S);
+            curmin(linind(I))=minval(I);
+            mapall(linind(I))=k;
+        end
+    end
+end
+% imagesc(mapall)
+% pause(1)
+[xbdcor,ybdcor,sizebdcor,coords2,sizecor2,minmaxrowcol]=  bndcoords(mapall,K);    
 k=1;
-new=newmapall(:)~=mapall(:);
+totalnum=0;
 while k<=K
-    mask1=(newmapall(:)==k);
-    mask2=(mapall(:)==k);
-    regsize=sum(mask1);
-    change=sum(new(mask1|mask2));
+    regsize=sizecor2(k);
+    indices=coords2(k,1:regsize);
+    change=numel(setxor(indices,coords1(k,1:sizecor1(k))));
+    totalnum=totalnum+change;
+    
     if change<3 && regsize>10
         active(k)=0;
         k=k+1;
     else
-        curmin(mask1)=fid*2;
+        curmin(indices)=fid*2;
         active(k)=1;
-    changenum(k)=changenum(k)+change;
-    num=changenum(k)/regsize;
+
     if regsize>10
-    if (num)>=.4 && regsize>50
-        changenum(k)=0;
-        indices=find(mask1(:));
-        if sum(CIflat(indices))>1e-4
-            newind=datasample(indices,numsub,'Weights',CIflat(indices));
+        num=numel(setxor(indices,coordsfix(k,1:sizecorfix(k))))/regsize;
+    if (num)>=.2 && regsize>50
+        if sum(CI(indices))>1e-4
+            newind=datasamplez(indices,numsub,CI(indices));
             EBSDtemp=EBSDflat(newind,:);
-            if mexed
-                [newg1, kap, ~] = VMFEMfast_mex(EBSDtemp, Pall,1,dict{k},kappa{k});
-            else
-                [newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict{k},kappa{k});
-            end
-            dict{k}=newg1;
-            kappa{k}=kap;
+            [newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict(k,:),kappa(k));
+            dict(k,:)=newg1;
+            kappa(k)=kap;
         end
     end
     k=k+1;
     else
         if k<K
-            dict{k}=dict{K};
-            kappa{k}=kappa{K};
+            dict(k,:)=dict(K,:);
+            kappa(k)=kappa(K);
             mapall(mapall==k)=0;
             mapall(mapall==K)=k;
-            newmapall(newmapall==k)=0;
-            newmapall(newmapall==K)=k;
-            changenum(k)=changenum(K);
             active(k)=active(K);
+            coordsfix(k,:)=coordsfix(K,:);
+            coords1(k,:)=coords1(K,:);
+            coords2(k,:)=coords2(K,:);
+            sizecorfix(k)=sizecorfix(K);
+            sizecor1(k)=sizecor1(K);
+            sizecor2(k)=sizecor2(K);
+            xbdcor(k,:)=xbdcor(K,:);
+            ybdcor(k,:)=ybdcor(K,:);
+            sizebdcor(k,:)=sizebdcor(K,:);
+            minmaxrowcol(k,:)=minmaxrowcol(K,:);
         end
-        changenum(K)=[];
         kappa(K)=[];
-        dict(K)=[];
+        dict(K,:)=[];
         active(K)=[];
+        coordsfix(K,:)=[];
+        coords1(K,:)=[];
+        coords2(K,:)=[];
+        sizecorfix(K)=[];
+        sizecor1(K)=[];
+        sizecor2(K)=[];
+        xbdcor(K,:)=[];
+        ybdcor(K,:)=[];
+        sizebdcor(K,:)=[];
+        minmaxrowcol(K,:)=[];
         K=K-1;
     end
     end
 end
-mapall=newmapall;
-%imagesc(mapall)
-%pause(1)
-totalnum=sum(new(:));
+coords1=coords2;
+sizecor1=sizecor2;
+
+
 if totalnum<2
     if dt<dtstop
         break
     else
+        %fid=fid*sqrt(2);
         dt=dt/2;
+        w=ceil(fac*600*sqrt(dt));
         active=ones(1,K);
     end
 end

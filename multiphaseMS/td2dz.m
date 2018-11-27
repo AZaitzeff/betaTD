@@ -13,8 +13,8 @@ if flag
     nx=2*n1;
     ny=2*n2;
 else
-    border1=30;
-    border2=10;
+    border1=50;
+    border2=30;
     border=border1+border2;
     nx=n1+2*border;
     ny=n2+2*border;
