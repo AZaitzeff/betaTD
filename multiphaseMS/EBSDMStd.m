@@ -138,30 +138,27 @@ end
 %title(['energy: ' num2str(energy) ' dt: ' num2str(dt)])
 %writeVideo(vidObj, getframe(gca));
 if totalnum<2
-    if flag==3
+    if dt<=dtstop
         break
-    elseif flag==1
-        flag=2;
-        dt=dtstop;
-        for k=1:K
-            S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
-        end
-        
-     elseif flag==2
-        flag=3;
+    elseif dt<=(dtstop*2)
+        dt=dt/2;
         for k=1:K
             mapall(u{k}>0)=k;
         end
-        [mapall,dict,kappa,K1]=paircheck(mapall,dict,kappa,CIflat,EBSDflat,K,dtstop,dx,dy,enec);
-        if K~=K1
-            K=K1;
-            for k=1:K
-                S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
-                u{k}=mapall==k;
-            end
-        else
-            break
+        [mapall,dict,kappa,K1]=paircheck(mapall,dict,kappa,CIflat,EBSDflat,K,dt,dx,dy,enec);
+        K=K1;
+        u=cell(1,K);
+        S=cell(1,K);
+        for k=1:K
+            S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
+            u{k}=mapall==k;
         end
+    else
+        dt=dt/2;
+        for k=1:K
+            S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
+        end
+        S=td2dz(S,dt/4,dx,dy);
     end
 end
 lastu=u;
