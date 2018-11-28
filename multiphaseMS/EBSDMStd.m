@@ -45,7 +45,7 @@ for k=1:K
     S{k}=1-u{k}*2;
     S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
 end
-S=td2dz(S,dt/4,dx,dy);
+S=td2dz(S,dt/16,dx,dy);
 
 changeu=u;
 lastu=u;
@@ -115,7 +115,7 @@ while k<=K
             dict(k,:)=newg1;
             kappa(k)=kap;
             S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
-            ls=td2dz({S{k}},dt/4,dx,dy);
+            ls=td2dz({S{k}},dt/16,dx,dy);
             S{k}=ls{1};
         end
     end
@@ -160,7 +160,7 @@ if totalnum<2
         for k=1:K
             S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
         end
-        S=td2dz(S,dt/4,dx,dy);
+        S=td2dz(S,dt/16,dx,dy);
     end
 end
 lastu=u;
