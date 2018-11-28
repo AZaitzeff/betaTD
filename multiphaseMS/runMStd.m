@@ -1,4 +1,4 @@
-function runMStd(filename,filesave,fid,numpar,betathres,Ks,dx,dy,dt,step,num,reestbeta,clean,subsample,mexed)
+function runMStd(filename,filesave,fid,numpar,betathres,Ks,dx,dy,dt,step,num,reestbeta,clean,subsample,enec)
 addpath('../anglelib/')
 if nargin<6
     Ks=[5,5];
@@ -23,7 +23,7 @@ if nargin<13
     clean=-1;
 end
 if nargin<14
-    mexed=0;
+    enec=0;
 end
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
@@ -47,7 +47,7 @@ tic;
 if numpar>1
     parpool(numpar)
     parfor i=1:num
-        MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,mexed);
+        MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,enec);
     end
     poolobj = gcp('nocreate');
     delete(poolobj);

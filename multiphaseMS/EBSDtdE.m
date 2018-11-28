@@ -35,7 +35,9 @@ if enec
         energy=energy+sum(fid*CIflat(ind(:)).*alpbmetric(EBSDflat(ind(:),:),dict(k,:))');
         if sum(ind)>0
             for k2=1:K
-                energy=energy+ene(k,k2)*1/sqrt(dt)*sum(ls{k2}(ind));
+                if k2~=k
+                    energy=energy+ene(k,k2)*1/sqrt(dt)*sum(ls{k2}(ind));
+                end
             end
         end
      end

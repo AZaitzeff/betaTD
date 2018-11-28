@@ -22,7 +22,6 @@ end
 if nargin<12
     numsub=400;
 end
-flag=1;
 dt=DT;
 
 T=alphatobetatrans();
@@ -81,7 +80,9 @@ for k=1:K
     else
         
      for k2=1:K
-         phi(:,:,k)=phi(:,:,k)+2/(sqrt(dt))*ene(k,k2)*ls{k2};
+         if k2~=k
+            phi(:,:,k)=phi(:,:,k)+2/(sqrt(dt))*ene(k,k2)*ls{k2};
+         end
      end
     end
 end
@@ -140,21 +141,21 @@ end
 if totalnum<2
     if dt<=dtstop
         break
-    elseif dt<=(dtstop*2)
-        dt=dt/2;
-        for k=1:K
-            mapall(u{k}>0)=k;
-        end
-        [mapall,dict,kappa,K1]=paircheck(mapall,dict,kappa,CIflat,EBSDflat,K,dt,dx,dy,enec);
-        K=K1;
-        u=cell(1,K);
-        S=cell(1,K);
-        for k=1:K
-            u{k}=mapall==k;
-            S{k}=1-u{k}*2;
-            S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
-            
-        end
+%     elseif dt<=(dtstop*2)
+%         dt=dt/2;
+%         for k=1:K
+%             mapall(u{k}>0)=k;
+%         end
+%         [mapall,dict,kappa,K1]=paircheck(mapall,dict,kappa,CIflat,EBSDflat,K,dt,dx,dy,enec);
+%         K=K1;
+%         u=cell(1,K);
+%         S=cell(1,K);
+%         for k=1:K
+%             u{k}=mapall==k;
+%             S{k}=1-u{k}*2;
+%             S{k}(:)=CIflat(:).*alpbmetric(EBSDflat(:,:),dict(k,:))';
+%             
+%         end
     else
         dt=dt/2;
         for k=1:K
