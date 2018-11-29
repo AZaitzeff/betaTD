@@ -79,9 +79,9 @@ betaEBSD=zeros(m*n,4);
 K = max(mapall(:));
 alpha=reshape(EBSD, [m*n,z]);
 alpha=E313toq(alpha);
-for z=1:K
-    mu=dict{z};
-    zfun=find(z==mapall);
+for k=1:K
+    mu=dict(k,:);
+    zfun=find(k==mapall);
     [best,~]=alpbbeta(alpha(zfun,:),mu);
     betaEBSD(zfun,:)=best;
 
