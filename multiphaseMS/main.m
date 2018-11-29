@@ -1,13 +1,17 @@
-%  for dt=[.08,.16]
-%      for fid=[250,300,350,400]
-%          name=['AFone' num2str(dt*100) 'dt'];
-%          filename='AFone';
-%          runMStd(filename,name,fid,12,1,[11,7],1/100,1/100,dt,4,24,1,-1,0,1);
-%      end
-% end
+for enec=[.2,.1,0,-.1,-.2]
+    for fid=[12,25,50,100,200,400]
+        if enec>=0
+            name=['sim' num2str(10*enec)];
+        else
+            name=['sim' num2str(-10*enec)];
+        end
+        filename='sim';
+        runMStd(filename,name,fid,12,1,[8,8],1/100,1/100,2^-6,1,18,0,0,1,enec);
+    end
+end
 
 for enec=[.2,.1,0,-.1,-.2]
-    for fid=[12,25,50,100,200]
+    for fid=[12,25,50,100,200,400]
         if enec>=0
             name=['AFone' num2str(10*enec)];
         else
@@ -19,7 +23,7 @@ for enec=[.2,.1,0,-.1,-.2]
 end
 
 for enec=[.2,.1,0,-.1,-.2]
-    for fid=[12,25,50,100,200]
+    for fid=[12,25,50,100,200,400]
         if enec>=0
             name=['AFbig' num2str(10*enec)];
         else
