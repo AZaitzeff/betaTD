@@ -37,13 +37,18 @@ MAXITER=1000;
 curmin=ones(m,n)*fid*2;
 active=ones(1,K);
 [xbdcor,ybdcor,sizebdcor,coords1,sizecor1,minmaxrowcol]=  bndcoords(mapall,K);
-coordsfix=coords1;
-sizecorfix=sizecor1;
 [M,N]=size(mapall);
+bndK=zeros(K,M*N);
+bndKsz=zeros(K,1);
+fidK=zeros(K,M*N);
+regK=zeros(K,M*N);
+BindKsz=zeros(K,M*N);
+SindKsz=zeros(K,M*N);
+fidregKsz=zeros(K,1);
 fac=1/(50*(dx+dy));
-w=ceil(fac*400*sqrt(dt));
-%w1=ceil(fac*400*sqrt(dt));
-%w2=ceil(fac*800*sqrt(dt));
+%w=ceil(fac*600*sqrt(dt));
+w1=ceil(fac*400*sqrt(dt));
+w2=ceil(fac*600*sqrt(dt));
 
 for t=1:MAXITER
 
@@ -53,11 +58,15 @@ for k=1:K
     if active(k)
         total=sizebdcor(k);
         if total>5
-            [xdir,ydir,xsizes,ysizes,smallu,linind,slinind,m,n]=findboundary(newmapall,k,w,minmaxrowcol(k,:),xbdcor(k,1:total)',ybdcor(k,1:total)',M,N);
+            [xdir,ydir,xsizes,ysizes,smallu,linind,slinind,bndcoor,bndsz,fullsz,m,n]=findboundary(newmapall,k,[w1,w2],minmaxrowcol(k,:),xbdcor(k,1:total)',ybdcor(k,1:total)',M,N);
+            bndK(k,1:bndsz)=bndcoor;
+            bndKsz(k)=bndsz;
+            BindKsz(k,1:fullsz)=linind;
+            SindKsz(k,1:fullsz)=slinind;
+            fidregKsz(k)=fullsz;
         
         
-        
-            newu=TSz(smallu*1,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n);
+            newu=TSz(smallu*1,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,0);
             %mask=(newu(slinind)>.025 & newu(slinind)<.995);
             %slinind=slinind(mask);
             %linind=linind(mask);
@@ -143,7 +152,8 @@ if totalnum<2
     else
         %fid=fid*sqrt(2);
         dt=dt/2;
-        w=ceil(fac*600*sqrt(dt));
+        w1=ceil(fac*400*sqrt(dt));
+        w2=ceil(fac*600*sqrt(dt));
         active=ones(1,K);
     end
 end

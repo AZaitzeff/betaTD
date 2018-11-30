@@ -21,7 +21,7 @@ if enec
      ene=zeros(K,K);
      for k1=1:K
          for k2=k1+1:K
-             energy=readshockley(dict(k1,:),dict(k2,:));
+             energy=readshockley(dict(k1,:),dict(k2,:),enec);
              
              ene(k1,k2)=energy;
              ene(k2,k1)=energy;

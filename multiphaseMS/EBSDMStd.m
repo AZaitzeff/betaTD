@@ -63,7 +63,7 @@ if enec
      ene=zeros(K,K);
      for k1=1:K
          for k2=(k1+1):K
-             energy=readshockley(dict(k1,:),dict(k2,:));
+             energy=readshockley(dict(k1,:),dict(k2,:),enec);
              ene(k1,k2)=energy;
              ene(k2,k1)=energy;
          end
@@ -76,12 +76,12 @@ phi=zeros(m,n,K);
 for k=1:K
     phi(:,:,k)=fid*S{k};
     if ~enec
-    phi(:,:,k)=phi(:,:,k)-2/(sqrt(dt))*ls{k};
+        phi(:,:,k)=phi(:,:,k)-2/(sqrt(dt))*ls{k};
     else
         
      for k2=1:K
          if k2~=k
-            phi(:,:,k)=phi(:,:,k)+2/(sqrt(dt))*ene(k,k2)*ls{k2};
+            phi(:,:,k)=phi(:,:,k)+1/(sqrt(dt))*ene(k,k2)*ls{k2};
          end
      end
     end

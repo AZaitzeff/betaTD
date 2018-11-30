@@ -2,15 +2,15 @@
 %addpath('../../../MATLAB/mtex-5.1.1/')
 %startup
 
-addpath('../anglelib/')
-load('../data/AFbigEBSD')
-EBSD=EBSD(1:3:end,1:3:end,:);
-CI=CI(1:3:end,1:3:end);
+ addpath('../anglelib/')
+% load('../data/AFbigEBSD')
+% EBSD=EBSD(1:3:end,1:3:end,:);
+% CI=CI(1:3:end,1:3:end);
 %%
 %load('../data/AFoneEBSD')
 %EBSD=EBSD(1:2:end,1:2:end,:);
 %CI=CI(1:2:end,1:2:end);
-
+load('../data/simEBSD')
 %Ks=[2,2];
 %[mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,200,16);
 %[mapall,newdict,newkappa]=regionmerging(mapall,newdict,newkappa,EBSD,CI,Ks,.015,200);
@@ -22,11 +22,11 @@ lams=[50,100,200,300,400];
 %lams=[100,200,300];
 %dts=[.0005,.001,.0025];
 dt=2^-6;
-Ks=[11,7];
-%Ks=[6,6];
-dx=1/100*3;
-dy=1/100*3;
-enes=[1];%[1,2];
+%Ks=[11,7];
+Ks=[7,7];
+dx=1/100;
+dy=1/100;
+enes=[.2];%[1,2];
 %for i=1:2
 %    for j=1:4
 

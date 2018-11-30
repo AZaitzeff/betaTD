@@ -1,16 +1,16 @@
-for enec=[.2,.1,0,-.1,-.2]
+for enec=[.2,.1,-.1,-.2]
     for fid=[12,25,50,100,200,400]
         if enec>=0
             name=['sim' num2str(10*enec)];
         else
-            name=['sim' num2str(-10*enec)];
+            name=['simn' num2str(-10*enec)];
         end
         filename='sim';
         runMStd(filename,name,fid,12,1,[8,8],1/100,1/100,2^-6,1,18,0,0,1,enec);
     end
 end
 
-for enec=[.2,.1,0,-.1,-.2]
+for enec=[.2,.1,-.1,-.2]
     for fid=[12,25,50,100,200,400]
         if enec>=0
             name=['AFone' num2str(10*enec)];
