@@ -49,14 +49,14 @@ tic;
 if numpar>1
     parpool(numpar)
     parfor i=1:num
-        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,step,i,enec);
+        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,i,enec);
     end
     poolobj = gcp('nocreate');
     delete(poolobj);
     
 else
     for i=1:num
-        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,step,i,enec);
+        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,i,enec);
     end
 end
 toc;
