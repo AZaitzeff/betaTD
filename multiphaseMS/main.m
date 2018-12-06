@@ -6,7 +6,7 @@ for enec=[1,2]
             name=['simn' num2str(-10*enec)];
         end
         filename='sim';
-        runMStd(filename,name,fid,12,1,[8,8],1/100,1/100,2^-6,1,18,0,0,1,enec);
+        runMStd(filename,name,fid,12,1,[8,8],1/100,1/100,2^-6,1,12,0,0,1,enec);
     end
 end
 
@@ -18,7 +18,7 @@ for enec=[1,2]
             name=['AFonen' num2str(-10*enec)];
         end
         filename='AFone';
-        runMStd(filename,name,fid,12,1,[12,8],2/100,2/100,2^-6,1,18,0,0,2,enec);
+        runMStd(filename,name,fid,12,1,[12,8],2/100,2/100,2^-6,1,12,0,0,2,enec);
     end
 end
 
@@ -30,7 +30,7 @@ for enec=[1,2,-.1]
             name=['AFbign' num2str(-10*enec)];
         end
         filename='AFbig';
-        runMStd(filename,name,fid,12,1,[12,8],4/100,4/100,2^-6,1,18,0,0,4,enec);
+        runMStd(filename,name,fid,12,1,[12,8],4/100,4/100,2^-6,1,12,0,0,4,enec);
     end
 end
 % for dt=[.08,.16]

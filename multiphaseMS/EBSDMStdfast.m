@@ -1,4 +1,4 @@
-function [mapall,newdict,newkappa,energy]=EBSDMStdfast(mapall,EBSD,CI,dict,kappa,fid,DT,dx,dy,dtstop,nt,numsub)
+function [mapall,newdict,newkappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,numsub)
 
 
 if nargin<8
@@ -139,7 +139,11 @@ for k=1:K
                     if sum(CI(indices))>1e-4
                         newind=datasamplez(indices,numsub,CI(indices));
                         EBSDtemp=EBSDflat(newind,:);
-                        [newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict(k,:),kappa(k));
+                        mask=beta(newind);
+                        alphaEBSD=EBSDtemp(~mask);
+                        betaEBSD=EBSDtemp(mask);
+                        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
+                        %[newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict(k,:),kappa(k));
                         dict(k,:)=newg1;
                         kappa(k)=kap;
                     end  
@@ -187,7 +191,9 @@ if activecounter==0
                 energy=energy+sum(temp(endmask));
                 csize=sizecoordsa(k);
                 indices=coordsa(k,1:csize);
-                energy=energy+sum(fid*CI(indices).*alpbmetric(EBSDflat(indices,:),dict(k,:)));
+                mask=beta(linind);
+                energy=energy+sum(fid*CI(indices(~mask)).*alpbmetric(EBSDflat(indices(~mask),:),dict(k,:)));
+                energy=energy+sum(fid*CI(indices(mask)).*b2bmetric(EBSDflat(indices(mask),:),dict(k,:)));
             end
         end
         break
@@ -245,7 +251,9 @@ mapall=changemap(mapall,map);
         mask=zeros(m,n);
         mask(slinind)=1;
         [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
-        mask(slinind)=fid*CI(linind).*alpbmetric(EBSDflat(linind,:),dict(k,:));
+        mask=beta(linind);
+        mask(slinind(~mask))=fid*CI(linind(~mask)).*alpbmetric(EBSDflat(linind(~mask),:),dict(k,:));
+        mask(slinind(mask))=fid*CI(linind(mask)).*b2bmetric(EBSDflat(linind(mask),:),dict(k,:));
         newu=TSz(mask,dt/16,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,1);
         fidK(k,1:fullsz)=newu(slinind);
     end

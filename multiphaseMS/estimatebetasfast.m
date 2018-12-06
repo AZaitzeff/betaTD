@@ -1,4 +1,4 @@
-function [dict,kappa]=estimatebetasfast(EBSD,CI,map,max_init,numsub)
+function [dict,kappa]=estimatebetasfast(EBSD,CI,beta,map,max_init,numsub)
     if nargin<4
         max_init=8;
     end
@@ -31,8 +31,10 @@ for k=1:K
         end
         newind=datasamplez(indices,numsub,CItemp);
         EBSDtemp=EBSDflat(newind,:);
-
-        [mu, kap, ~] = VMFEMfast(EBSDtemp, Pall,max_init,[0,0,0,0],1);
+        mask=beta(newind);
+        alphaEBSD=EBSDtemp(~mask);
+        betaEBSD=EBSDtemp(mask);
+        [mu, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,max_init,[0,0,0,0],1);
         dict(k,:)=mu;
         kappa(k)=kap;
     else

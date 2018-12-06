@@ -1,4 +1,4 @@
-function [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,Ks,check,subm,subn,numsub)
+function [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,beta,Ks,check,subm,subn,numsub)
 if nargin<4
     check=20;
 end
@@ -38,4 +38,4 @@ smallmap=reshape(r,[subm subn]);
 %K=prod(Ks);
 %smallmap=(x-1)*Ks(2)+y';
 mapall = imresize(smallmap, [m n], 'nearest');
-[dict,kappa]=estimatebetasfast(EBSD,CI,mapall,check,numsub);
+[dict,kappa]=estimatebetasfast(EBSD,CI,beta,mapall,check,numsub);

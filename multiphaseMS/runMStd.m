@@ -30,6 +30,7 @@ EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
 EBSD=EBSDtemp.EBSD;
 CI=EBSDtemp.CI;
+beta=zeros(size(CI));
 clean=min(clean,.9);
 
 if clean>0
@@ -38,6 +39,7 @@ end
 if subsample>1
     EBSD=EBSD(1:subsample:end,1:subsample:end,:);
     CI=CI(1:subsample:end,1:subsample:end);
+    beta=beta(1:subsample:end,1:subsample:end);
 end
 
 [m,n,z]=size(EBSD);
@@ -47,14 +49,14 @@ tic;
 if numpar>1
     parpool(numpar)
     parfor i=1:num
-        MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,enec);
+        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,step,i,enec);
     end
     poolobj = gcp('nocreate');
     delete(poolobj);
     
 else
     for i=1:num
-        MStd(EBSD,CI,fid,Ks,filesave,dx,dy,dt,step,i,mexed);
+        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,step,i,enec);
     end
 end
 toc;
