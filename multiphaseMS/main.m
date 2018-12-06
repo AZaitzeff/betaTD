@@ -22,8 +22,8 @@ for enec=[1,2]
     end
 end
 
-for enec=[1,2]
-    for fid=[100,200]
+for enec=[1,2,-.1]
+    for fid=[100,50]
         if enec>=0
             name=['AFbig' num2str(10*enec)];
         else
