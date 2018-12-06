@@ -30,9 +30,11 @@ EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
 EBSD=EBSDtemp.EBSD;
 CI=EBSDtemp.CI;
-beta=zeros(size(CI));
+[M,N]=size(CI);
+beta=logical(EBSDtemp.betas);
 clean=min(clean,.9);
-
+K=prod(Ks);
+%codegenzaitzeff(M,N,K);
 if clean>0
     [EBSD,CI]=cleanEBSDdata(EBSD,CI,clean);
 end

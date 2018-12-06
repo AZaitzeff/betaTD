@@ -26,10 +26,10 @@ try
 
         
 
-    %[mapall,dict,kappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,dx*cs,dy*cs,dt/(4^z),ceil(20/cs),dtstop,mexed);
-    [mapall,dict,kappa]=EBSDMStd(mapall,sEBSD,sCI,dict,kappa,fid,dt,dx,dy,dtstop,enec);
+    %[mapall,dict,kappa,energy]=EBSDMStdfast_mex(mapall,EBSD,CI,beta,dict,kappa,fid,dx*cs,dy*cs,dt/(4^z),ceil(20/cs),dtstop,mexed);
+    [mapall,dict,~]=EBSDMStd(mapall,EBSD,CI,dict,kappa,fid,dt,dx,dy,dtstop,enec);
 
-    energy=EBSDtdE(mapall,sEBSD,sCI,dict,fid,dtstop,dx,dy,enec);
+    energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dtstop,dx,dy,enec);
     %energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
 
 catch
