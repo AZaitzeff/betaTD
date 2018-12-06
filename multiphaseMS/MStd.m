@@ -22,7 +22,7 @@ dtstop=2^(-10);
         
 
     [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,beta,Ks,20,50,50,400);
-    [mapall,dict,kappa]=regionmerging(mapall,dict,kappa,sEBSD,sCI,Ks,.5);
+    [mapall,dict,kappa]=regionmerging(mapall,dict,kappa,EBSD,CI,Ks,.5);
 
         
 
