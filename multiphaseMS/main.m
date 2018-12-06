@@ -1,5 +1,5 @@
-for enec=[.2,.1,-.1,-.2]
-    for fid=[12,25,50,100,200,400]
+for enec=[1,2]
+    for fid=[100,200]
         if enec>=0
             name=['sim' num2str(10*enec)];
         else
@@ -10,8 +10,8 @@ for enec=[.2,.1,-.1,-.2]
     end
 end
 
-for enec=[.2,.1,-.1,-.2]
-    for fid=[12,25,50,100,200,400]
+for enec=[1,2]
+    for fid=[100,200]
         if enec>=0
             name=['AFone' num2str(10*enec)];
         else
@@ -22,8 +22,8 @@ for enec=[.2,.1,-.1,-.2]
     end
 end
 
-for enec=[.2,.1,0,-.1,-.2]
-    for fid=[12,25,50,100,200,400]
+for enec=[1,2]
+    for fid=[100,200]
         if enec>=0
             name=['AFbig' num2str(10*enec)];
         else

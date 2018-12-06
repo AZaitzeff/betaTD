@@ -12,7 +12,7 @@ for k=1:K
     linind=coords(k,1:sizecor(k));
     energy=energy+sum(fid*CI(linind).*alpbmetric(EBSDflat(linind,:),dict(k,:)));  
 end
-w=ceil(fac*600*sqrt(dt));
+w=ceil(600*sqrt(dt));
 for k=1:K
     
 

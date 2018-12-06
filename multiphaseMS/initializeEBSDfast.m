@@ -14,6 +14,7 @@ end
 x=(1:subn);
 y=(1:subm);
 [X,Y]=meshgrid(x,y);
+total=subn*subm;
 xs=zeros(subn*subm,2);
 xs(:,1)=X(:);
 xs(:,2)=Y(:);
@@ -25,8 +26,9 @@ center(:,2)=ypts(:)+randn(K,1)*subm/(Ks(2)*4);
 
 val=zeros(subm*subn,K);
 for k=1:K
-    mean=sum((xs-center(k,:)).^2,2);
-    val(:,k)=mean;
+    for i=1:total
+        val(i,k)=sum((xs(i,:)-center(k,:)).^2);
+    end
 end
 [~,r]=min(val,[],2);
 smallmap=reshape(r,[subm subn]);

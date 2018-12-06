@@ -1,9 +1,6 @@
-function [newmapall,newdict,newkappa]=regionmerging(mapall,dict,kappa,EBSD,CI,Ks,thres,numsub)
+function [mapall,newdict,newkappa]=regionmerging(mapall,dict,kappa,Ks,thres)
 
 
-if nargin<8
-    numsub=400;
-end
 if nargin<7
     thres=3;
 end
@@ -14,11 +11,11 @@ Pall=zeros(4,4,144);
 for i=1:144
     Pall(:,:,i)=T(:,:,mod(i-1,6)+1)'*Pm(:,:,ceil(i/6));
 end
-[m,n]=size(mapall);%size of level set function
-[~,~,z]=size(EBSD);
-EBSDflat=reshape(EBSD,[m*n,z]);
-EBSDflat=E313toq(EBSDflat);
-CIflat=reshape(CI,[m*n,1]);
+%[m,n]=size(mapall);%size of level set function
+% [~,~,z]=size(EBSD);
+% EBSDflat=reshape(EBSD,[m*n,z]);
+% EBSDflat=E313toq(EBSDflat);
+% CIflat=reshape(CI,[m*n,1]);
 
 m=Ks(2);
 n=Ks(1);
@@ -58,35 +55,40 @@ for z =1:total
     r2=findroot(map,ind2);
     if r1~=r2
         val=b2bmetric(dict(r1,:),dict(r2,:));
-
         if val<thres
             map(r2)=r1;
-            mapall(mapall==r2)=r1;
-            indices=find(mapall==r1);
-            if sum(CIflat(indices))>1e-4
-                newind=datasample(indices,numsub,'Weights',CIflat(indices));
-                EBSDtemp=EBSDflat(newind,:);
-                [newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict(r1,:),kappa(r1));
-                dict(r1,:)=newg1;
-                kappa(r1)=kap;
-            end
         end
     end
 
 end
 
-inds=unique(map);
-K=numel(inds);
-newdict=zeros(K,4);
-newkappa=zeros(K,1);
-newmapall=mapall;
+
+
+current=zeros(1,K);
+for k=1:K
+    if map(k)==k
+        current(k)=1;
+    end
+end
+newK=sum(current);
+newdict=zeros(newK,4);
+newkappa=zeros(newK,1);
+newk=1;
+newmap=1:K;
+for k=1:K
+    if current(k)
+        newmap(k)=newk;
+        newdict(newk,:)=dict(k,:);
+        newkappa(newk)=kappa(k);
+        newk=newk+1;
+    end
+end
 
 for k=1:K
-    ind=inds(k);
-    newkappa(k)=kappa(ind);
-    newdict(k,:)=dict(ind,:);
-    newmapall(mapall==ind)=k;
+    newmap(k)=newmap(findroot(map,k));
 end
+
+mapall=changemap(mapall,newmap);
 end
 
 

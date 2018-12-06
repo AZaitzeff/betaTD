@@ -46,7 +46,7 @@ else
 for k=1:K
     ind=(u{k}(:)>0);
     if sum(ind)>0
-        energy=energy+2/sqrt(dt)*sum(ls{k}(~ind));
+        energy=energy+1/sqrt(dt)*sum(ls{k}(~ind));
         energy=energy+sum(fid*CIflat(ind(:)).*alpbmetric(EBSDflat(ind(:),:),dict(k,:))');
     end
 end 
