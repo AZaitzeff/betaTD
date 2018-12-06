@@ -1,12 +1,12 @@
 function [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,beta,Ks,check,subm,subn,numsub)
-if nargin<4
+if nargin<5
     check=20;
 end
 if nargin<6
     subn=50;
     subm=50;
 end
-if nargin<7
+if nargin<8
     numsub=400;
 end
 [m,n,~]=size(EBSD);

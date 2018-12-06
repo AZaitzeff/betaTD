@@ -16,12 +16,12 @@ if nargin<10
 end
 [m,n,~]=size(EBSD);
 dtstop=2^(-10);
-try
+%try
 
 
         
 
-    [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,beta,Ks,20,50,50);
+    [mapall,dict,kappa]=initializeEBSDfast(EBSD,CI,beta,Ks,20,50,50,400);
     [mapall,dict,kappa]=regionmerging(mapall,dict,kappa,sEBSD,sCI,Ks,.5);
 
         
@@ -32,10 +32,10 @@ try
     energy=EBSDtdE(mapall,EBSD,CI,dict,fid,dtstop,dx,dy,enec);
     %energy=EBSDtdEfast(mapall,EBSD,CI,dict,fid,dx,dy,mexed);
 
-catch
-    mapall=zeros(m,n);
-    dict={};
-    energy=inf;
-end
+%catch
+%    mapall=zeros(m,n);
+%    dict={};
+%    energy=inf;
+%end
 save(['results/' filesave num2str(fid) num2str(num)],'mapall','dict','energy');
 end
