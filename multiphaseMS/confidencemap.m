@@ -4,7 +4,7 @@ Pm=getsymmetries('cubic');
 vectorType1 = coder.typeof(1, [num 4], [false false]);
 vectorType2 = coder.typeof(1, [4 4 24], [false false false]);
 codegen VMFEMfast -args {vectorType1,vectorType2,1,vectorType1,5}
-conmap=zeros(M,N);
+conmap=ones(M,N);
 mapall=zeros(M*N,num);
 curnum=num*K;
 dictall=zeros(num*K,4);
@@ -26,14 +26,14 @@ end
 [~,I]=min(enevec);
 total=M*N;
 if numpar>1
-    parfor ind=total
+    parfor ind=1:total
         betas=dictall(mapall(ind,:),:);
         [meanbeta, kap, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
         %conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
         conmap(ind)=(1/kap);
     end
 else
-    for ind=total
+    for ind=1:total
         betas=dictall(mapall(ind,:),:);
         [meanbeta, kap, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
         %conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
