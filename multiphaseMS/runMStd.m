@@ -3,7 +3,7 @@ addpath('../anglelib/')
 
 fid=200;
 dt=2^-6;
-if nargin<4
+if nargin<3
     numpar=10;
     num=10;
 end
@@ -32,7 +32,7 @@ name=['results/' filesave num2str(round(fid))];
 smallK=ceil((Ks(1)*Ks(2))/8);
 
 if numpar>1
-    parpool(numpar)
+    %parpool(numpar)
     
     parfor i=1:num
         tic;
@@ -42,8 +42,8 @@ if numpar>1
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
     
     
-    poolobj = gcp('nocreate');
-    delete(poolobj);
+    %poolobj = gcp('nocreate');
+    %delete(poolobj);
     
 else
     for i=1:num
