@@ -84,7 +84,7 @@ for k=1:K
 end
 betaEBSD=qtoE313(betaEBSD);
 betaEBSD=reshape(betaEBSD,[M,N,3]);
-save(['results/' filesave num2str(fid)],'mapall','betaEBSD','dict','energy','conval','conmap','timings');
+save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','timings');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
