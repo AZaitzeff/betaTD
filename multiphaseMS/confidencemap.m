@@ -40,7 +40,7 @@ else
         conmap(ind)=(1/kap);
     end
 end
-conval=sqrt(sum(conmap(:)))/(M*N);
+conval=sum(conmap(:))/(M*N);
 end
 function [newdictall]=growbetas(dictall,curnum,start)
     newdictall=zeros(curnum,4);
