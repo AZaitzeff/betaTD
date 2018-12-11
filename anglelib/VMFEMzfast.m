@@ -63,7 +63,7 @@ function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
             tmpGamma1 = zeros(No1, p);
 
             for j=1:No1
-                tmpGamma1(j,:) = sum((Pm1(:,:,j)'*X1')'.*repmat(R1(:,j), [1 4]));
+                tmpGamma1(j,:) = sum((Pm1(:,:,j)'*X1')'.*repmat(R1(:,j), [1 4]),1);
             end
 
 
@@ -77,7 +77,7 @@ function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
 
             tmpGamma2 = zeros(No2, p);
             for j=1:No2
-                tmpGamma2(j,:) = sum((Pm2(:,:,j)'*X2')'.*repmat(R2(:,j), [1 4]));
+                tmpGamma2(j,:) = sum((Pm2(:,:,j)'*X2')'.*repmat(R2(:,j), [1 4]),1);
             end
             Gamma=sum(tmpGamma1,1)+sum(tmpGamma2,1);
             

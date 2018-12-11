@@ -1,30 +1,16 @@
-function runMStd(filename,filesave,fid,numpar,betathres,Ks,dx,dy,dt,step,num,reestbeta,clean,subsample,enec)
+function runMStd(filename,filesave,numpar,num,smdiam)
 addpath('../anglelib/')
-if nargin<6
-    Ks=[5,5];
+
+fid=200;
+dt=2^-6;
+if nargin<4
+    numpar=10;
+    num=10;
 end
-if nargin<8
-    dx=1/100;
-    dy=1/100;
+if nargin<5
+    smdiam=50;
 end
-if nargin<9
-    dt=.02;
-end
-if nargin<10
-    step=1;
-end
-if nargin<11
-    num=1;
-end
-if nargin<12
-    reestbeta=0;
-end
-if nargin<13
-    clean=-1;
-end
-if nargin<14
-    enec=0;
-end
+
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
@@ -32,69 +18,75 @@ EBSD=EBSDtemp.EBSD;
 CI=EBSDtemp.CI;
 [M,N]=size(CI);
 beta=logical(EBSDtemp.betas);
-clean=min(clean,.9);
-K=prod(Ks);
-%codegenzaitzeff(M,N,K);
-if clean>0
-    [EBSD,CI]=cleanEBSDdata(EBSD,CI,clean);
-end
-if subsample>1
-    EBSD=EBSD(1:subsample:end,1:subsample:end,:);
-    CI=CI(1:subsample:end,1:subsample:end);
-    beta=beta(1:subsample:end,1:subsample:end);
-end
+codegenzaitzeff(M,N);
 
-[m,n,z]=size(EBSD);
+
+Ks=[ceil(N/smdiam*1.2),ceil(M/smdiam*1.2)];
+dx=1/(2*smdiam);
+dy=dx*EBSDtemp.scale;
+
 %betas=EBSDtemp.betas(rows,cols);
+timings=zeros(1,num);
 
-tic;
+name=['results/' filesave num2str(round(fid))];
+smallK=ceil((Ks(1)*Ks(2))/8);
+
 if numpar>1
     parpool(numpar)
+    
     parfor i=1:num
-        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,i,enec);
+        tic;
+        MStd(EBSD,CI,beta,fid,Ks,filesave,dt,dx,dy,i);
+        timings(i)=toc;
     end
+    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+    
+    
     poolobj = gcp('nocreate');
     delete(poolobj);
     
 else
     for i=1:num
-        MStd(EBSD,CI,beta,fid,Ks,filesave,dx,dy,dt,i,enec);
+        tic;
+        MStd(EBSD,CI,beta,fid,Ks,filesave,dt,dx,dy,i);
+        timings(i)=toc;
     end
+    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
 end
-toc;
 
 
-enevec=zeros(1,num);
-for i=1:num
-    vars=load(['results/' filesave num2str(fid) num2str(i)]);
-    enevec(i)=vars.energy;
-end
-[~,I]=min(enevec);
-vars=load(['results/' filesave num2str(fid) num2str(I)]);
+vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
+
 
 
 mapall=vars.mapall;
 dict=vars.dict;
 energy=vars.energy;
-if reestbeta
-    [dict,~]=estimatebetasfast(EBSD,CI,mapall,24,mexed);
-end
-betaEBSD=zeros(m*n,4);
-K = max(mapall(:));
-alpha=reshape(EBSD, [m*n,z]);
+
+
+betaEBSD=zeros(M*N,4);
+K = size(dict,1);
+alpha=reshape(EBSD, [M*N,3]);
 alpha=E313toq(alpha);
+
+[~,~,~,coords,sizecoords,~]=  bndcoords(mapall,K);
 for k=1:K
     mu=dict(k,:);
-    zfun=find(k==mapall);
-    [best,~]=alpbbeta(alpha(zfun,:),mu);
-    betaEBSD(zfun,:)=best;
+    indices=coords(k,1:sizecoords(k));
+    mask=beta(indices);
+    acoord=indices(~mask);
+    [best,~]=alpbbeta(alpha(acoord,:),mu);
+    betaEBSD(acoord,:)=best;
+    bcoord=indices(mask);
+    betaEBSD(bcoord,:)=alpha(bcoord,:);
 
+    
 end
 betaEBSD=qtoE313(betaEBSD);
-betaEBSD=reshape(betaEBSD,[m,n,3]);
-save(['results/' filesave num2str(fid)],'mapall','betaEBSD','dict','energy');
+betaEBSD=reshape(betaEBSD,[M,N,3]);
+save(['results/' filesave num2str(fid)],'mapall','betaEBSD','dict','energy','conval','conmap','timings');
 
 for i=1:num
-    delete(['results/' filesave num2str(fid) num2str(i) '.mat']);
+    delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
 end
 

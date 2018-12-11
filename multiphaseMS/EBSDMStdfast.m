@@ -1,23 +1,4 @@
-function [mapall,newdict,newkappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,numsub)
-
-
-if nargin<8
-    dx=1/100;
-    dy=1/100;
-end
-if nargin<7
-    DT=.02;
-end
-if nargin<11
-    nt=5;
-end
-if nargin<12
-    numsub=400;
-end
-if nargin<10
-    dtstop=2^(-10);
-end
-between=10;
+function [mapall,newdict,newkappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between,numsub)
 dt=DT;
 %mult=ceil(log2(DT/dtstop));
 %fid=fid/2^(mult/2);
@@ -27,7 +8,8 @@ Pall=zeros(4,4,144);
 for i=1:144
     Pall(:,:,i)=T(:,:,mod(i-1,6)+1)'*Pm(:,:,ceil(i/6));
 end
-energy=0;
+sqrtdt=sqrt(dt);
+energy=inf;
 K=max(mapall(:));
 newmapall=mapall;
 current=ones(1,K);
@@ -35,12 +17,12 @@ current=ones(1,K);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
 EBSDflat=E313toq(EBSDflat);
-MAXITER=200;
+MAXITER=1000;
 %curmin=ones(M,N)*fid*2;
 active=ones(1,K);
 activecounter=K;
 fac=1/(50*(dx+dy));
-w=ceil(fac*600*sqrt(dt));
+w=ceil(fac*600*sqrtdt);
 [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);
 %bdelemts=size(ybdcor);
 crdelemts=size(coords);
@@ -64,34 +46,43 @@ end
 for t=1:MAXITER
     
 for times=1:between
-    newmapall(:)=mapall(:);
+    newmapall=mapall;
     curmin(:)=fid*2;
     for k=1:K
         if current(k)
             fullsz=fidregKsz(k);
-            slinind=SindKsz(k,1:fullsz);
-            linind=BindKsz(k,1:fullsz);
-            if active(k)
-                miny=bndsK(k,1);
-                maxy=bndsK(k,2);
-                minx=bndsK(k,3);
-                maxx=bndsK(k,4);
-                m=maxy-miny+1;
-                n=maxx-minx+1;
-                indy=miny:maxy;
-                indx=minx:maxx;
-                smallu=1*(newmapall(indy,indx)==k);
-                mask=smallu*0;
-                mask(slinind)=1;
-                [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
-                newu=TSz(smallu,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,0);
-                regK(k,1:fullsz)=newu(slinind);
+            if fullsz>0
+                slinind=SindKsz(k,1:fullsz);
+                linind=BindKsz(k,1:fullsz);
+                if active(k)
+                    miny=bndsK(k,1);
+                    maxy=bndsK(k,2);
+                    minx=bndsK(k,3);
+                    maxx=bndsK(k,4);
+                    m=maxy-miny+1;
+                    n=maxx-minx+1;
+                    indy=miny:maxy;
+                    indx=minx:maxx;
+                    smallu=1*(newmapall(indy,indx)==k);
+                    mask=smallu*0;
+                    mask(slinind)=1;
+                    [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
+                    newu=TSz(smallu,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,0);
+                    regK(k,1:fullsz)=newu(slinind);
+                end
+                %S=2/sqrt(dt)*(-regK(k,1:fullsz))+fidK(k,1:fullsz);
+                %[minval,I]=findminz(curmin(linind),S);
+                %curmin(linind(I))=minval(I);
+                %mapall(linind(I))=k;
+                for ind=1:fullsz
+                    temp=2/sqrtdt*(-regK(k,ind))+fidK(k,ind);
+                    canind=linind(ind);
+                    if temp<curmin(canind)
+                        curmin(canind)=temp;
+                        mapall(canind)=k;
+                    end
+                end
             end
-
-            S=2/sqrt(dt)*(-regK(k,1:fullsz))+fidK(k,1:fullsz);
-            [minval,I]=findminz(curmin(linind),S);
-            curmin(linind(I))=minval(I);
-            mapall(linind(I))=k;
         end
     end
     %imagesc(mapall)
@@ -139,9 +130,9 @@ for k=1:K
                     if sum(CI(indices))>1e-4
                         newind=datasamplez(indices,numsub,CI(indices));
                         EBSDtemp=EBSDflat(newind,:);
-                        mask=beta(newind);
-                        alphaEBSD=EBSDtemp(~mask,:);
-                        betaEBSD=EBSDtemp(mask,:);
+                        cmask=beta(newind);
+                        alphaEBSD=EBSDtemp(~cmask,:);
+                        betaEBSD=EBSDtemp(cmask,:);
                         [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
                         %[newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict(k,:),kappa(k));
                         dict(k,:)=newg1;
@@ -176,31 +167,40 @@ if activecounter==0
         for k=1:K
             if current(k)
                 fullsz=fidregKsz(k);
-                slinind=SindKsz(k,1:fullsz);
-                miny=bndsK(k,1);
-                maxy=bndsK(k,2);
-                minx=bndsK(k,3);
-                maxx=bndsK(k,4);
-                m=maxy-miny+1;
-                n=maxx-minx+1;
-                indy=miny:maxy;
-                indx=minx:maxx;
-                endmask=(newmapall(indy,indx)~=k);
-                temp=endmask*0;
-                temp(slinind)=1/sqrt(dt)*(regK(k,1:fullsz));
-                energy=energy+sum(temp(endmask));
-                csize=sizecoordsa(k);
-                indices=coordsa(k,1:csize);
-                mask=beta(linind);
-                energy=energy+sum(fid*CI(indices(~mask)).*alpbmetric(EBSDflat(indices(~mask),:),dict(k,:)));
-                energy=energy+sum(fid*CI(indices(mask)).*b2bmetric(EBSDflat(indices(mask),:),dict(k,:)));
+                if fullsz>0
+                    slinind=SindKsz(k,1:fullsz);
+                    miny=bndsK(k,1);
+                    maxy=bndsK(k,2);
+                    minx=bndsK(k,3);
+                    maxx=bndsK(k,4);
+                    m=maxy-miny+1;
+                    n=maxx-minx+1;
+                    indy=miny:maxy;
+                    indx=minx:maxx;
+                    endmask=(newmapall(indy,indx)~=k);
+                    temp=endmask*0;
+                    temp(slinind)=1/sqrtdt*(regK(k,1:fullsz));
+                    energy=energy+sum(temp(endmask));
+                    csize=sizecoordsa(k);
+                    indices=coordsa(k,1:csize);
+                    bmask=beta(indices);
+                    alphacoord=indices(~bmask);
+                    betacoord=indices(bmask);
+                    if ~isempty(alphacoord)
+                        energy=energy+sum(fid*CI(alphacoord).*alpbmetric(EBSDflat(alphacoord,:),dict(k,:)));
+                    end
+                    if ~isempty(betacoord)
+                        energy=energy+sum(fid*CI(betacoord).*b2bmetric(EBSDflat(betacoord,:),dict(k,:)));
+                    end
+                end
             end
         end
         break
     else
         %fid=fid*sqrt(2);
         dt=dt/2;
-        w=ceil(fac*600*sqrt(dt));
+        sqrtdt=sqrt(dt);
+        w=ceil(fac*600*sqrtdt);
         
         
         active=current;
@@ -240,37 +240,49 @@ mapall=changemap(mapall,map);
 
     function updateFID(k)
         fullsz=fidregKsz(k);
-        slinind=SindKsz(k,1:fullsz);
-        linind=BindKsz(k,1:fullsz);
-        miny=bndsK(k,1);
-        maxy=bndsK(k,2);
-        minx=bndsK(k,3);
-        maxx=bndsK(k,4);
-        m=maxy-miny+1;
-        n=maxx-minx+1;
-        mask=zeros(m,n);
-        mask(slinind)=1;
-        [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
-        mask=beta(linind);
-        mask(slinind(~mask))=fid*CI(linind(~mask)).*alpbmetric(EBSDflat(linind(~mask),:),dict(k,:));
-        mask(slinind(mask))=fid*CI(linind(mask)).*b2bmetric(EBSDflat(linind(mask),:),dict(k,:));
-        newu=TSz(mask,dt/16,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,1);
-        fidK(k,1:fullsz)=newu(slinind);
+        if fullsz>0
+            slinind=SindKsz(k,1:fullsz);
+            linind=BindKsz(k,1:fullsz);
+            miny=bndsK(k,1);
+            maxy=bndsK(k,2);
+            minx=bndsK(k,3);
+            maxx=bndsK(k,4);
+            m=maxy-miny+1;
+            n=maxx-minx+1;
+            mask=zeros(m,n);
+            mask(slinind)=1;
+            [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
+            bmask=beta(linind);
+            alphacoord=linind(~bmask);
+            betacoord=linind(bmask);
+            if ~isempty(alphacoord)
+                mask(slinind(~bmask))=fid*CI(alphacoord).*alpbmetric(EBSDflat(alphacoord,:),dict(k,:));
+            end
+            if ~isempty(betacoord)
+                mask(slinind(bmask))=fid*CI(betacoord).*b2bmetric(EBSDflat(betacoord,:),dict(k,:));
+            end
+            newu=TSz(mask,dt/16,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,1);
+            fidK(k,1:fullsz)=newu(slinind);
+        end
     end
     function updatebnds(k)
         total=sizebdcor(k);
-        [linind,slinind,fullsz,bnds]=findboundary(w,minmaxrowcol(k,:),xbdcor(k,1:total)',ybdcor(k,1:total)',M,N);
-        if fullsz>numelemts(2)
-            numelemts(2)=ceil(fullsz*1.1);
-            [BindKsz,fidregKsz]=growarray(BindKsz,fidregKsz,K,numelemts,-1,1);
-            [SindKsz,fidregKsz]=growarray(SindKsz,fidregKsz,K,numelemts,-1,1);
-            [fidK,fidregKsz]=growarray(fidK,fidregKsz,K,numelemts,-1,1);
-            [regK,fidregKsz]=growarray(regK,fidregKsz,K,numelemts,-1,1);
+        if total>0
+            [linind,slinind,fullsz,bnds]=findboundary(w,minmaxrowcol(k,:),xbdcor(k,1:total)',ybdcor(k,1:total)',M,N);
+            if fullsz>numelemts(2)
+                numelemts(2)=ceil(fullsz*1.1);
+                [BindKsz,fidregKsz]=growarray(BindKsz,fidregKsz,K,numelemts,-1,1);
+                [SindKsz,fidregKsz]=growarray(SindKsz,fidregKsz,K,numelemts,-1,1);
+                [fidK,fidregKsz]=growarray(fidK,fidregKsz,K,numelemts,-1,1);
+                [regK,fidregKsz]=growarray(regK,fidregKsz,K,numelemts,-1,1);
+            end
+            BindKsz(k,1:fullsz)=linind;
+            SindKsz(k,1:fullsz)=slinind;
+            fidregKsz(k)=fullsz;
+            bndsK(k,:)=bnds;
+        else
+            bndsK(k,:)=[0,0,0,0];
+            fidregKsz(k)=0;
         end
-        BindKsz(k,1:fullsz)=linind;
-        SindKsz(k,1:fullsz)=slinind;
-        fidregKsz(k)=fullsz;
-        bndsK(k,:)=bnds;
-        
     end
 end

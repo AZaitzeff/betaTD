@@ -38,4 +38,4 @@ smallmap=reshape(r,[subm subn]);
 %K=prod(Ks);
 %smallmap=(x-1)*Ks(2)+y';
 mapall = imresize(smallmap, [m n], 'nearest');
-[dict,kappa]=estimatebetasfast(EBSD,CI,beta,mapall,check,numsub);
+[dict,kappa]=estimatebetasfast(EBSD,CI,beta,mapall,K,check,numsub);
