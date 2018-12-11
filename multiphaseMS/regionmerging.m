@@ -1,7 +1,7 @@
 function [mapall,newdict,newkappa]=regionmerging(mapall,dict,kappa,Ks,thres)
 
 
-if nargin<7
+if nargin<5
     thres=3;
 end
 thres=thres*pi/360;%degrees to radians.

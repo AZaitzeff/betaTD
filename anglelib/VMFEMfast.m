@@ -1,18 +1,21 @@
-function [Mu, Kappa, logL]=VMFEMfast(X, Pm,Num_of_init,Mu,Kappa)
+function [Mu, Kappa, logL]=VMFEMfast(X, Pm,Num_of_initarg,Mus,Kappas)
     Pm = cat(3, Pm, -Pm);
     %%% Duplicate the Euler Angles
     No = size(Pm,3);
     N = size(X,1);
     p = 4;
+    
     % Precompute the xAp, yAp for invAp_fast
     xAp=0.001:0.1:700;
     yAp = real(Ap(xAp, p));
     
     % Create container for estimated parameters
     if(nargin<3)
-        Num_of_init=8;
+        Num_of_initarg=20;
+        Kappas=50;
+        Mus=[1,0,0,0];
     end
-    
+    Num_of_init=abs(Num_of_initarg);
     Mu_All = zeros( Num_of_init,p);
     Kappa_All = zeros(1, Num_of_init);
     L_All = zeros(Num_of_init,1);
@@ -21,12 +24,16 @@ function [Mu, Kappa, logL]=VMFEMfast(X, Pm,Num_of_init,Mu,Kappa)
         R = zeros(N,No);
         
 
-        if Num_of_init>1
+        if Num_of_initarg>1
             Mu = zeros(1, p);
             mu = randn(1,p);
             mu = mu/norm(mu,2);
             Mu(1,:) = mu(:);
             Kappa = 50;
+        else
+            Mu = zeros(1, p);
+            Mu(1,:) = Mus(init,:);
+            Kappa=Kappas;
         end
         %a=16;
         %Mu(1,:)=[1,0,0,0];
@@ -53,7 +60,7 @@ function [Mu, Kappa, logL]=VMFEMfast(X, Pm,Num_of_init,Mu,Kappa)
                 tmpGamma = zeros(No, p);
                 
                 for j=1:No
-                    tmpGamma(j,:) = sum((Pm(:,:,j)'*X')'.*repmat(R(:,j), [1 4]));
+                    tmpGamma(j,:) = sum((Pm(:,:,j)'*X')'.*repmat(R(:,j), [1 4]),1);
                 end
                 Gamma = sum(tmpGamma,1);
                 

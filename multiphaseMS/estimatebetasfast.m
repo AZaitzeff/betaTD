@@ -1,11 +1,10 @@
-function [dict,kappa]=estimatebetasfast(EBSD,CI,beta,map,max_init,numsub)
+function [dict,kappa]=estimatebetasfast(EBSD,CI,beta,map,K,max_init,numsub)
     if nargin<5
         max_init=8;
     end
     if nargin<6
         numsub=400;
     end
-    K = max(map(:));
     dict=zeros(K,4);
     kappa=zeros(K,1);
 
