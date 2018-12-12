@@ -20,5 +20,5 @@ end
 %    dict={};
 %    energy=inf;
 %end
-save(['results/' filesave num2str(round(fid)) num2str(num)],'mapall','dict','energy');
+save(['results/' filesave num2str(round(fid)) num2str(num)],'mapall','dict','energy','-v7.3');
 end
