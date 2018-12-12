@@ -40,8 +40,9 @@ if numpar>1
         timings(i)=toc;
     end
     pause(1);
+    rmdir codegen s
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
-    
+    rmdir codegen s
     
     poolobj = gcp('nocreate');
     delete(poolobj);
