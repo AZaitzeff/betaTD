@@ -30,14 +30,14 @@ if numpar>1
         betas=dictall(mapall(ind,:),:);
         [meanbeta, kap, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
         %conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
-        conmap(ind)=(1/kap);
+        conmap(ind)=(kap);
     end
 else
     for ind=1:total
         betas=dictall(mapall(ind,:),:);
         [meanbeta, kap, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
         %conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
-        conmap(ind)=(1/kap);
+        conmap(ind)=(kap);
     end
 end
 conval=sum(conmap(:))/(M*N);
