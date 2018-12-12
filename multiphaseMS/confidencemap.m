@@ -28,19 +28,19 @@ total=M*N;
 if numpar>1
     parfor ind=1:total
         betas=dictall(mapall(ind,:),:);
-        [meanbeta, kap, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
-        %conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
-        conmap(ind)=(kap);
+        [meanbeta, ~, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
+        conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
+        %conmap(ind)=(kap);
     end
 else
     for ind=1:total
         betas=dictall(mapall(ind,:),:);
-        [meanbeta, kap, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
-        %conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
-        conmap(ind)=(kap);
+        [meanbeta, ~, ~] = VMFEMfast_mex(betas, Pm,-num,betas,50);
+        conmap(ind)=sum(b2bmetric(betas,meanbeta).^2)/num;
+        %conmap(ind)=(kap);
     end
 end
-conval=sum(conmap(:))/(M*N);
+conval=sqrt(sum(conmap(:))/(M*N));
 end
 function [newdictall]=growbetas(dictall,curnum,start)
     newdictall=zeros(curnum,4);
