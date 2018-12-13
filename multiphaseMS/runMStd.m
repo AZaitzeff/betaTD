@@ -39,10 +39,7 @@ if numpar>1
         MStd(EBSD,CI,beta,fid,Ks,filesave,dt,dx,dy,i);
         timings(i)=toc;
     end
-    pause(1);
-    rmdir codegen s
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
-    rmdir codegen s
     
     poolobj = gcp('nocreate');
     delete(poolobj);
@@ -53,7 +50,6 @@ else
         MStd(EBSD,CI,beta,fid,Ks,filesave,dt,dx,dy,i);
         timings(i)=toc;
     end
-    pause(1);
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
 end
 
