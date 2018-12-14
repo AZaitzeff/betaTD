@@ -1,8 +1,8 @@
 function runMStd(filename,filesave,numpar,num,smdiam)
 addpath('../anglelib/')
 
-fid=200;
-dt=2^-6;
+fid=150;
+dt=2^-5;
 if nargin<3
     numpar=10;
     num=10;

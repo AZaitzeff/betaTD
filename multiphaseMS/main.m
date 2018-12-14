@@ -20,16 +20,16 @@
 %      name=names2{i};
 %      runMStd(filename,name,1,10,50);
 %  end
-sizes=[200,100,50,25,12.5,6.25];
+sizes=[400,200,100,50,25,12.5,6.25,3.125];
  for gs=sizes
-     filename='mapedge';
-     name=['mapedge' num2str(gs) 's'];
+     filename='AFone';
+     name=['AFone' num2str(round(gs)) 's'];
      runMStd(filename,name,12,12,gs);
  end
  
- sizes=[200,100,50,25,12.5,6.25];
- for gs=sizes
-     filename='mapcenter';
-     name=['mapcenter' num2str(gs) 's'];
-     runMStd(filename,name,12,12,gs);
- end
+%  sizes=[200,100,50,25,12.5,6.25];
+%  for gs=sizes
+%      filename='mapcenter';
+%      name=['mapcenter' num2str(gs) 's'];
+%      runMStd(filename,name,12,12,gs);
+%  end
