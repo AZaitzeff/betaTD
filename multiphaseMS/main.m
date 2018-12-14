@@ -23,7 +23,7 @@
 sizes=[400,200,100,50,25,12.5,6.25,3.125];
  for gs=sizes
      filename='AFone';
-     name=['AFone' num2str(gs) 's'];
+     name=['AFone' num2str(round(gs)) 's'];
      runMStd(filename,name,12,12,gs);
  end
  
