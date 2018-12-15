@@ -20,11 +20,11 @@
 %      name=names2{i};
 %      runMStd(filename,name,1,10,50);
 %  end
-sizes=[400,200,100,50,25,12.5,6.25,3.125];
- for gs=sizes
+
+ for KSfac=[1,2,3,4]
      filename='AFone';
-     name=['AFone' num2str(round(gs)) 's'];
-     runMStd(filename,name,12,12,gs);
+     name=['AFone' num2str(KSfac) 'fac'];
+     runMStd(filename,name,12,24,50,KSfac);
  end
  
 %  sizes=[200,100,50,25,12.5,6.25];
