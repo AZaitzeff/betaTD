@@ -1,4 +1,4 @@
-function runMStd(filename,filesave,numpar,num,smdiam)
+function runMStd(filename,filesave,numpar,num,smdiam,ksfac)
 addpath('../anglelib/')
 
 fid=150;
@@ -21,7 +21,7 @@ beta=logical(EBSDtemp.betas);
 codegenzaitzeff(M,N);
 
 
-Ks=[ceil(N/smdiam*1.2),ceil(M/smdiam*1.2)];
+Ks=[ceil(N/smdiam*1.2),ceil(M/smdiam*1.2)]*ksfac;
 dx=1/(2*smdiam);
 dy=dx*EBSDtemp.scale;
 
