@@ -57,12 +57,15 @@ end
 nr=ceil(M/40*gs/50);
 nc=ceil(N/40*gs/50);
 
-fids=[100,125,150,175,200,225,250,275,300,325];
+fids=[50,100,150,200,250,300];
+numfids=numel(fids);
+runcheck=10;
+totalcheck=runcheck*numfids;
 if numpar>1
     parpool(numpar)
     
-    parfor pari=1:40
-        fidz=fids(ceil(pari/4));
+    parfor pari=1:totalcheck
+        fidz=fids(ceil(pari/runcheck));
         MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,pari);
     end
     
@@ -70,24 +73,24 @@ if numpar>1
     delete(poolobj);
     
 else
-    for i=1:40
-        fid=fids(ceil(i/4));
+    for i=1:totalcheck
+        fid=fids(ceil(i/runcheck));
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
     end
 end
 total=(M*N);
-score=zeros(1,10);
-score2=zeros(1,10);
-for z=1:10
+score=zeros(1,numfids);
+score2=zeros(1,numfids);
+for z=1:numfids
     fid=fids(z);
-    energies=zeros(1,4);
-    for g=1:4
-        numz=g+(z-1)*4;
+    energies=zeros(1,runcheck);
+    for g=1:runcheck
+        numz=g+(z-1)*runcheck;
         var=load(['results/' filesave num2str(round(fid)) num2str(numz)]);
         energies(g)=var.energy;
     end
     [~,I]=min(energies);
-    numz=I+(z-1)*4;
+    numz=I+(z-1)*runcheck;
     var=load(['results/' filesave num2str(round(fid)) num2str(numz)]);
     for i=1:total
           score(z)=score(z)+CI(i)*b2bmetric(truebetaEBSD(i,:),var.dict(var.mapall(i),:))^2;
@@ -99,10 +102,10 @@ end
 fid=fids(find(diff(score)>-5e-4,1));
 
 save(['results/check' filesave],'score','score2','mapallp','dictp','kappap')
-for z=1:10
+for z=1:numfids
     fid=fids(z);
-    for g=1:4
-        numz=g+(z-1)*4;
+    for g=1:runcheck
+        numz=g+(z-1)*numfids;
         delete(['results/' filesave num2str(round(fid)) num2str(numz) '.mat']);
     end
 end
