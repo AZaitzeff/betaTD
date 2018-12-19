@@ -1,19 +1,8 @@
-function MStd(EBSD,CI,beta,fid,Ks,filesave,dt,dx,dy,num)
-
-if nargin<7
-    dx=1/100;
-    dy=1/100;
-end
-if nargin<8
-    dt=2^(-6);
-end
-if nargin<9
-    num=1;
-end
+function MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,num)
 
 %try
 
-    [mapall,dict,energy]=EBSDimgseg_mex(EBSD,CI,beta,fid,Ks,dt,dx,dy);
+    [mapall,dict,energy]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
 
 %catch
 %    mapall=zeros(m,n);
