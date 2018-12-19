@@ -1,6 +1,7 @@
 function [mapall,dict,kappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
 numsub=400;
 dt=DT;
+factor=(dtstop/dt)^(1/3);
 %mult=ceil(log2(DT/dtstop));
 %fid=fid/2^(mult/2);
 T=alphatobetatrans();
@@ -13,7 +14,6 @@ sqrtdt=sqrt(dt);
 energy=inf;
 K=max(mapall(:));
 totalK=K;
-newmapall=mapall;
 current=ones(1,K);
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
@@ -45,43 +45,54 @@ for k=1:K
     updateFID(k);
 end
 for t=1:MAXITER
+curmin(:)=2*fid;
+for k=1:K
+    if current(k)
+        csize=sizecoords(k);
+        indices=coords(k,1:csize);
+        fullsz=fidregKsz(k);
+        linind=BindKsz(k,1:fullsz);
+        safe=setdiff(indices,linind);
+        curmin(safe)=-inf;
+    end
     
+end
 for times=1:between
-    newmapall=mapall;
-    curmin(:)=fid*2;
+    
+    for k=1:K
+        fullsz=fidregKsz(k);
+        if active(k) && fullsz>0
+
+            slinind=SindKsz(k,1:fullsz);
+            linind=BindKsz(k,1:fullsz);
+            miny=bndsK(k,1);
+            maxy=bndsK(k,2);
+            minx=bndsK(k,3);
+            maxx=bndsK(k,4);
+            m=maxy-miny+1;
+            n=maxx-minx+1;
+            indy=miny:maxy;
+            indx=minx:maxx;
+            smallu=1*(mapall(indy,indx)==k);
+            mask=smallu*0;
+            mask(slinind)=1;
+            [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
+            newu=TSz(smallu,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,0);
+            regK(k,1:fullsz)=newu(slinind);
+        end
+        
+    end
+
     for k=1:K
         if current(k)
             fullsz=fidregKsz(k);
-            if fullsz>0
-                slinind=SindKsz(k,1:fullsz);
-                linind=BindKsz(k,1:fullsz);
-                if active(k)
-                    miny=bndsK(k,1);
-                    maxy=bndsK(k,2);
-                    minx=bndsK(k,3);
-                    maxx=bndsK(k,4);
-                    m=maxy-miny+1;
-                    n=maxx-minx+1;
-                    indy=miny:maxy;
-                    indx=minx:maxx;
-                    smallu=1*(newmapall(indy,indx)==k);
-                    mask=smallu*0;
-                    mask(slinind)=1;
-                    [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n);
-                    newu=TSz(smallu,dt,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,0);
-                    regK(k,1:fullsz)=newu(slinind);
-                end
-                %S=2/sqrt(dt)*(-regK(k,1:fullsz))+fidK(k,1:fullsz);
-                %[minval,I]=findminz(curmin(linind),S);
-                %curmin(linind(I))=minval(I);
-                %mapall(linind(I))=k;
-                for ind=1:fullsz
-                    temp=2/sqrtdt*(-regK(k,ind))+fidK(k,ind);
-                    canind=linind(ind);
-                    if temp<curmin(canind)
-                        curmin(canind)=temp;
-                        mapall(canind)=k;
-                    end
+            linind=BindKsz(k,1:fullsz);
+            for ind=1:fullsz
+                temp=2/sqrtdt*(-regK(k,ind))+fidK(k,ind);
+                canind=linind(ind);
+                if temp<curmin(canind)
+                    curmin(canind)=temp;
+                    mapall(canind)=k;
                 end
             end
         end
@@ -89,6 +100,9 @@ for times=1:between
     %imagesc(mapall);colorbar
     %pause(1)
 end
+
+
+
 
 [xbdcor,ybdcor,sizebdcor,coordsa,sizecoordsa,minmaxrowcol]=  bndcoords(mapall,K); 
 p=max(sizecoordsa);
@@ -149,6 +163,9 @@ for k=1:K
         end
     end
 end
+if (K/totalK)>=1.5
+    simplify();
+end
 
 for k=1:K
     if active(k)
@@ -156,7 +173,6 @@ for k=1:K
         updateFID(k); 
     end
 end
-
 if activecounter==0
     if dt<=dtstop
         energy=0;
@@ -173,7 +189,7 @@ if activecounter==0
                     n=maxx-minx+1;
                     indy=miny:maxy;
                     indx=minx:maxx;
-                    endmask=(newmapall(indy,indx)~=k);
+                    endmask=(mapall(indy,indx)~=k);
                     temp=endmask*0;
                     temp(slinind)=1/sqrtdt*(regK(k,1:fullsz));
                     energy=energy+sum(temp(endmask));
@@ -194,72 +210,93 @@ if activecounter==0
         simplify();
         break
     else
-        dt=dt/2;
+        dt=dt*factor;
+        simplify();
         sqrtdt=sqrt(dt);
         w=ceil(fac*600*sqrtdt);
         
-        
-        active=current;
-        activecounter=sum(active);
+        active=ones(1,K);
+        activecounter=K;
         for k=1:K
-            if current(k)
-                updatebnds(k);
-            end
+            updatebnds(k);
         end
         for k=1:K
-            if current(k)
-                updateFID(k);
-            end
+            updateFID(k);
         end
     end
 end
-%if (K-totalK)>20
-%    simplify();
-%end
+
 
 end
 
 if t==MAXITER
    energy=inf; 
 end
-
+t
     function simplify()
+        if K>totalK
         map=1:K;
         newk=1;
         
         for kz=1:K
             if current(kz)
+                
                 changecounter(newk)=changecounter(kz);
-                sizecoords(newk)=sizecoords(kz);
                 active(newk)=active(kz);
-                coords(newk,:)=coords(kz,:);
-                fidK(newk,:)=fidK(kz,:);
-                regK(newk,:)=regK(kz,:);
-                BindKsz(newk,:)=BindKsz(kz,:);
-                SindKsz(newk,:)=SindKsz(kz,:);
-                fidregKsz(newk)=fidregKsz(kz);
+                
+                sc=sizecoords(kz);
+                sizecoords(newk)=sc;
+                coords(newk,1:sc)=coords(kz,1:sc);
+                
+                num=fidregKsz(kz);
+                fidregKsz(newk)=num;
+                fidK(newk,1:num)=fidK(kz,1:num);
+                regK(newk,1:num)=regK(kz,1:num);
+                BindKsz(newk,1:num)=BindKsz(kz,1:num);
+                SindKsz(newk,1:num)=SindKsz(kz,1:num);
+                
+                sbd=sizebdcor(kz);
+                sizebdcor(newk)=sbd;
+                xbdcor(newk,1:sbd)=xbdcor(kz,1:sbd);
+                ybdcor(newk,1:sbd)=ybdcor(kz,1:sbd);
+                minmaxrowcol(newk,:)=minmaxrowcol(kz,:);
+                
                 bndsK(newk,:)=bndsK(kz,:);
                 map(kz)=newk;
                 dict(newk,:)=dict(kz,:);
                 kappa(newk)=kappa(kz);
+                
+                
                 newk=newk+1;
+                
             end
         end
         mapall=changemap(mapall,map);
         changecounter(newk:K)=[];
+        active(newk:K)=[];
+
         sizecoords(newk:K)=[];
         coords(newk:K,:)=[];
-        active(newk:K)=[];
+
+        fidregKsz(newk:K)=[];
         fidK(newk:K,:)=[];
         regK(newk:K,:)=[];
         BindKsz(newk:K,:)=[];
         SindKsz(newk:K,:)=[];
-        fidregKsz(newk:K)=[];
+
+        sizebdcor(newk:K)=[];
+        xbdcor(newk:K,:)=[];
+        ybdcor(newk:K,:)=[];
+        minmaxrowcol(newk:K,:)=[];
+
         bndsK(newk:K,:)=[];
         dict(newk:K,:)=[];
         kappa(newk:K)=[];
+        
+        
         K=totalK;
         current=ones(1,K);
+        end
     end
     function updateFID(k)
         fullsz=fidregKsz(k);
@@ -299,8 +336,9 @@ end
                 [fidK,fidregKsz]=growarray(fidK,fidregKsz,K,numelemts,-1,1);
                 [regK,fidregKsz]=growarray(regK,fidregKsz,K,numelemts,-1,1);
             end
-            BindKsz(k,1:fullsz)=linind;
-            SindKsz(k,1:fullsz)=slinind;
+            [sortedind,order]=sort(linind);
+            BindKsz(k,1:fullsz)=sortedind;
+            SindKsz(k,1:fullsz)=slinind(order);
             fidregKsz(k)=fullsz;
             bndsK(k,:)=bnds;
         else
