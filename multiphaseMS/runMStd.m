@@ -98,7 +98,7 @@ for z=1:10
 end
 fid=fids(find(diff(score)>-5e-4,1));
 
-save(['results/check' filesave],'score','score2','mapallp','dictp')
+save(['results/check' filesave],'score','score2','mapallp','dictp','kappap')
 for z=1:10
     fid=fids(z);
     for g=1:4
