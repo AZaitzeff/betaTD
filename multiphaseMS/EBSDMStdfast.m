@@ -1,4 +1,5 @@
-function [mapall,newdict,newkappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between,numsub)
+function [mapall,dict,kappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
+numsub=400;
 dt=DT;
 %mult=ceil(log2(DT/dtstop));
 %fid=fid/2^(mult/2);
@@ -11,13 +12,14 @@ end
 sqrtdt=sqrt(dt);
 energy=inf;
 K=max(mapall(:));
+totalK=K;
 newmapall=mapall;
 current=ones(1,K);
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
 EBSDflat=E313toq(EBSDflat);
-MAXITER=200;
+MAXITER=500;
 %curmin=ones(M,N)*fid*2;
 active=ones(1,K);
 activecounter=K;
@@ -27,7 +29,6 @@ w=ceil(fac*600*sqrtdt);
 %bdelemts=size(ybdcor);
 crdelemts=size(coords);
 changecounter=zeros(K,1);
-%numelemts=[K,ceil(M*N)];
 numelemts=[K,ceil(8*w*sqrt(M*N/K))];
 curmin=zeros(M,N);
 fidK=zeros(numelemts);
@@ -85,7 +86,7 @@ for times=1:between
             end
         end
     end
-    %imagesc(mapall)
+    %imagesc(mapall);colorbar
     %pause(1)
 end
 
@@ -95,15 +96,9 @@ if p>crdelemts(2)
     crdelemts(2)=ceil(p*1.1);
     [coords,sizecoords]=growarray(coords,sizecoords,K,crdelemts,-1,1);
 end
-% p=max(sizebdcora);
-% if p>bdelemts(2)
-%     bdelemts(2)=ceil(p*1.1);
-%     [ybdcora,sizebdcor]=growarray(ybdcora,sizebdcor,K,bdelemts,-1,1);
-%     [xbdcora,sizebdcor]=growarray(xbdcora,sizebdcor,K,bdelemts,-1,1);
-% end
+
 for k=1:K
     if current(k)
-        
         csize=sizecoordsa(k);
 
         if csize>10
@@ -134,7 +129,6 @@ for k=1:K
                         alphaEBSD=EBSDtemp(~cmask,:);
                         betaEBSD=EBSDtemp(cmask,:);
                         [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
-                        %[newg1, kap, ~] = VMFEMfast(EBSDtemp, Pall,1,dict(k,:),kappa(k));
                         dict(k,:)=newg1;
                         kappa(k)=kap;
                     end  
@@ -151,9 +145,11 @@ for k=1:K
             fidregKsz(k)=0;
             sizebdcor(k)=0;
             sizecoords(k)=0;
+            totalK=totalK-1;
         end
     end
 end
+
 for k=1:K
     if active(k)
         updatebnds(k);
@@ -195,9 +191,9 @@ if activecounter==0
                 end
             end
         end
+        simplify();
         break
     else
-        %fid=fid*sqrt(2);
         dt=dt/2;
         sqrtdt=sqrt(dt);
         w=ceil(fac*600*sqrtdt);
@@ -217,27 +213,54 @@ if activecounter==0
         end
     end
 end
+%if (K-totalK)>20
+%    simplify();
+%end
 
 end
 
 if t==MAXITER
    energy=inf; 
 end
-newK=sum(current);
-newdict=zeros(newK,4);
-newkappa=zeros(newK,1);
-map=1:K;
-newk=1;
-for k=1:K
-    if current(k)
-        map(k)=newk;
-        newdict(newk,:)=dict(k,:);
-        newkappa(newk)=kappa(k);
-        newk=newk+1;
-    end
-end
-mapall=changemap(mapall,map);
 
+    function simplify()
+        map=1:K;
+        newk=1;
+        
+        for kz=1:K
+            if current(kz)
+                changecounter(newk)=changecounter(kz);
+                sizecoords(newk)=sizecoords(kz);
+                active(newk)=active(kz);
+                coords(newk,:)=coords(kz,:);
+                fidK(newk,:)=fidK(kz,:);
+                regK(newk,:)=regK(kz,:);
+                BindKsz(newk,:)=BindKsz(kz,:);
+                SindKsz(newk,:)=SindKsz(kz,:);
+                fidregKsz(newk)=fidregKsz(kz);
+                bndsK(newk,:)=bndsK(kz,:);
+                map(kz)=newk;
+                dict(newk,:)=dict(kz,:);
+                kappa(newk)=kappa(kz);
+                newk=newk+1;
+            end
+        end
+        mapall=changemap(mapall,map);
+        changecounter(newk:K)=[];
+        sizecoords(newk:K)=[];
+        coords(newk:K,:)=[];
+        active(newk:K)=[];
+        fidK(newk:K,:)=[];
+        regK(newk:K,:)=[];
+        BindKsz(newk:K,:)=[];
+        SindKsz(newk:K,:)=[];
+        fidregKsz(newk:K)=[];
+        bndsK(newk:K,:)=[];
+        dict(newk:K,:)=[];
+        kappa(newk:K)=[];
+        K=totalK;
+        current=ones(1,K);
+    end
     function updateFID(k)
         fullsz=fidregKsz(k);
         if fullsz>0

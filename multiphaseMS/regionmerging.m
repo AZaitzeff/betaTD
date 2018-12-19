@@ -1,25 +1,11 @@
-function [mapall,newdict,newkappa]=regionmerging(mapall,dict,kappa,Ks,thres)
+function [mapall,newdict,newkappa]=regionmerging(mapall,dict,kappa,m,n,mid,fid)
+%fid=150;
+%constant=0.28211;
+gs=1/100;
 
-
-if nargin<5
-    thres=3;
-end
-thres=thres*pi/360;%degrees to radians.
-T=alphatobetatrans();
-Pm=getsymmetries('cubic');
-Pall=zeros(4,4,144);
-for i=1:144
-    Pall(:,:,i)=T(:,:,mod(i-1,6)+1)'*Pm(:,:,ceil(i/6));
-end
-%[m,n]=size(mapall);%size of level set function
-% [~,~,z]=size(EBSD);
-% EBSDflat=reshape(EBSD,[m*n,z]);
-% EBSDflat=E313toq(EBSDflat);
-% CIflat=reshape(CI,[m*n,1]);
-
-m=Ks(2);
-n=Ks(1);
 K=m*n;
+contains=eye(K,'logical');
+neighbors=zeros(K,K,'logical');
 map=1:K;
 total=2*(n-1)*(m-1)+m-1+n-1;
 values=zeros(1,total);
@@ -30,6 +16,8 @@ for i=1:m
         ind1=sub2ind([m,n],i,j);
         if j<n
             ind2=sub2ind([m,n],i,j+1);
+            neighbors(ind1,ind2)=1;
+            neighbors(ind2,ind1)=1;
             values(z)=b2bmetric(dict(ind1,:),dict(ind2,:));
             ind(1,z)=ind1;
             ind(2,z)=ind2;
@@ -37,6 +25,8 @@ for i=1:m
         end
         if i<m
             ind2=sub2ind([m,n],i+1,j);
+            neighbors(ind1,ind2)=1;
+            neighbors(ind2,ind1)=1;
             values(z)=b2bmetric(dict(ind1,:),dict(ind2,:));
             ind(1,z)=ind1;
             ind(2,z)=ind2;
@@ -54,9 +44,24 @@ for z =1:total
     r1=findroot(map,ind1);
     r2=findroot(map,ind2);
     if r1~=r2
+        per=andsum(contains(r1,:),neighbors(r2,:),K);
+        area1=sum(contains(r1,:));
+        area2=sum(contains(r2,:));
+        area=min(area1,area2);
+        perterm=per*gs*mid;
         val=b2bmetric(dict(r1,:),dict(r2,:));
-        if val<thres
-            map(r2)=r1;
+        fidterm=val*fid*area*(gs*mid)^2;
+        if fidterm<perterm
+            if area1>area2
+                map(r2)=r1;
+                contains(r1,:)=or(contains(r1,:),contains(r2,:));
+                neighbors(r1,:)=or(neighbors(r1,:),neighbors(r2,:));
+            else
+                map(r1)=r2;
+                contains(r2,:)=or(contains(r1,:),contains(r2,:));
+                neighbors(r2,:)=or(neighbors(r1,:),neighbors(r2,:));
+            end
+            
         end
     end
 
@@ -91,5 +96,14 @@ end
 mapall=changemap(mapall,newmap);
 end
 
+function thesum=andsum(A,B,K)
+thesum=0;
+for k=1:K
+    if A(k) && B(k)
+        thesum=thesum+1;
+    end
+end
 
+
+end
 

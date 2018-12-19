@@ -1,17 +1,12 @@
-function [dict,kappa]=estimatebetasfast(EBSD,CI,beta,map,K,max_init,numsub)
-    if nargin<5
-        max_init=8;
-    end
-    if nargin<6
-        numsub=400;
-    end
+function [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,map,K)
+
+    max_init=16;
+
+    numsub=400;
+
     dict=zeros(K,4);
     kappa=zeros(K,1);
 
-[m,n,z]=size(EBSD);
-EBSDflat=reshape(EBSD, [m*n,z]);
-EBSDflat=E313toq(EBSDflat);
-CIflat=reshape(CI, [m*n,1]);
 
 
 T=alphatobetatrans();

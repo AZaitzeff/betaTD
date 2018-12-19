@@ -3,13 +3,15 @@ function [xbdcor,ybdcor,sizebdcor,coords,sizecor,minmaxrowcol]=  bndcoords(mapal
 
 
 sizecor=ones(K,1);
-sizecors=[K,ceil(4*M*N/K)];
-coords=zeros(sizecors);
+sizecors=ceil(4*M*N/K);
 
+coords=zeros(K,sizecors);
 sizebdcor=ones(K,1);
-sizebd=[K,ceil(4*sqrt(M)*sqrt(N)/K)];
-xbdcor=zeros(sizebd);
-ybdcor=zeros(sizebd);
+sizebd=ceil(4*sqrt(M)*sqrt(N)/K);
+
+xbdcor=zeros(K,sizebd);
+ybdcor=zeros(K,sizebd);
+%coder.varsize('xbdcor','ybdcor','coords');
 %bdcor=zeros(1,sizebd);
 %neighbors=zeros(K,K);
 minmaxrowcol=zeros(K,4);%min row,max row, min col, max col
@@ -21,9 +23,9 @@ minmaxrowcol(:,4)=0;
 for j=2:N-1
     for i =2:M-1
         k=mapall(i,j);
-        if sizecor(k)>sizecors(2)
-            sizecors(2)=sizecors(2)*2;
-            [coords,sizecor]=growarray(coords,sizecor,K,sizecors,-1);
+        if sizecor(k)>sizecors
+            sizecors=sizecors*2;
+            [coords]=growarrayz(coords,sizecor,K,sizecors);
         end
         coords(k,sizecor(k))=i+(j-1)*M;
         sizecor(k)=sizecor(k)+1;
@@ -31,10 +33,10 @@ for j=2:N-1
         %neighbors(k,mapall(i+1,j))=1;
         %neighbors(k,mapall(i,j+1))=1;
         if total<4
-            if sizebdcor(k)>sizebd(2)
-                sizebd(2)=sizebd(2)*2;
-                [xbdcor,sizebdcor]=growarray(xbdcor,sizebdcor,K,sizebd,-1);
-                [ybdcor,sizebdcor]=growarray(ybdcor,sizebdcor,K,sizebd,-1);
+            if sizebdcor(k)>sizebd
+                sizebd=sizebd*2;
+                [xbdcor]=growarrayz(xbdcor,sizebdcor,K,sizebd);
+                [ybdcor]=growarrayz(ybdcor,sizebdcor,K,sizebd);
                 %[bdcor,sizebdcor]=growarray(bdcor,sizebdcor,K,sizebd,-1);
             end
             xbdcor(k,sizebdcor(k))=j;
@@ -62,4 +64,12 @@ sizecor(:)=sizecor(:)-1;
 %for k=1:K
 %    neighbors(k,k)=0;
 %end
+end
+
+function [new]=growarrayz(orig,sizeorig,os,ns)
+new=zeros(os,ns);
+for i=1:os
+    v=sizeorig(i)-1;
+    new(i,1:v)=orig(i,1:v);
+end
 end
