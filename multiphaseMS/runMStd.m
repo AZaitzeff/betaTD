@@ -59,14 +59,14 @@ nc=ceil(N/40*gs/50);
 
 fids=[50,100,150,200,250,300];
 numfids=numel(fids);
-runcheck=10;
+runcheck=9;
 totalcheck=runcheck*numfids;
 if numpar>1
     parpool(numpar)
     
     parfor pari=1:totalcheck
         fidz=fids(ceil(pari/runcheck));
-        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,pari);
+        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
     end
     
     poolobj = gcp('nocreate');
@@ -75,7 +75,7 @@ if numpar>1
 else
     for i=1:totalcheck
         fid=fids(ceil(i/runcheck));
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
 total=(M*N);
@@ -85,16 +85,13 @@ for z=1:numfids
     fid=fids(z);
     energies=zeros(1,runcheck);
     for g=1:runcheck
-        numz=g+(z-1)*runcheck;
-        var=load(['results/' filesave num2str(round(fid)) num2str(numz)]);
+        var=load(['results/' filesave num2str(round(fid)) num2str(g)]);
         energies(g)=var.energy;
     end
     [~,I]=min(energies);
-    numz=I+(z-1)*runcheck;
-    var=load(['results/' filesave num2str(round(fid)) num2str(numz)]);
+    var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
     mapall=var.mapall;
     dict=var.dict;
-    save(['results/it' filesave num2str(round(fid))],'mapall','dict')
     for i=1:total
           score(z)=score(z)+CI(i)*b2bmetric(truebetaEBSD(i,:),var.dict(var.mapall(i),:))^2;
           score2(z)=score2(z)+CI(i)*b2bmetric(dictp(mapallp(i),:),var.dict(var.mapall(i),:))^2;
@@ -104,14 +101,13 @@ for z=1:numfids
 end
 fid=fids(find(diff(score)>-5e-4,1));
 
-save(['results/check' filesave],'score','score2','mapallp','dictp','kappap')
-for z=1:numfids
-    fid=fids(z);
-    for g=1:runcheck
-        numz=g+(z-1)*numfids;
-        delete(['results/' filesave num2str(round(fid)) num2str(numz) '.mat']);
-    end
-end
+save(['results/check' filesave],'score','score2','mapallp','dictp','kappap','truebetaEBSD')
+% for z=1:numfids
+%     fid=fids(z);
+%     for g=1:runcheck
+%         delete(['results/' filesave num2str(round(fid)) num2str(g) '.mat']);
+%     end
+% end
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 
