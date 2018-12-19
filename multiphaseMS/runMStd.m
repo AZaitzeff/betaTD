@@ -108,7 +108,7 @@ save(['results/check' filesave],'score','score2','mapallp','dictp','kappap','tru
 %         delete(['results/' filesave num2str(round(fid)) num2str(g) '.mat']);
 %     end
 % end
-
+return
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 
 EBSD=EBSDtemp.EBSD;
