@@ -92,6 +92,9 @@ for z=1:numfids
     [~,I]=min(energies);
     numz=I+(z-1)*runcheck;
     var=load(['results/' filesave num2str(round(fid)) num2str(numz)]);
+    mapall=var.mapall;
+    dict=var.dict;
+    save(['results/it' filesave num2str(round(fid))],'mapall','dict')
     for i=1:total
           score(z)=score(z)+CI(i)*b2bmetric(truebetaEBSD(i,:),var.dict(var.mapall(i),:))^2;
           score2(z)=score2(z)+CI(i)*b2bmetric(dictp(mapallp(i),:),var.dict(var.mapall(i),:))^2;
