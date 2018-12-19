@@ -26,6 +26,7 @@ nc=ceil(N/40*gs/50);
 name=['results/' filesave num2str(round(fid))];
 
 timings=zeros(1,num);
+smallK=ceil((nr*nc)/8);
 if numpar>1
     parpool(numpar)
     

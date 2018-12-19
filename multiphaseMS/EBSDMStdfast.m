@@ -229,15 +229,21 @@ end
         
         for kz=1:K
             if current(kz)
+                
                 changecounter(newk)=changecounter(kz);
-                sizecoords(newk)=sizecoords(kz);
                 active(newk)=active(kz);
-                coords(newk,:)=coords(kz,:);
-                fidK(newk,:)=fidK(kz,:);
-                regK(newk,:)=regK(kz,:);
-                BindKsz(newk,:)=BindKsz(kz,:);
-                SindKsz(newk,:)=SindKsz(kz,:);
-                fidregKsz(newk)=fidregKsz(kz);
+                
+                sc=sizecoords(kz);
+                sizecoords(newk)=sc;
+                coords(newk,1:sc)=coords(kz,1:sc);
+                
+                num=fidregKsz(kz);
+                fidregKsz(newk)=num;
+                fidK(newk,1:num)=fidK(kz,1:num);
+                regK(newk,1:num)=regK(kz,1:num);
+                BindKsz(newk,1:num)=BindKsz(kz,1:num);
+                SindKsz(newk,1:num)=SindKsz(kz,1:num);
+                
                 bndsK(newk,:)=bndsK(kz,:);
                 map(kz)=newk;
                 dict(newk,:)=dict(kz,:);

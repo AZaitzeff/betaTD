@@ -124,7 +124,7 @@ nr=ceil(M/40*gs/50);
 nc=ceil(N/40*gs/50);
 name=['results/' filesave num2str(round(fid))];
 
-
+smallK=ceil((nr*nc)/8);
 if numpar>1
     parpool(numpar)
     
