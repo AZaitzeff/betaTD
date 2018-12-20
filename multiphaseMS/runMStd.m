@@ -125,9 +125,7 @@ if numpar>1
     parpool(numpar)
     
     parfor pari=1:num
-        tic;
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
-        timings(pari)=toc;
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
     
@@ -136,9 +134,7 @@ if numpar>1
     
 else
     for i=1:num
-        tic;
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
-        timings(i)=toc;
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
 end
@@ -172,7 +168,7 @@ for k=1:K
 end
 betaEBSD=qtoE313(betaEBSD);
 betaEBSD=reshape(betaEBSD,[M,N,3]);
-save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','timings');
+save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
