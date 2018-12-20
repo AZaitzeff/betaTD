@@ -232,7 +232,6 @@ end
 if t==MAXITER
    energy=inf; 
 end
-t
     function simplify()
         if K>totalK
         map=1:K;

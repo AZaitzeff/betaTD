@@ -9,13 +9,11 @@
  
 %   names={'sim','AFone','RX','rand','AFbig','mapcenter','mapedge','hardbot','hardmid','hardtop'};
 %  for i=1:3
-%      for fid=[100,150,200,250,300]
-%          filename=names{i};
-%          name=names{i};
-%          runMStd(filename,name,12,24,50);
-%      end
+%      filename=names{i};
+%      name=names{i};
+%      runMStd(filename,name,1,24,50);
 %  end
-% 
+
 % 
 names={'sim','sim2f','sim3f','sim4f'};
 for i=1:4
