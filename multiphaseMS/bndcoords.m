@@ -20,8 +20,8 @@ minmaxrowcol(:,2)=0;
 minmaxrowcol(:,3)=N;
 minmaxrowcol(:,4)=0;
 
-for j=2:N-1
-    for i =2:M-1
+for j=1:N
+    for i =1:M
         k=mapall(i,j);
         if sizecor(k)>sizecors
             sizecors=sizecors*2;
@@ -29,31 +29,33 @@ for j=2:N-1
         end
         coords(k,sizecor(k))=i+(j-1)*M;
         sizecor(k)=sizecor(k)+1;
-        total=(mapall(i+1,j)==k)+(mapall(i-1,j)==k)+(mapall(i,j+1)==k)+(mapall(i,j-1)==k);
-        %neighbors(k,mapall(i+1,j))=1;
-        %neighbors(k,mapall(i,j+1))=1;
-        if total<4
-            if sizebdcor(k)>sizebd
-                sizebd=sizebd*2;
-                [xbdcor]=growarrayz(xbdcor,sizebdcor,K,sizebd);
-                [ybdcor]=growarrayz(ybdcor,sizebdcor,K,sizebd);
-                %[bdcor,sizebdcor]=growarray(bdcor,sizebdcor,K,sizebd,-1);
-            end
-            xbdcor(k,sizebdcor(k))=j;
-            ybdcor(k,sizebdcor(k))=i;
-            %bdcor(k,sizebdcor(k))=i+M*(j-1);
-            sizebdcor(k)=sizebdcor(k)+1;
-            if minmaxrowcol(k,1)>i
-                minmaxrowcol(k,1)=i;
-            end
-            if minmaxrowcol(k,2)<i
-                minmaxrowcol(k,2)=i;
-            end
-            if minmaxrowcol(k,3)>j
-                minmaxrowcol(k,3)=j;
-            end
-            if minmaxrowcol(k,4)<j
-                minmaxrowcol(k,4)=j;
+        if i~=1 && i~=M && j~=1 && j~=N
+            total=(mapall(i+1,j)==k)+(mapall(i-1,j)==k)+(mapall(i,j+1)==k)+(mapall(i,j-1)==k);
+            %neighbors(k,mapall(i+1,j))=1;
+            %neighbors(k,mapall(i,j+1))=1;
+            if total<4 
+                if sizebdcor(k)>sizebd
+                    sizebd=sizebd*2;
+                    [xbdcor]=growarrayz(xbdcor,sizebdcor,K,sizebd);
+                    [ybdcor]=growarrayz(ybdcor,sizebdcor,K,sizebd);
+                    %[bdcor,sizebdcor]=growarray(bdcor,sizebdcor,K,sizebd,-1);
+                end
+                xbdcor(k,sizebdcor(k))=j;
+                ybdcor(k,sizebdcor(k))=i;
+                %bdcor(k,sizebdcor(k))=i+M*(j-1);
+                sizebdcor(k)=sizebdcor(k)+1;
+                if minmaxrowcol(k,1)>i
+                    minmaxrowcol(k,1)=i;
+                end
+                if minmaxrowcol(k,2)<i
+                    minmaxrowcol(k,2)=i;
+                end
+                if minmaxrowcol(k,3)>j
+                    minmaxrowcol(k,3)=j;
+                end
+                if minmaxrowcol(k,4)<j
+                    minmaxrowcol(k,4)=j;
+                end
             end
         end
     end
