@@ -35,24 +35,10 @@ codegenzaitzeff(M,N,1);
 %betas=EBSDtemp.betas(rows,cols);
 dt=2^-5;
 
-nr=ceil(M/30*gs/50);
-nc=ceil(N/30*gs/50);
+nr=ceil(M/10*gs/50);
+nc=ceil(N/10*gs/50);
 [mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
-K=nr*nc;
-[~,~,~,coords,sizecoords,~]=  bndcoords(mapallp,K);
-alpha=reshape(EBSD, [M*N,3]);
-alpha=E313toq(alpha);
-truebetaEBSD=zeros(M*N,4);
-for k=1:K
-    mu=dictp(k,:);
-    indices=coords(k,1:sizecoords(k));
-    mask=beta(indices);
-    acoord=indices(~mask);
-    [best,~]=alpbbeta(alpha(acoord,:),mu);
-    truebetaEBSD(acoord,:)=best;
-    bcoord=indices(mask);
-    truebetaEBSD(bcoord,:)=alpha(bcoord,:);
-end
+truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
 nr=ceil(M/40*gs/50);
 nc=ceil(N/40*gs/50);
@@ -148,26 +134,8 @@ dict=vars.dict;
 energy=vars.energy;
 
 
-betaEBSD=zeros(M*N,4);
-K = size(dict,1);
-alpha=reshape(EBSD, [M*N,3]);
-alpha=E313toq(alpha);
+betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-[~,~,~,coords,sizecoords,~]=  bndcoords(mapall,K);
-for k=1:K
-    mu=dict(k,:);
-    indices=coords(k,1:sizecoords(k));
-    mask=beta(indices);
-    acoord=indices(~mask);
-    [best,~]=alpbbeta(alpha(acoord,:),mu);
-    betaEBSD(acoord,:)=best;
-    bcoord=indices(mask);
-    betaEBSD(bcoord,:)=alpha(bcoord,:);
-
-    
-end
-betaEBSD=qtoE313(betaEBSD);
-betaEBSD=reshape(betaEBSD,[M,N,3]);
 save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap');
 
 for i=1:num
