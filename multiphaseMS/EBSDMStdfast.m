@@ -19,7 +19,7 @@ current=ones(1,K);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
 EBSDflat=E313toq(EBSDflat);
-MAXITER=500;
+MAXITER=250;
 %curmin=ones(M,N)*fid*2;
 active=ones(1,K);
 activecounter=K;
@@ -45,6 +45,7 @@ for k=1:K
     updateFID(k);
 end
 for t=1:MAXITER
+    t
 curmin(:)=2*fid;
 for k=1:K
     if current(k)
