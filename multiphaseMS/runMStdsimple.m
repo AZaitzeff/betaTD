@@ -1,7 +1,6 @@
-function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs)
-if nargin<5
-    gs=50;
-end
+function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs,fac)
+%fac=40
+%gs=50
 addpath('../anglelib/')
 
 
@@ -21,8 +20,8 @@ CI=EBSDtemp.CI;
 [M,N]=size(CI);
 beta=logical(EBSDtemp.betas);
 codegenzaitzeff(M,N,0);
-nr=ceil(M/40*gs/50);
-nc=ceil(N/40*gs/50);
+nr=ceil(M/fac*gs/50);
+nc=ceil(N/fac*gs/50);
 name=['results/' filesave num2str(round(fid))];
 
 timings=zeros(1,num);
