@@ -45,7 +45,6 @@ for k=1:K
     updateFID(k);
 end
 for t=1:MAXITER
-    t
 curmin(:)=2*fid;
 for k=1:K
     if current(k)
