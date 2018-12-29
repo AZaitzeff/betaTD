@@ -8,16 +8,19 @@ cd=ceil(n/nc);
 K=nr*nc;
 mid=(rd+cd)/2;
 mapall=zeros(m,n);
+rows=linspace(0,m,nr+1);
+%rows(2:end-1)=rows(2:end-1)+(rand-.5)*10;
+rows=round(rows);
+cols=linspace(0,n,nc+1);
+%cols(2:end-1)=cols(2:end-1)+(rand-.5)*10;
+cols=round(cols);
 for i=1:nr
+    row=(rows(i)+1):rows(i+1);
     for j=1:nc
-        row=(i-1)*rd+1:min(i*rd,m);
-        col=(j-1)*cd+1:min(j*cd,n);
+        col=(cols(j)+1):cols(j+1);
         mapall(row,col)=i+(j-1)*nr;
-        
     end
 end
-
-
 %x=(1:subn);
 %y=(1:subm);
 %[X,Y]=meshgrid(x,y);

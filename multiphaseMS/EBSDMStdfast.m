@@ -123,7 +123,7 @@ for k=1:K
             indices=coordsa(k,1:csize);
             change=numel(setxor(indices,oldindices));
             perchange=(change/csize);
-            if perchange<.01 || change<10
+            if perchange<.02 || change<20
                 activecounter=activecounter-active(k);
                 active(k)=0;
                 
@@ -173,7 +173,22 @@ for k=1:K
         updateFID(k); 
     end
 end
-if activecounter==0
+if t==(MAXITER-50)
+    dt=dtstop;
+    simplify();
+    sqrtdt=sqrt(dt);
+    w=ceil(fac*600*sqrtdt);
+    for k=1:K
+        updatebnds(k);
+    end
+    for k=1:K
+        updateFID(k);
+    end 
+
+end
+
+if activecounter==0 || t==MAXITER
+
     if dt<=dtstop
         energy=0;
         for k=1:K
@@ -229,9 +244,8 @@ end
 
 end
 
-if t==MAXITER
-   energy=inf; 
-end
+
+
     function simplify()
         if K>totalK
         map=1:K;
@@ -346,3 +360,19 @@ end
         end
     end
 end
+
+% for k=1:K
+%     csize=sizecoords(k);
+%     indices=coords(k,1:csize);
+%    if sum(CI(indices))>1e-4
+%         newind=datasamplez(indices,numsub,CI(indices));
+%         EBSDtemp=EBSDflat(newind,:);
+%         cmask=beta(newind);
+%         alphaEBSD=EBSDtemp(~cmask,:);
+%         betaEBSD=EBSDtemp(cmask,:);
+%         [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
+%         dict(k,:)=newg1;
+%         kappa(k)=kap;
+%     end  
+%     
+% end
