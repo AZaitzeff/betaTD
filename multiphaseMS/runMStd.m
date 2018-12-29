@@ -1,5 +1,9 @@
-function runMStd(filename,filesave,numpar,num,gs)
+function runMStd(filename,filesave,numpar,num,checknoise,gs)
 if nargin<5
+    checknoise=1;
+end
+
+if nargin<6
     gs=50;
 end
 addpath('../anglelib/')
@@ -30,22 +34,23 @@ N=un-ln+1;
 EBSD=EBSDtemp.EBSD(suby,subx,:);
 CI=EBSDtemp.CI(suby,subx);
 beta=logical(EBSDtemp.betas(suby,subx));
-codegenzaitzeff(M,N,1);
-
+%codegenzaitzeff(M,N,1);
+alpha=reshape(EBSD, [M*N,3]);
+alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 dt=2^-5;
 
-nr=ceil(M/10*gs/50);
-nc=ceil(N/10*gs/50);
-[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
-truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
+%nr=ceil(M/10*gs/50);
+%nc=ceil(N/10*gs/50);
+%[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
+%truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
 nr=ceil(M/40*gs/50);
 nc=ceil(N/40*gs/50);
 
-fids=[50,100,150,200,250,300];
+fids=25:25:300;
 numfids=numel(fids);
-runcheck=9;
+runcheck=3;
 totalcheck=runcheck*numfids;
 if numpar>1
     parpool(numpar)
@@ -66,7 +71,6 @@ else
 end
 total=(M*N);
 score=zeros(1,numfids);
-score2=zeros(1,numfids);
 for z=1:numfids
     fid=fids(z);
     energies=zeros(1,runcheck);
@@ -76,25 +80,40 @@ for z=1:numfids
     end
     [~,I]=min(energies);
     var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
-    mapall=var.mapall;
-    dict=var.dict;
     for i=1:total
-          score(z)=score(z)+CI(i)*b2bmetric(truebetaEBSD(i,:),var.dict(var.mapall(i),:))^2;
-          score2(z)=score2(z)+CI(i)*b2bmetric(dictp(mapallp(i),:),var.dict(var.mapall(i),:))^2;
+          score(z)=score(z)+CI(i)*alpbmetric(alpha(i,:),var.dict(var.mapall(i),:))^2;
     end
     score(z)=sqrt(score(z)/(M*N));
-    score2(z)=sqrt(score2(z)/(M*N));
 end
-fid=fids(find(diff(score)>-5e-4,1));
 
-save(['results/check' filesave],'score','score2','mapallp','dictp','kappap','truebetaEBSD')
-% for z=1:numfids
-%     fid=fids(z);
-%     for g=1:runcheck
-%         delete(['results/' filesave num2str(round(fid)) num2str(g) '.mat']);
-%     end
-% end
-return
+fid=kneedle(fids,score);
+
+save(['results/check' filesave],'score')
+if checknoise
+name=['results/' filesave num2str(round(fid))];
+smallK=ceil((nr*nc)/8);
+if numpar>1
+    parpool(numpar)
+    
+    parfor pari=1:num
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
+    end
+    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+    
+    poolobj = gcp('nocreate');
+    delete(poolobj);
+    
+else
+    for i=1:num
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
+    end
+    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+end
+end
+
+if ~checknoise || conval<.05
+    message='Ran on full dataset';
+
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 
 EBSD=EBSDtemp.EBSD;
@@ -133,10 +152,12 @@ mapall=vars.mapall;
 dict=vars.dict;
 energy=vars.energy;
 
-
+else
+    message='dataset is too noisy, if you want to run full run again with checknoise=0';
+end
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap');
+save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','message');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
