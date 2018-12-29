@@ -34,7 +34,7 @@ N=un-ln+1;
 EBSD=EBSDtemp.EBSD(suby,subx,:);
 CI=EBSDtemp.CI(suby,subx);
 beta=logical(EBSDtemp.betas(suby,subx));
-%codegenzaitzeff(M,N,1);
+codegenzaitzeff(M,N);
 alpha=reshape(EBSD, [M*N,3]);
 alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
@@ -120,7 +120,7 @@ EBSD=EBSDtemp.EBSD;
 CI=EBSDtemp.CI;
 [M,N]=size(CI);
 beta=logical(EBSDtemp.betas);
-codegenzaitzeff(M,N,0);
+codegenzaitzeff(M,N);
 nr=ceil(M/40*gs/50);
 nc=ceil(N/40*gs/50);
 name=['results/' filesave num2str(round(fid))];
@@ -144,6 +144,11 @@ else
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
 end
 
+
+
+else
+    message='dataset is too noisy, if you want to run full run again with checknoise=0';
+end
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 
 
@@ -152,9 +157,6 @@ mapall=vars.mapall;
 dict=vars.dict;
 energy=vars.energy;
 
-else
-    message='dataset is too noisy, if you want to run full run again with checknoise=0';
-end
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
 save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','message');
