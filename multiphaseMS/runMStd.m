@@ -89,6 +89,14 @@ end
 fid=kneedle(fids,score);
 
 save(['results/check' filesave],'score')
+
+for z=1:numfids
+    fid=fids(z);
+    for g=1:runcheck
+        delete(['results/' filesave num2str(round(fid)) num2str(g) '.mat']);
+    end
+end
+
 if checknoise
 name=['results/' filesave num2str(round(fid))];
 smallK=ceil((nr*nc)/8);
