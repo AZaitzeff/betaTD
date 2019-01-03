@@ -86,16 +86,18 @@ for z=1:numfids
     score(z)=sqrt(score(z)/(M*N));
 end
 
-fid=kneedle(fids,score);
-
-save(['results/check' filesave],'score')
-
 for z=1:numfids
     fid=fids(z);
     for g=1:runcheck
         delete(['results/' filesave num2str(round(fid)) num2str(g) '.mat']);
     end
 end
+
+fid=bestlam2(fids,score);
+
+save(['results/check' filesave],'score')
+
+
 
 if checknoise
 name=['results/' filesave num2str(round(fid))];
