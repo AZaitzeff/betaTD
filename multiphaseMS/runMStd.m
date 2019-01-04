@@ -45,7 +45,7 @@ nc=ceil(N/15);
 
 fids=25:25:300;
 numfids=numel(fids);
-runcheck=2;
+runcheck=3;
 totalcheck=runcheck*numfids;
 if numpar>1
     parpool(numpar)
