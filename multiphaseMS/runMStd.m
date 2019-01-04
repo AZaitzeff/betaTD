@@ -1,11 +1,8 @@
-function runMStd(filename,filesave,numpar,num,checknoise,gs)
+function runMStd(filename,filesave,numpar,num,checknoise)
 if nargin<5
     checknoise=1;
 end
 
-if nargin<6
-    gs=50;
-end
 addpath('../anglelib/')
 
 
@@ -17,7 +14,7 @@ end
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
-dx=1/(2*gs);
+dx=1/100;
 dy=dx*EBSDtemp.scale;
 
 [M,N]=size(EBSDtemp.CI);
@@ -38,19 +35,17 @@ codegenzaitzeff(M,N);
 alpha=reshape(EBSD, [M*N,3]);
 alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
-dt=2^-5;
+dt=2^-5.5;
 
-%nr=ceil(M/10*gs/50);
-%nc=ceil(N/10*gs/50);
+nr=ceil(M/15);
+nc=ceil(N/15);
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
-nr=ceil(M/40*gs/50);
-nc=ceil(N/40*gs/50);
 
 fids=25:25:300;
 numfids=numel(fids);
-runcheck=3;
+runcheck=2;
 totalcheck=runcheck*numfids;
 if numpar>1
     parpool(numpar)
@@ -69,8 +64,10 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
+
 total=(M*N);
 score=zeros(1,numfids);
+gsizes=zeros(1,numfids);
 for z=1:numfids
     fid=fids(z);
     energies=zeros(1,runcheck);
@@ -81,23 +78,32 @@ for z=1:numfids
     [~,I]=min(energies);
     var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
     for i=1:total
-          score(z)=score(z)+CI(i)*alpbmetric(alpha(i,:),var.dict(var.mapall(i),:))^2;
+        if beta(i)
+            score(z)=score(z)+CI(i)*alpbmetric(alpha(i,:),var.dict(var.mapall(i),:))^2;
+        else
+            score(z)=score(z)+CI(i)*b2bmetric(alpha(i,:),var.dict(var.mapall(i),:))^2;
+        end
     end
     score(z)=sqrt(score(z)/(M*N));
+    %mapall=var.mapall;
+    gsizes(z)=round(prctile(var.gsizies,5));
+    %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
-for z=1:numfids
-    fid=fids(z);
-    for g=1:runcheck
-        delete(['results/' filesave num2str(round(fid)) num2str(g) '.mat']);
-    end
-end
+
 
 fid=bestlam2(fids,score);
+I=ceil(fid/25);
+gs=gsizes(I);
 
 save(['results/check' filesave],'score')
 
-
+for z=1:numfids
+    tempfid=fids(z);
+    for g=1:runcheck
+        delete(['results/' filesave num2str(round(tempfid)) num2str(g) '.mat']);
+    end
+end
 
 if checknoise
 name=['results/' filesave num2str(round(fid))];
