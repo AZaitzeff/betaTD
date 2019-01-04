@@ -1,4 +1,4 @@
-function [mapall,dict,kappa,energy]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
+function [mapall,dict,kappa,energy,sizecoords]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
 numsub=400;
 dt=DT;
 factor=(dtstop/dt)^(1/3);
