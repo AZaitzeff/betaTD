@@ -35,10 +35,10 @@ codegenzaitzeff(M,N);
 alpha=reshape(EBSD, [M*N,3]);
 alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
-dt=2^-5.5;
+dts=[2^-5 2^-5.5 2^-6];
 
-nr=ceil(M/15);
-nc=ceil(N/15);
+nr=ceil(M/20);
+nc=ceil(N/20);
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
@@ -52,6 +52,7 @@ if numpar>1
     
     parfor pari=1:totalcheck
         fidz=fids(ceil(pari/runcheck));
+        dt=dts(mod(pari-1,3)+1);
         MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
     end
     
@@ -61,6 +62,7 @@ if numpar>1
 else
     for i=1:totalcheck
         fid=fids(ceil(i/runcheck));
+        dt=dts(mod(i-1,3)+1);
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
@@ -106,25 +108,27 @@ for z=1:numfids
 end
 
 if checknoise
-name=['results/' filesave num2str(round(fid))];
-smallK=ceil((nr*nc)/8);
-if numpar>1
-    parpool(numpar)
-    
-    parfor pari=1:num
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
+    name=['results/' filesave num2str(round(fid))];
+    smallK=ceil((nr*nc)/8);
+    if numpar>1
+        parpool(numpar)
+
+        parfor pari=1:num
+            dt=dts(mod(pari-1,3)+1);
+            MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
+        end
+        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+
+        poolobj = gcp('nocreate');
+        delete(poolobj);
+
+    else
+        for i=1:num
+            dt=dts(mod(i-1,3)+1);
+            MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
+        end
+        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
     end
-    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
-    
-    poolobj = gcp('nocreate');
-    delete(poolobj);
-    
-else
-    for i=1:num
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
-    end
-    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
-end
 end
 
 if ~checknoise || conval<.05
@@ -146,6 +150,7 @@ if numpar>1
     parpool(numpar)
     
     parfor pari=1:num
+        dt=dts(mod(pari-1,3)+1);
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
@@ -155,6 +160,7 @@ if numpar>1
     
 else
     for i=1:num
+        dt=dts(mod(i-1,3)+1);
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
