@@ -94,7 +94,7 @@ end
 
 
 
-fid=bestlam2(fids,score);
+fid=kneedle(fids,score);
 I=ceil(fid/25);
 gs=gsizes(I);
 
