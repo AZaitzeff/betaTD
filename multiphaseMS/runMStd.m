@@ -37,8 +37,8 @@ alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.5 2^-6];
 dt=2^-5.5;
-nr=ceil(M/15);
-nc=ceil(N/15);
+nr=25;
+nc=25;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
