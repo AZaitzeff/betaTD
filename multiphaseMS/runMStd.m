@@ -86,7 +86,7 @@ for z=1:numfids
     end
     score(z)=sqrt(score(z)/(M*N));
     %mapall=var.mapall;
-    gsizes(z)=round(prctile(var.gsizies,5));
+    gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
