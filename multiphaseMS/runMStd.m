@@ -137,8 +137,8 @@ CI=EBSDtemp.CI;
 [M,N]=size(CI);
 beta=logical(EBSDtemp.betas);
 codegenzaitzeff(M,N);
-nr=ceil(M/40*gs/50);
-nc=ceil(N/40*gs/50);
+nr=ceil(M/(1.1*gs));
+nc=ceil(N/(1.1*gs));
 name=['results/' filesave num2str(round(fid))];
 
 smallK=ceil((nr*nc)/8);
