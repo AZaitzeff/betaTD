@@ -98,7 +98,6 @@ fid=kneedle(fids,score);
 I=ceil(fid/25);
 gs=gsizes(I);
 
-save(['results/check' filesave],'score')
 
 for z=1:numfids
     tempfid=fids(z);
@@ -181,7 +180,7 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','message');
+save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','message');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
