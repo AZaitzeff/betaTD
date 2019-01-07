@@ -27,7 +27,7 @@ name=['results/' filesave num2str(round(fid))];
 timings=zeros(1,num);
 smallK=ceil((nr*nc)/8);
 if numpar>1
-    parpool(numpar)
+    parpool([1 numpar])
     
     parfor pari=1:num
         tic;

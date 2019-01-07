@@ -7,8 +7,8 @@
 %        end
 %    end
  
-names={'sim','AFone','RX','rand','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbig'};
-for i=1:10
+names={'sim','AFone','RX','rand','AFbeta','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbig'};
+for i=1:11
   filename=names{i};
   name=names{i};
   runMStd(filename,name,16,32,1);
