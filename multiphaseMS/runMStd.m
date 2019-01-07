@@ -48,7 +48,7 @@ numfids=numel(fids);
 runcheck=3;
 totalcheck=runcheck*numfids;
 if numpar>1
-    parpool(numpar)
+    parpool([1 numpar])
     
     parfor pari=1:totalcheck
         fidz=fids(ceil(pari/runcheck));
@@ -110,7 +110,7 @@ if checknoise
     name=['results/' filesave num2str(round(fid))];
     smallK=ceil((nr*nc)/8);
     if numpar>1
-        parpool(numpar)
+        parpool([1 numpar])
 
         parfor pari=1:num
             %dt=dts(mod(pari-1,3)+1);
@@ -146,7 +146,7 @@ name=['results/' filesave num2str(round(fid))];
 
 smallK=ceil((nr*nc)/8);
 if numpar>1
-    parpool(numpar)
+    parpool([1 numpar])
     
     parfor pari=1:num
         %dt=dts(mod(pari-1,3)+1);
