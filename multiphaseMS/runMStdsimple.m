@@ -1,4 +1,4 @@
-function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs,fac)
+function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs)
 %fac=40
 %gs=50
 addpath('../anglelib/')
@@ -12,16 +12,16 @@ end
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 addpath('../anglelib/')
-dx=1/(2*gs);
+dx=1/100;
 dy=dx*EBSDtemp.scale;
 
 EBSD=EBSDtemp.EBSD;
 CI=EBSDtemp.CI;
 [M,N]=size(CI);
 beta=logical(EBSDtemp.betas);
-codegenzaitzeff(M,N,0);
-nr=ceil(M/fac*gs/50);
-nc=ceil(N/fac*gs/50);
+codegenzaitzeff(M,N);
+nr=ceil(M/gs);
+nc=ceil(N/gs);
 name=['results/' filesave num2str(round(fid))];
 
 timings=zeros(1,num);
