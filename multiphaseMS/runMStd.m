@@ -43,7 +43,7 @@ nc=20;
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
 
-fids=25:25:250;
+fids=25:25:300;
 numfids=numel(fids);
 runcheck=3;
 totalcheck=runcheck*numfids;
