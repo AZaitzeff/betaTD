@@ -248,7 +248,7 @@ end
 
     function simplify()
         if K>totalK
-        map=1:K;
+        map=zeros(1,K);
         newk=1;
         
         for kz=1:K
