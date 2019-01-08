@@ -1,7 +1,7 @@
 function [lam]=bestlam2(xs,ys)
 N=numel(xs);
-xtry=linspace(min(xs),max(xs),101);
-ytry=linspace(min(ys),max(ys),101);
+xtry=linspace(min(xs),max(xs),1001);
+ytry=linspace(min(ys),max(ys),1001);
 xstart=xs(1);
 ystart=ys(1);
 
