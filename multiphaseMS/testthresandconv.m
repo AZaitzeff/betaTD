@@ -32,12 +32,12 @@ dy=1/100;
 
 %[alphacolors,oM]=crystalcolormaps(EBSD,1);
 [M,N,z]=size(EBSD);
-nr=10;
-nc=10;
-%nr=20;
-%nc=30;
+%nr=10;
+%nc=10;
+nr=20;
+nc=30;
 codegenzaitzeff(M,N);
-fid=100;
+fid=250;
 dt=2^-4;
 for ztest =1:4
         
