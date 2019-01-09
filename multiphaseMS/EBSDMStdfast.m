@@ -1,10 +1,6 @@
 function [mapall,dict,kappa,energy,sizecoords]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
 numsub=400;
-%dt=DT;
-%factor=(dtstop/dt)^(1/3);
-dts=2.^linspace(log2(DT),log2(dtstop),5);
-%mult=ceil(log2(DT/dtstop));
-%fid=fid/2^(mult/2);
+dts=2.^linspace(log2(DT),log2(dtstop),5);%limit at dt goes to 0
 T=alphatobetatrans();
 Pm=getsymmetries('cubic');
 Pall=zeros(4,4,144);
@@ -18,10 +14,9 @@ current=ones(1,K);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
 EBSDflat=E313toq(EBSDflat);
-MAXITER=80;
+MAXITER=250;
 fac=1/(50*(dx+dy));
-[xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);
-%bdelemts=size(ybdcor);
+[xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
 crdelemts=size(coords);
 changecounter=zeros(K,1);
 numelemts=[K,ceil(8*fac*600*sqrt(DT)*sqrt(M*N/K))];
@@ -181,6 +176,7 @@ for dt=dts
         end
     end
     simplify();
+    MAXITER=ceil(MAXITER/2);
 end
 
 energy=0;
@@ -200,8 +196,8 @@ for k=1:K
         temp=endmask*0;
         temp(slinind)=1/sqrtdt*(regK(k,1:fullsz));
         energy=energy+sum(temp(endmask));
-        csize=sizecoordsa(k);
-        indices=coordsa(k,1:csize);
+        csize=sizecoords(k);
+        indices=coords(k,1:csize);
         bmask=beta(indices);
         alphacoord=indices(~bmask);
         betacoord=indices(bmask);
@@ -333,19 +329,3 @@ end
         end
     end
 end
-
-% for k=1:K
-%     csize=sizecoords(k);
-%     indices=coords(k,1:csize);
-%    if sum(CI(indices))>1e-4
-%         newind=datasamplez(indices,numsub,CI(indices));
-%         EBSDtemp=EBSDflat(newind,:);
-%         cmask=beta(newind);
-%         alphaEBSD=EBSDtemp(~cmask,:);
-%         betaEBSD=EBSDtemp(cmask,:);
-%         [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
-%         dict(k,:)=newg1;
-%         kappa(k)=kap;
-%     end  
-%     
-% end

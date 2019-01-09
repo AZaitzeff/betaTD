@@ -7,10 +7,10 @@
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-%load('../data/AFoneEBSD')
+load('../data/AFoneEBSD')
 %EBSD=EBSD(1:2:end,1:2:end,:);
 %CI=CI(1:2:end,1:2:end);
-load('../data/simEBSD')
+%load('../data/simEBSD')
 %Ks=[2,2];
 %[mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,200,16);
 %[mapall,newdict,newkappa]=regionmerging(mapall,newdict,newkappa,EBSD,CI,Ks,.015,200);
@@ -32,13 +32,13 @@ dy=1/100;
 
 %[alphacolors,oM]=crystalcolormaps(EBSD,1);
 [M,N,z]=size(EBSD);
-nr=15;
-nc=15;
+nr=10;
+nc=10;
 %nr=20;
 %nc=30;
 codegenzaitzeff(M,N);
 fid=100;
-dt=2^-5;
+dt=2^-4;
 for ztest =1:4
         
 
@@ -49,7 +49,7 @@ tic;
 toc;
 
 
-save(['results/sim' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
+save(['results/AF' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
 
 %save(['results/sim' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','kappa','energy')
 %save(['results/AFbig' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt'  num2str(ztest) ],'mapall','dict','kappa','energy')
