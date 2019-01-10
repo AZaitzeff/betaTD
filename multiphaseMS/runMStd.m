@@ -1,4 +1,4 @@
-function runMStd(filename,filesave,numpar,num,checknoise)
+function runMStd(filename,filesave,numpar,num,runcheck,checknoise)
 if nargin<5
     checknoise=1;
 end
@@ -36,16 +36,26 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-dt=2^-4.5;
+dt=2^-4;
 nr=20;
 nc=20;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
-
-fids=50:50:400;
+totalfid=6;
+allfids=zeros(1,totalfid);
+allscore=zeros(1,totalfid);
+allgrains=zeros(1,totalfid);
+len=100;
+fids=[150,300];
 numfids=numel(fids);
-runcheck=4;
+con=1;
+while len>20
+    for fid=fids
+        allfids(con)=fid;
+        con=con+1;
+    end
+    con=con-2;
 totalcheck=runcheck*numfids;
 if numpar>1
     parpool([1 numpar])
@@ -65,6 +75,7 @@ else
     end
 end
 
+
 score=zeros(1,numfids);
 gsizes=zeros(1,numfids);
 for z=1:numfids
@@ -83,12 +94,63 @@ for z=1:numfids
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
+for iter=1:2
+    allscore(con)=score(iter);
+    allgrains(con)=gsizes(iter);
+    con=con+1;
+end
 
+len=len/2;
+if score(1)>=1.2 && score(2)>=1.2
+    fids=[len+fids(2),2*len+fids(2)];
+elseif score(1)<=.8 && score(2)<=.8
+    fids=[-len+fids(1),-2*len+fids(1)];
+elseif score(1)>=.8 && score(2)<=.8
+    fids=[-len+fids(1),len+fids(1)];
+elseif score(1)>=1.2 && score(2)<=1.2    
+    fids=[-len+fids(2),len+fids(2)];
+else
+    fids=[len+fids(1),-len+fids(2)];
+end
+end
 
-I=max(min(find(score<1,1)-1,numfids),1);
+[fids,I]=sort(allfids);
+tempscore=allscore(I);
+score=zeros(1,totalfid);
+for i=1:totalfid
+    if i==1
+        score(1)=3/4*tempscore(1)+tempscore(2)/4;
+    elseif i==totalfid
+        score(totalfid)=3/4*tempscore(totalfid)+tempscore(totalfid-1)/4;
+        
+    else
+        score(i)=tempscore(i-1)/4+1/2*tempscore(i)+tempscore(i+1)/4;
+    end
+end
+gsizes=allgrains(I);
+
+I=find(score<1,1)-1;
+if isempty(I)
+    I=totalfid;
+elseif I==0
+    I=1;
+end
 fid=fids(I);
 gs=gsizes(I);
+if checknoise
+    name=['results/' filesave num2str(round(fid))];
+    smallK=ceil((nr*nc)/8);
+    if numpar>1
+        parpool([1 numpar])
+        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+        poolobj = gcp('nocreate');
+        delete(poolobj);
 
+    else
+        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+    end
+    vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
+end
 
 for z=1:numfids
     tempfid=fids(z);
@@ -97,27 +159,6 @@ for z=1:numfids
     end
 end
 
-if checknoise
-    name=['results/' filesave num2str(round(fid))];
-    smallK=ceil((nr*nc)/8);
-    if numpar>1
-        parpool([1 numpar])
-
-        parfor pari=1:num
-            MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
-        end
-        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
-
-        poolobj = gcp('nocreate');
-        delete(poolobj);
-
-    else
-        for i=1:num
-            MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
-        end
-        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
-    end
-end
 
 if ~checknoise || conval<.05
     message='Ran on full dataset';
@@ -152,12 +193,12 @@ else
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
 end
 
-
+vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 
 else
-    message='dataset is too noisy, if you want to run full run again with checknoise=0';
+    message='dataset is too noisy, if you want to run on full, run again with checknoise=0';
 end
-vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
+
 
 
 
@@ -167,7 +208,7 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','message');
+save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','fids','score','gs','message');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
