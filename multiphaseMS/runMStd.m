@@ -115,18 +115,18 @@ end
 end
 
 [fids,I]=sort(allfids);
-tempscore=allscore(I);
-score=zeros(1,totalfid);
-for i=1:totalfid
-    if i==1
-        score(1)=3/4*tempscore(1)+tempscore(2)/4;
-    elseif i==totalfid
-        score(totalfid)=3/4*tempscore(totalfid)+tempscore(totalfid-1)/4;
-        
-    else
-        score(i)=tempscore(i-1)/4+1/2*tempscore(i)+tempscore(i+1)/4;
-    end
-end
+score=allscore(I);
+%score=zeros(1,totalfid);
+% for i=1:totalfid
+%     if i==1
+%         score(1)=3/4*tempscore(1)+tempscore(2)/4;
+%     elseif i==totalfid
+%         score(totalfid)=3/4*tempscore(totalfid)+tempscore(totalfid-1)/4;
+%         
+%     else
+%         score(i)=tempscore(i-1)/4+1/2*tempscore(i)+tempscore(i+1)/4;
+%     end
+% end
 gsizes=allgrains(I);
 
 I=find(score<1,1)-1;
