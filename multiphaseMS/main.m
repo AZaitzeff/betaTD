@@ -1,5 +1,5 @@
  names={'sim','AFone','RX','rand','AFbig','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbeta'};
- for i=7:11
+ for i=6:11
     for fid=50:50:350
         filename=names{i};
         name=names{i};
