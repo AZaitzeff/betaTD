@@ -38,8 +38,8 @@ nr=20;
 nc=30;
 codegenzaitzeff(M,N);
 fid=250;
-dt=2^-4;
-for ztest =1:4
+dt=2^-5;
+for ztest =1:1
         
 
 

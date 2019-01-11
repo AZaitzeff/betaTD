@@ -2,7 +2,7 @@ function runMStd(filename,filesave,numpar,num,runcheck,checknoise)
 if nargin<5
     checknoise=1;
 end
-
+timings=zeros(1,num);
 addpath('../anglelib/')
 
 
@@ -36,7 +36,7 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-dt=2^-4;
+dt=2^-5;
 nr=25;
 nc=25;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
@@ -78,7 +78,7 @@ for z=1:numfids
     [~,I]=min(energies);
     var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
     [vals,~]=matchmetric(var.mapall,var.dict);
-    score(z)=prctile(vals,2);
+    score(z)=prctile(vals,1);
     %mapall=var.mapall;
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
@@ -99,12 +99,12 @@ if checknoise
     smallK=ceil((nr*nc)/8);
     if numpar>1
         parpool([1 numpar])
-        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+        [I,conval,conmap]=confidencemap(name,M,N,smallK,runcheck,numpar);
         poolobj = gcp('nocreate');
         delete(poolobj);
 
     else
-        [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+        [I,conval,conmap]=confidencemap(name,M,N,smallK,runcheck,numpar);
     end
     vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 end
@@ -117,7 +117,7 @@ for z=1:numfids
 end
 
 
-if ~checknoise || conval<.05
+if ~checknoise || conval<.075
     message='Ran on full dataset';
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
@@ -136,7 +136,9 @@ if numpar>1
     parpool([1 numpar])
     
     parfor pari=1:num
+        tic;
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
+        timings(pari)=toc;
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
     
@@ -145,7 +147,9 @@ if numpar>1
     
 else
     for i=1:num
+        tic;
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
+        timings(i)=toc;
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
 end
@@ -165,7 +169,7 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','fids','score','gs','message');
+save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','timings','message');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);

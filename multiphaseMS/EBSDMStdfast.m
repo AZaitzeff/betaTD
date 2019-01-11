@@ -1,6 +1,8 @@
 function [mapall,dict,kappa,energy,sizecoords]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
 numsub=400;
-dts=2.^linspace(log2(DT),log2(dtstop),5);%limit at dt goes to 0
+dts=2.^linspace(log2(DT),log2(dtstop),4);%limit at dt goes to 0
+%lam=fid;
+
 T=alphatobetatrans();
 Pm=getsymmetries('cubic');
 Pall=zeros(4,4,144);
@@ -21,6 +23,11 @@ crdelemts=size(coords);
 changecounter=zeros(K,1);
 numelemts=[K,ceil(8*fac*600*sqrt(DT)*sqrt(M*N/K))];
 curmin=zeros(M,N);
+
+
+curminall=ones(M,N,K)*50;
+curminallz=ones(M,N,K)*50;
+
 fidK=zeros(numelemts);
 regK=zeros(numelemts);
 BindKsz=zeros(numelemts);
@@ -29,7 +36,7 @@ fidregKsz=zeros(K,1);
 bndsK=zeros(K,4);
 
 for dt=dts
-        
+    %fid=lam*2^(log(dtstop/dt)/2);
     sqrtdt=sqrt(dt);
     w=ceil(fac*600*sqrtdt);
 
@@ -39,7 +46,7 @@ for dt=dts
         updatebnds(k);
     end
     for k=1:K
-        updateFID(k);
+        updateFID(k,1);
     end
     for t=1:MAXITER
         curmin(:)=2*fid;
@@ -92,12 +99,17 @@ for dt=dts
                             mapall(canind)=k;
                         end
                     end
+                    temp=ones(M,N)*100;
+                    temp(linind)=2/sqrtdt*(-regK(k,1:fullsz));
+                    curminall(:,:,k)=temp;
+                    temp(linind)=fidK(k,1:fullsz);
+                    curminallz(:,:,k)=temp;
+                    
                 end
             end
             %imagesc(mapall);colorbar
             %pause(1)
         end
-
 
 
 
@@ -120,7 +132,7 @@ for dt=dts
                     indices=coordsa(k,1:csize);
                     change=numel(setxor(indices,oldindices));
                     perchange=(change/csize);
-                    if perchange<.02 || change<20
+                    if perchange<.01 || change<10
                         activecounter=activecounter-active(k);
                         active(k)=0;
 
@@ -163,20 +175,41 @@ for dt=dts
         if (K/totalK)>=1.5
             simplify();
         end
+        if activecounter==0
+            break
+        end
 
         for k=1:K
             if active(k)
                 updatebnds(k);
-                updateFID(k); 
+                updateFID(k,1); 
             end
         end
 
-        if activecounter==0
-            break
-        end
+
     end
     simplify();
     MAXITER=ceil(MAXITER/2);
+end
+
+for k=1:K
+    csize=sizecoords(k);
+    indices=coords(k,1:csize);
+    if sum(CI(indices))>1e-4
+        newind=datasamplez(indices,numsub,CI(indices));
+        EBSDtemp=EBSDflat(newind,:);
+        cmask=beta(newind);
+        alphaEBSD=EBSDtemp(~cmask,:);
+        betaEBSD=EBSDtemp(cmask,:);
+        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
+        dict(k,:)=newg1;
+        kappa(k)=kap;
+    end  
+end
+
+for k=1:K
+    updatebnds(k);
+    updateFID(k,0); 
 end
 
 energy=0;
@@ -280,7 +313,7 @@ end
         current=ones(1,K);
         end
     end
-    function updateFID(k)
+    function updateFID(k,smooth)
         fullsz=fidregKsz(k);
         if fullsz>0
             slinind=SindKsz(k,1:fullsz);
@@ -303,7 +336,11 @@ end
             if ~isempty(betacoord)
                 mask(slinind(bmask))=fid*CI(betacoord).*b2bmetric(EBSDflat(betacoord,:),dict(k,:));
             end
-            newu=TSz(mask,dt/16,nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,1);
+            if smooth
+                newu=TSz(mask,min(dt/16,2^-12),nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,1);
+            else
+                newu=mask;
+            end
             fidK(k,1:fullsz)=newu(slinind);
         end
     end

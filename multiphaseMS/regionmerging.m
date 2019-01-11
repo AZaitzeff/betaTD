@@ -2,7 +2,7 @@ function [mapall,newdict,newkappa]=regionmerging(mapall,dict,kappa,m,n,mid,fid)
 %fid=150;
 %constant=0.28211;
 gs=1/100;
-
+threshold=prctile(kappa,50)/2;
 K=m*n;
 contains=eye(K,'logical');
 neighbors=zeros(K,K,'logical');
@@ -44,15 +44,28 @@ for z =1:total
     r1=findroot(map,ind1);
     r2=findroot(map,ind2);
     if r1~=r2
-        per=andsum(contains(r1,:),neighbors(r2,:),K);
-        area1=sum(contains(r1,:));
-        area2=sum(contains(r2,:));
-        area=min(area1,area2);
-        perterm=per*gs*mid;
-        val=b2bmetric(dict(r1,:),dict(r2,:));
-        fidterm=val*fid*area*(gs*mid)^2;
-        if fidterm<perterm
-            if area1>area2
+        if kappa(r1)>threshold && kappa(r2)>threshold
+            per=andsum(contains(r1,:),neighbors(r2,:),K);
+            area1=sum(contains(r1,:));
+            area2=sum(contains(r2,:));
+            area=min(area1,area2);
+            perterm=per*gs*mid;
+            val=b2bmetric(dict(r1,:),dict(r2,:));
+            fidterm=val*fid*area*(gs*mid)^2;
+            if fidterm<=perterm
+                if area1>=area2
+                    map(r2)=r1;
+                    contains(r1,:)=or(contains(r1,:),contains(r2,:));
+                    neighbors(r1,:)=or(neighbors(r1,:),neighbors(r2,:));
+                else
+                    map(r1)=r2;
+                    contains(r2,:)=or(contains(r1,:),contains(r2,:));
+                    neighbors(r2,:)=or(neighbors(r1,:),neighbors(r2,:));
+                end
+
+            end
+        else
+            if kappa(r1)>=kappa(r2)
                 map(r2)=r1;
                 contains(r1,:)=or(contains(r1,:),contains(r2,:));
                 neighbors(r1,:)=or(neighbors(r1,:),neighbors(r2,:));
