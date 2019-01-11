@@ -37,8 +37,8 @@ codegenzaitzeff(M,N);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
 dt=2^-4;
-nr=20;
-nc=20;
+nr=25;
+nc=25;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
@@ -115,18 +115,18 @@ end
 end
 
 [fids,I]=sort(allfids);
-tempscore=allscore(I);
-score=zeros(1,totalfid);
-for i=1:totalfid
-    if i==1
-        score(1)=3/4*tempscore(1)+tempscore(2)/4;
-    elseif i==totalfid
-        score(totalfid)=3/4*tempscore(totalfid)+tempscore(totalfid-1)/4;
-        
-    else
-        score(i)=tempscore(i-1)/4+1/2*tempscore(i)+tempscore(i+1)/4;
-    end
-end
+score=allscore(I);
+%score=zeros(1,totalfid);
+% for i=1:totalfid
+%     if i==1
+%         score(1)=3/4*tempscore(1)+tempscore(2)/4;
+%     elseif i==totalfid
+%         score(totalfid)=3/4*tempscore(totalfid)+tempscore(totalfid-1)/4;
+%         
+%     else
+%         score(i)=tempscore(i-1)/4+1/2*tempscore(i)+tempscore(i+1)/4;
+%     end
+% end
 gsizes=allgrains(I);
 
 I=find(score<1,1)-1;
