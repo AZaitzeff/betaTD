@@ -101,14 +101,10 @@ for iter=1:2
 end
 
 len=len/2;
-if score(1)>=1.2 && score(2)>=1.2
+if score(1)>=1 && score(2)>=1
     fids=[len+fids(2),2*len+fids(2)];
-elseif score(1)<=.8 && score(2)<=.8
+elseif score(1)<=1 && score(2)<=1
     fids=[-len+fids(1),-2*len+fids(1)];
-elseif score(1)>=.8 && score(2)<=.8
-    fids=[-len+fids(1),len+fids(1)];
-elseif score(1)>=1.2 && score(2)<=1.2    
-    fids=[-len+fids(2),len+fids(2)];
 else
     fids=[len+fids(1),-len+fids(2)];
 end
