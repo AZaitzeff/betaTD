@@ -42,20 +42,10 @@ nc=25;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
-totalfid=6;
-allfids=zeros(1,totalfid);
-allscore=zeros(1,totalfid);
-allgrains=zeros(1,totalfid);
-len=100;
-fids=[150,300];
+
+fids=50:50:350;
 numfids=numel(fids);
-con=1;
-while len>20
-    for fid=fids
-        allfids(con)=fid;
-        con=con+1;
-    end
-    con=con-2;
+
 totalcheck=runcheck*numfids;
 if numpar>1
     parpool([1 numpar])
@@ -94,40 +84,11 @@ for z=1:numfids
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
-for iter=1:2
-    allscore(con)=score(iter);
-    allgrains(con)=gsizes(iter);
-    con=con+1;
-end
 
-len=len/2;
-if score(1)>=1 && score(2)>=1
-    fids=[len+fids(2),2*len+fids(2)];
-elseif score(1)<=1 && score(2)<=1
-    fids=[-len+fids(1),-2*len+fids(1)];
-else
-    fids=[len+fids(1),-len+fids(2)];
-end
-end
-
-[fids,I]=sort(allfids);
-score=allscore(I);
-%score=zeros(1,totalfid);
-% for i=1:totalfid
-%     if i==1
-%         score(1)=3/4*tempscore(1)+tempscore(2)/4;
-%     elseif i==totalfid
-%         score(totalfid)=3/4*tempscore(totalfid)+tempscore(totalfid-1)/4;
-%         
-%     else
-%         score(i)=tempscore(i-1)/4+1/2*tempscore(i)+tempscore(i+1)/4;
-%     end
-% end
-gsizes=allgrains(I);
 
 I=find(score<1,1)-1;
 if isempty(I)
-    I=totalfid;
+    I=numfids;
 elseif I==0
     I=1;
 end
