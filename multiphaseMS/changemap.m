@@ -6,16 +6,16 @@ for i=1:M
     	val=map(mapall(i,j));
 		if val~=0
         	mapall(i,j)=val; 
-    	else
-    		if j<(N/2)
+        else
+            if j<(N/2)
     			ind=0;
-    			while val~=0
+                while val==0
     				ind=ind+1;
         			val=map(mapall(i,j+ind));
-        		end
+                end
     		else
     			val=mapall(i,j-1);
-        	end
+            end
     		mapall(i,j)=val;  
 		end 
     end

@@ -42,8 +42,13 @@ nc=25;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
+next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,154,172,190];...
+    [236,272,308,344,380];[500,600,700,800,900]];
 
-fids=50:50:350;
+
+fids=[12,25,50,100,200,400];
+for iter=1:2
+    
 numfids=numel(fids);
 
 totalcheck=runcheck*numfids;
@@ -85,14 +90,33 @@ for z=1:numfids
 end
 
 
-
+if iter==1
 I=find(score<1,1)-1;
 if isempty(I)
     I=numfids;
+    startfid=fids(I);
 elseif I==0
-    I=1;
+    startfid=0;
+else
+    startfid=fids(I);
 end
-fid=fids(I);
+
+fids=next(I+1,:);
+
+else
+    I=find(score<1,1)-1;
+    if isempty(I)
+        fid=fids(numfids);
+    elseif I==0
+        fid=startfid;
+
+    else
+        fid=fids(I);
+    end
+end
+
+end
+
 gs=gsizes(I);
 if checknoise
     name=['results/' filesave num2str(round(fid))];
