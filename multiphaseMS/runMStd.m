@@ -45,7 +45,7 @@ nc=25;
 next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,154,172,190];...
     [236,272,308,344,380];[500,600,700,800,900]];
 
-
+dts=[2^-3,2^-3,2^-4,2^-4,2^-5,2^-5];
 fids=[12,25,50,100,200,400];
 for iter=1:2
     
@@ -57,6 +57,7 @@ if numpar>1
     
     parfor pari=1:totalcheck
         fidz=fids(ceil(pari/runcheck));
+        dt=dts(ceil(pari/runcheck));
         MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
     end
     
@@ -66,6 +67,7 @@ if numpar>1
 else
     for i=1:totalcheck
         fid=fids(ceil(i/runcheck));
+        dt=dts(ceil(i/runcheck));
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
@@ -95,12 +97,15 @@ I=find(score<1,1)-1;
 if isempty(I)
     I=numfids;
     startfid=fids(I);
+    dt=2^-6;
 elseif I==0
-    startfid=0;
+    startfid=6;
+    dt=1/4;
 else
     startfid=fids(I);
+    dt=dts(I);
 end
-
+dts(:)=dt;
 fids=next(I+1,:);
 
 else
