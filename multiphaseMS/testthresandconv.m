@@ -35,9 +35,9 @@ dy=1/100;
 %nr=10;
 %nc=10;
 nr=20;
-nc=30;
+nc=20;
 codegenzaitzeff(M,N);
-fid=250;
+fid=150;
 dt=2^-5;
 for ztest =1:1
         
