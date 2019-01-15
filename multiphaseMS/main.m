@@ -11,7 +11,7 @@ names={'sim','AFone','RX','rand','AFbeta','mapcenter','mapedge','hardbot','hardm
 for i=1:11
   filename=names{i};
   name=names{i};
-  runMStd(filename,name,16,30,4,1);
+  runMStd(filename,name,16,1,1,1);
 end
 
 %names={'sim','sim2f','sim3f','sim4f'};
