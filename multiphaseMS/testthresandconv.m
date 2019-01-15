@@ -7,7 +7,7 @@
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-load('../data/AFoneEBSD')
+load('../data/AFbetaEBSD')
 %EBSD=EBSD(1:2:end,1:2:end,:);
 %CI=CI(1:2:end,1:2:end);
 %load('../data/simEBSD')
@@ -35,11 +35,11 @@ dy=1/100;
 %nr=10;
 %nc=10;
 nr=20;
-nc=20;
+nc=40;
 codegenzaitzeff(M,N);
 fid=150;
 dt=2^-5;
-for ztest =1:1
+for ztest =1:4
         
 
 
@@ -49,7 +49,7 @@ tic;
 toc;
 
 
-save(['results/AF' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
+save(['results/AFbeta' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
 
 %save(['results/sim' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','kappa','energy')
 %save(['results/AFbig' num2str(enec) 'e' num2str(fid) 'fid' num2str(round(dt*100)) 'dt'  num2str(ztest) ],'mapall','dict','kappa','energy')
