@@ -146,6 +146,13 @@ for z=1:numfids
 end
 
 
+for tempfid=[12,25,50,100,200,400]
+    for g=1:runcheck
+        delete(['results/' filesave num2str(round(tempfid)) num2str(g) '.mat']);
+    end
+end
+
+
 if ~checknoise || conval<.075
     message='Ran on full dataset';
 
