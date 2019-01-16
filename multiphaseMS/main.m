@@ -1,9 +1,9 @@
  names={'sim2','AFone','RX','rand','AFbig','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbeta'};
  for i=11:11
-    for fid=50:50:400
+    for fid=100:50:400
         filename=names{i};
         name=names{i};
-        runMStdsimple(filename,name,16,24,2^-5,fid,30);
+        runMStdsimple(filename,name,8,16,2^-5,fid,30);
     end
  end
  
