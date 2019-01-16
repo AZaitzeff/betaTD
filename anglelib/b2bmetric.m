@@ -5,9 +5,8 @@ function dist=b2bmetric(beta1,beta2)
     dist=1.5*ones(1,n);
 
     for j=1:numS
-        for i=1:N
-            dist(i)=min(dist(i),acos(abs((beta2*Pm(:,:,j)')*beta1(i,:)')));
-        end
+        
+        dist=min(dist,acos(abs((beta2*Pm(:,:,j)')*beta1')));
     end
     
 end
