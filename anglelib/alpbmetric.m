@@ -8,7 +8,7 @@ function dist=alpbmetric(alpha,beta)
     
     for i=1:numB
         for j=1:numS
-            dist(:,:)=min(dist(:,:),acos(real(beta*Pm(:,:,j)'*T(:,:,i)*alpha')));
+            dist(:,:)=min(dist(:,:),acos(abs((beta*Pm(:,:,j)'*T(:,:,i))*alpha')));
         end
     end
 end
