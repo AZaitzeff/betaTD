@@ -1,5 +1,5 @@
- names={'sim2','AFone','RX','rand','AFbig','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbeta'};
- for i=[1,11]
+ names={'sim','AFone','RX','rand','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbeta','AFbig'};
+ for i=1:9
     for fid=100:50:400
         filename=names{i};
         name=names{i};
@@ -7,8 +7,8 @@
     end
  end
  
-% names={'sim','AFone','RX','rand','AFbeta','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbig'};
-% for i=5:5
+% names={'sim','sim2','AFone','RX','rand','AFbeta','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbig'};
+% for i=1:12
 %   filename=names{i};
 %   name=names{i};
 %   runMStd(filename,name,2,16,4,1);

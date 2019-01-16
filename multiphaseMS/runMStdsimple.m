@@ -60,6 +60,6 @@ energy=vars.energy;
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 save(['results/' filesave num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','timings');
 
-for i=1:num
-    delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
-end
+% for i=1:num
+%     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
+% end
