@@ -97,13 +97,16 @@ I=find(score<1,1)-1;
 if isempty(I)
     I=numfids;
     startfid=fids(I);
+    gsstart=gsizes(I);
     dt=2^-6;
 elseif I==0
     startfid=6;
     dt=1/4;
+    gsstart=20;
 else
     startfid=fids(I);
     dt=dts(I);
+    gsstart=gsizes(I);
 end
 dts(:)=dt;
 fids=next(I+1,:);
@@ -112,17 +115,21 @@ else
     I=find(score<1,1)-1;
     if isempty(I)
         fid=fids(numfids);
+        I=numfids;
+        gs=gsizes(I);
     elseif I==0
         fid=startfid;
+        gs=gsstart;
 
     else
         fid=fids(I);
+        gs=gsizes(I);
     end
 end
 
 end
 
-gs=gsizes(I);
+
 if checknoise
     name=['results/' filesave num2str(round(fid))];
     smallK=ceil((nr*nc)/8);
