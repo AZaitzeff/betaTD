@@ -3,7 +3,7 @@
     for fid=50:50:350
         filename=names{i};
         name=names{i};
-        runMStdsimple(filename,name,1,16,2^-5,fid,40);
+        runMStdsimple(filename,name,16,20,2^-5,fid,40);
     end
  end
  
