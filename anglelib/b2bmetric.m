@@ -5,6 +5,10 @@ function dist=b2bmetric(beta1,beta2)
     dist=1.5*ones(1,n);
     
     for j=1:numS
+        vals=abs(beta2*(Pm(:,:,j)'*beta1'));
+        if sum(imag(vals))>0
+            vals
+        end
         dist(:,:)=min(dist(:,:),acos(abs(beta2*(Pm(:,:,j)'*beta1'))));
     end
 end
