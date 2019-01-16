@@ -35,7 +35,7 @@ dy=1/100;
 %nr=10;
 %nc=10;
 nr=20;
-nc=20;
+nc=40;
 codegenzaitzeff(M,N);
 fid=150;
 dt=2^-5;
