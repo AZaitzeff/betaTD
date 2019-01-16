@@ -214,7 +214,7 @@ betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
 save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','timings','message');
 
-for i=1:num
-    delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
-end
+% for i=1:num
+%     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
+% end
 
