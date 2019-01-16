@@ -8,8 +8,8 @@
 % CI=CI(1:3:end,1:3:end);
 %%
 load('../data/AFbetaEBSD')
-EBSD=EBSD(401:end,401:end,:);
-CI=CI(401:end,401:end);
+% EBSD=EBSD(401:end,1:400,:);
+% CI=CI(401:end,1:400);
 %load('../data/simEBSD')
 %Ks=[2,2];
 %[mapall,newdict,newkappa]=initializeEBSDfast(EBSD,CI,Ks,200,16);
@@ -45,7 +45,7 @@ for ztest =1:1
 
 
 tic;
-[mapall,dict,energy,gsizes]=EBSDimgseg(EBSD,CI,logical(betas(401:end,401:end)),fid,dt,dx,dy,nr,nc);
+[mapall,dict,energy,gsizes]=EBSDimgseg(EBSD,CI,logical(betas),fid,dt,dx,dy,nr,nc);
 toc;
 
 
