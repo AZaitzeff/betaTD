@@ -8,10 +8,9 @@ function dist=alpbmetric(alpha,beta)
     
     for i=1:numB
         for j=1:numS
-            
             val=abs((beta*Pm(:,:,j)'*T(:,:,i))*alpha');
             for n=1:N
-                if val>=1
+                if val(n)>=1
                     dist(n)=0;
                 else
                     dist(n)=min(dist(n),acos(val(n)));
