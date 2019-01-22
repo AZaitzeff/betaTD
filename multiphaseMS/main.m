@@ -8,11 +8,11 @@
 %  end
  
  
-for i=[5,4,10,11]
+for i=[11,10]
     for fid=100:50:400
         filename=names{i};
         name=names{i};
-        runMStdsimple(filename,name,12,20,2^-5,fid,30);
+        runMStdsimple(filename,name,16,20,2^-5,fid,30);
     end
  end
  
