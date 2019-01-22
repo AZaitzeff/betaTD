@@ -8,7 +8,7 @@
 %  end
  
  
-for i=[11,10]
+for i=[10,12,11]
     for fid=100:50:400
         filename=names{i};
         name=names{i};
