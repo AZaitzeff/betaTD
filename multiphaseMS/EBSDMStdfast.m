@@ -25,8 +25,6 @@ numelemts=[K,ceil(8*fac*600*sqrt(DT)*sqrt(M*N/K))];
 curmin=zeros(M,N);
 
 
-curminall=ones(M,N,K)*50;
-curminallz=ones(M,N,K)*50;
 
 fidK=zeros(numelemts);
 regK=zeros(numelemts);
@@ -99,11 +97,6 @@ for dt=dts
                             mapall(canind)=k;
                         end
                     end
-                    temp=ones(M,N)*100;
-                    temp(linind)=2/sqrtdt*(-regK(k,1:fullsz));
-                    curminall(:,:,k)=temp;
-                    temp(linind)=fidK(k,1:fullsz);
-                    curminallz(:,:,k)=temp;
                     
                 end
             end
