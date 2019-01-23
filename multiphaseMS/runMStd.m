@@ -1,7 +1,5 @@
-function runMStd(filename,filesave,numpar,num,runcheck,checknoise)
-if nargin<5
-    checknoise=1;
-end
+function runMStd(filename,filesave,numpar,num,runcheck)
+
 timings=zeros(1,num);
 addpath('../anglelib/')
 
@@ -130,20 +128,7 @@ end
 end
 
 
-if checknoise
-    name=['results/' filesave num2str(round(fid))];
-    smallK=ceil((nr*nc)/8);
-    if numpar>1
-        parpool([1 numpar])
-        [I,conval,conmap]=confidencemap(name,M,N,smallK,runcheck,numpar);
-        poolobj = gcp('nocreate');
-        delete(poolobj);
 
-    else
-        [I,conval,conmap]=confidencemap(name,M,N,smallK,runcheck,numpar);
-    end
-    vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
-end
 
 for z=1:numfids
     tempfid=fids(z);
@@ -160,8 +145,6 @@ for tempfid=[12,25,50,100,200,400]
 end
 
 
-if ~checknoise || conval<.075
-    message='Ran on full dataset';
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 
@@ -199,9 +182,6 @@ end
 
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 
-else
-    message='dataset is too noisy, if you want to run on full, run again with checknoise=0';
-end
 
 
 
@@ -212,7 +192,7 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','timings','message');
+save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','timings');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
