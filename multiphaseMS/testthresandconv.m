@@ -7,7 +7,7 @@
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-load('../data/AFbetaEBSD')
+load('../data/AFbigEBSD')
 % EBSD=EBSD(401:end,1:400,:);
 % CI=CI(401:end,1:400);
 %load('../data/simEBSD')
@@ -34,11 +34,12 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=20;
-nc=40;
-codegenzaitzeff(M,N);
-fid=150;
+nr=ceil(M/50);
+nc=ceil(N/50);
+%codegenzaitzeff(M,N);
+fid=100;
 dt=2^-5;
+%% 
 for ztest =1:1
         
 
