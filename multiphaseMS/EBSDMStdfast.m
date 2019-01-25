@@ -47,8 +47,6 @@ for dt=dts
         updateFID(k,1);
     end
     for t=1:MAXITER
-        tic;
-        t
         curmin(:)=2*fid;
         for k=1:K
             if current(k)
@@ -102,8 +100,8 @@ for dt=dts
                     
                 end
             end
-            imagesc(mapall);colorbar
-            pause(1)
+            %imagesc(mapall);colorbar
+            %pause(1)
         end
 
 
@@ -181,7 +179,6 @@ for dt=dts
             end
         end
 
-    toc;
     end
     simplify();
     MAXITER=ceil(MAXITER/2);
