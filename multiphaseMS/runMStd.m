@@ -1,4 +1,4 @@
-function runMStd(filename,filesave,numpar,num,runcheck)
+function runMStd(filename,filesave,numpar,num,runcheck,thres)
 
 timings=zeros(1,num);
 addpath('../anglelib/')
@@ -35,8 +35,8 @@ codegenzaitzeff(M,N);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
 dt=2^-5;
-nr=25;
-nc=25;
+nr=16;
+nc=16;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
@@ -91,7 +91,7 @@ end
 
 
 if iter==1
-I=find(score<1,1)-1;
+I=find(score<thres,1)-1;
 if isempty(I)
     I=numfids;
     startfid=fids(I);
@@ -110,7 +110,7 @@ dts(:)=dt;
 fids=next(I+1,:);
 
 else
-    I=find(score<1,1)-1;
+    I=find(score<thres,1)-1;
     if isempty(I)
         fid=fids(numfids);
         I=numfids;
@@ -157,7 +157,6 @@ nr=ceil(M/sqrt(gs));
 nc=ceil(N/sqrt(gs));
 name=['results/' filesave num2str(round(fid))];
 
-smallK=ceil((nr*nc)/8);
 if numpar>1
     parpool([1 numpar])
     
@@ -166,7 +165,6 @@ if numpar>1
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
-    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
     
     poolobj = gcp('nocreate');
     delete(poolobj);
@@ -177,9 +175,10 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
-    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+    
 end
-
+[I,conval,conmap]=confidencemap2(name,M,N,num);
+[~,bndval,bndmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 
 
@@ -192,7 +191,7 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','fid','score','gs','timings');
+save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs','timings');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
