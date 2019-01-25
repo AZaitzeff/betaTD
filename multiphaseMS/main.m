@@ -16,7 +16,7 @@
 %     end
 %  end
  
-names={'sim','sim2','AFone','RX','rand','AFbeta','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbig'};
+names={'sim','R1','R2','AFone','RX','rand','AFbeta','mapcenter','mapedge','hardbot','hardmid','hardtop','AFbig'};
 for i=12:12
   filename=names{i};
   name=names{i};

@@ -8,6 +8,20 @@
 % CI=CI(1:3:end,1:3:end);
 %%
 load('../data/AFbigEBSD')
+[M,N]=size(CI);
+midm=ceil(M/2);
+midn=ceil(N/2);
+lm=max(midm-200,1);
+um=min(midm+200,M);
+ln=max(midn-200,1);
+un=min(midn+200,N);
+suby=lm:um;
+subx=ln:un;
+M=um-lm+1;
+N=un-ln+1;
+EBSD=EBSD(suby,subx,:);
+CI=CI(suby,subx);
+beta=logical(betas(suby,subx));
 % EBSD=EBSD(401:800,401:800,:);
 % CI=CI(401:800,401:800);
 %load('../data/simEBSD')
@@ -34,10 +48,10 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=ceil(M/200);
-nc=ceil(N/200);
+nr=ceil(M/20);
+nc=ceil(N/20);
 %codegenzaitzeff(M,N);
-fid=100;
+fid=400;
 dt=2^-5;
 %% 
 for ztest =1:1
