@@ -35,8 +35,8 @@ codegenzaitzeff(M,N);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
 dt=2^-5;
-nr=16;
-nc=16;
+nr=18;
+nc=18;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
@@ -44,7 +44,7 @@ next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,
     [236,272,308,344,380];[500,550,600,650,700]];
 
 dts=[2^-3,2^-3,2^-4,2^-4,2^-5,2^-6];
-fids=[12,25,50,100];
+fids=[12,25,50,100,200,400];
 for iter=1:2
     
 numfids=numel(fids);
@@ -56,7 +56,7 @@ if numpar>1
     parfor pari=1:totalcheck
         fidz=fids(ceil(pari/runcheck));
         dt=dts(ceil(pari/runcheck));
-        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
+        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1,1);
     end
     
     poolobj = gcp('nocreate');
@@ -66,7 +66,7 @@ else
     for i=1:totalcheck
         fid=fids(ceil(i/runcheck));
         dt=dts(ceil(i/runcheck));
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1,1);
     end
 end
 
@@ -162,7 +162,7 @@ if numpar>1
     
     parfor pari=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari,0);
         timings(pari)=toc;
     end
     
@@ -172,7 +172,7 @@ if numpar>1
 else
     for i=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i,0);
         timings(i)=toc;
     end
     

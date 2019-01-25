@@ -178,7 +178,7 @@ for dt=dts
                 updateFID(k,1); 
             end
         end
-
+    
     end
     simplify();
     MAXITER=ceil(MAXITER/2);
