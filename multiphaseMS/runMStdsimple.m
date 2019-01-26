@@ -31,7 +31,7 @@ if numpar>1
     
     parfor pari=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari,0);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
@@ -42,7 +42,7 @@ if numpar>1
 else
     for i=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i,0);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
     [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);

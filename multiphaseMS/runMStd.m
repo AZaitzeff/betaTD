@@ -56,7 +56,7 @@ if numpar>1
     parfor pari=1:totalcheck
         fidz=fids(ceil(pari/runcheck));
         dt=dts(ceil(pari/runcheck));
-        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1,1);
+        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
     end
     
     poolobj = gcp('nocreate');
@@ -66,7 +66,7 @@ else
     for i=1:totalcheck
         fid=fids(ceil(i/runcheck));
         dt=dts(ceil(i/runcheck));
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1,1);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
 
@@ -162,7 +162,7 @@ if numpar>1
     
     parfor pari=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari,0);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
     
@@ -172,7 +172,7 @@ if numpar>1
 else
     for i=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i,0);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
     
