@@ -11,7 +11,7 @@ for i=1:144
 end
 K=max(mapall(:));
 totalK=K;
-current=ones(1,K);
+current=ones(1,K,'logical');
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
@@ -19,6 +19,11 @@ EBSDflat=E313toq(EBSDflat);
 MAXITER=125;
 fac=1/(50*(dx+dy));
 [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
+ratio=zeros(K,1);
+for k=1:K
+   boxsize=(minmaxrowcol(k,2)-minmaxrowcol(k,1)+1)*(minmaxrowcol(k,4)-minmaxrowcol(k,3)+1);
+   ratio(k)=sizecoords(k)/boxsize; 
+end
 crdelemts=size(coords);
 changecounter=zeros(K,1);
 numelemts=[K,ceil(8*fac*600*sqrt(DT)*sqrt(M*N/K))];
@@ -31,6 +36,7 @@ regK=zeros(numelemts);
 BindKsz=zeros(numelemts);
 SindKsz=zeros(numelemts);
 fidregKsz=zeros(K,1);
+
 bndsK=zeros(K,4);
 
 for dt=dts
@@ -154,6 +160,8 @@ for dt=dts
                     end
                     sizecoords(k)=sizecoordsa(k);
                     coords(k,1:csize)=coordsa(k,1:csize);
+                    boxsize=(minmaxrowcol(k,2)-minmaxrowcol(k,1)+1)*(minmaxrowcol(k,4)-minmaxrowcol(k,3)+1);
+                    ratio(k)=sizecoords(k)/boxsize;
                 else
                     current(k)=0;
                     activecounter=activecounter-active(k);
@@ -178,6 +186,10 @@ for dt=dts
                 updateFID(k,1); 
             end
         end
+        
+    if prctile(ratio(current),20)<.1 && t>1
+        break
+    end
     
     end
     simplify();
@@ -272,6 +284,7 @@ end
                 map(kz)=newk;
                 dict(newk,:)=dict(kz,:);
                 kappa(newk)=kappa(kz);
+                ratio(newk)=ratio(kz);
                 
                 
                 newk=newk+1;
@@ -299,10 +312,11 @@ end
         bndsK(newk:K,:)=[];
         dict(newk:K,:)=[];
         kappa(newk:K)=[];
+        ratio(newk:K)=[];
         
         
         K=totalK;
-        current=ones(1,K);
+        current=ones(1,K,'logical');
         end
     end
     function updateFID(k,smooth)
