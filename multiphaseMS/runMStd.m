@@ -67,7 +67,7 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
-
+return
 
 score=zeros(1,numfids);
 gsizes=zeros(1,numfids);
@@ -80,13 +80,13 @@ for z=1:numfids
     end
     [~,I]=min(energies);
     var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
-    [vals,~]=matchmetric(var.mapall,var.dict);
+    [vals]=matchmetric(var.mapall,var.dict);
     score(z)=prctile(vals,1);
     %mapall=var.mapall;
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
-return
+
 save(['results/' filesave 'temp' num2str(iter)],'fid','score','gs');
 
 %if iter==1
