@@ -34,18 +34,16 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-dt=2^-5;
 nr=16;
 nc=16;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
-next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,154,172,190];...
-    [236,272,308,344,380];[500,550,600,650,700]];
+%next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,154,172,190];...
+%    [236,272,308,344,380];[500,550,600,650,700]];
 
-dts=[2^-3,2^-3,2^-4,2^-4,2^-5,2^-5];
-fids=[12,25,50,100,200,400];
-for iter=1:2
+dts=[2^-3,2^-3,2^-3,2^-3,2^-4,2^-4,2^-4,2^-4,2^-5,2^-5,2^-5,2^-5];
+fids=[12.5,12.5*sqrt(2),25,25*sqrt(2),50,50*sqrt(2),100,100*sqrt(2),200,200*sqrt(2),400,400*sqrt(2)];
     
 numfids=numel(fids);
 
@@ -88,10 +86,10 @@ for z=1:numfids
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
-
+return
 save(['results/' filesave 'temp' num2str(iter)],'fid','score','gs');
 
-if iter==1
+%if iter==1
 I=find(score<thres,1)-1;
 if isempty(I)
     I=numfids;
@@ -110,23 +108,22 @@ end
 dts(:)=dt;
 fids=next(I+1,:);
 
-else
-    I=find(score<thres,1)-1;
-    if isempty(I)
-        fid=fids(numfids);
-        I=numfids;
-        gs=gsizes(I);
-    elseif I==0
-        fid=startfid;
-        gs=gsstart;
+% else
+%     I=find(score<thres,1)-1;
+%     if isempty(I)
+%         fid=fids(numfids);
+%         I=numfids;
+%         gs=gsizes(I);
+%     elseif I==0
+%         fid=startfid;
+%         gs=gsstart;
+% 
+%     else
+%         fid=fids(I);
+%         gs=gsizes(I);
+%     end
+% end
 
-    else
-        fid=fids(I);
-        gs=gsizes(I);
-    end
-end
-
-end
 save(['results/' filesave 'temp'],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs');
 fid
 gs
