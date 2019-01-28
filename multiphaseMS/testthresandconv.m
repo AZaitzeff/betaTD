@@ -48,21 +48,25 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=18;
-nc=18;
+nr=16;
+nc=16;
 %codegenzaitzeff(M,N);
-fid=400;
-dt=2^-5;
+fid=100;
+dt=2^-4;
+beta=logical(betas);
 %% 
-for ztest =1:1
+for ztest =1:6
         
 
 
 
 tic;
-[mapall,dict,energy,gsizes]=EBSDimgseg(EBSD,CI,logical(betas),fid,dt,dx,dy,nr,nc);
+[mapall,dict,energy,gsizes]=EBSDimgseg(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
 toc;
-
+[vals]=matchmetric(mapall,dict);
+prctile(vals,1)
+    %mapall=var.mapall;
+round(prctile(gsizes,5))
 
 %save(['results/AFbeta' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
 
