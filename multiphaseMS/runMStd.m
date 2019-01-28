@@ -35,8 +35,8 @@ codegenzaitzeff(M,N);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
 dt=2^-5;
-nr=18;
-nc=18;
+nr=16;
+nc=16;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
@@ -89,6 +89,7 @@ for z=1:numfids
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
+save(['results/' filesave 'temp' num2str(iter)],'fid','score','gs');
 
 if iter==1
 I=find(score<thres,1)-1;
@@ -126,7 +127,7 @@ else
 end
 
 end
-
+save(['results/' filesave 'temp'],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs');
 fid
 gs
 
