@@ -50,7 +50,7 @@ dy=1/100;
 %nc=10;
 nr=10;
 nc=10;
-codegenzaitzeff(M,N);
+codegenzaitzeff(4000,4000);
 fid=200;
 dt=2^-5;
 %% 
