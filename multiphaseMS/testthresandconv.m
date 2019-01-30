@@ -3,7 +3,7 @@
 %startup
 
  addpath('../anglelib/')
-% load('../data/AFbigEBSD')
+ load('../data/AFoneEBSD')
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
@@ -48,25 +48,24 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=16;
-nc=16;
-%codegenzaitzeff(M,N);
-fid=100;
-dt=2^-4;
-beta=logical(betas);
+nr=10;
+nc=10;
+codegenzaitzeff(M,N);
+fid=200;
+dt=2^-5;
 %% 
-for ztest =1:6
+for ztest =1:2
         
 
 
 
 tic;
-[mapall,dict,energy,gsizes]=EBSDimgseg(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
+[mapall,dict,energy,gsizes]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
 toc;
-[vals]=matchmetric(mapall,dict);
-prctile(vals,1)
-    %mapall=var.mapall;
-round(prctile(gsizes,5))
+% [vals]=matchmetric(mapall,dict);
+% prctile(vals,1)
+%     %mapall=var.mapall;
+% round(prctile(gsizes,5))
 
 %save(['results/AFbeta' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
 

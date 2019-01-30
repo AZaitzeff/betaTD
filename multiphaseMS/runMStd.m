@@ -34,16 +34,16 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-nr=16;
-nc=16;
+nr=10;
+nc=10;
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
 %next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,154,172,190];...
 %    [236,272,308,344,380];[500,550,600,650,700]];
-
+fac=[1/8,1/(4*sqrt(2)),1/4,1/(2*sqrt(2)),1/2,1/sqrt(2),1,sqrt(2),2,2*sqrt(2)];
 dts=[2^-3,2^-3,2^-3,2^-3,2^-4,2^-4,2^-4,2^-4,2^-5,2^-5,2^-5,2^-5];
-fids=[12.5,12.5*sqrt(2),25,25*sqrt(2),50,50*sqrt(2),100,100*sqrt(2),200,200*sqrt(2),400,400*sqrt(2)];
+fids=[25,25*sqrt(2),50,50*sqrt(2),100,100*sqrt(2),200,200*sqrt(2),400,400*sqrt(2)];
     
 numfids=numel(fids);
 
