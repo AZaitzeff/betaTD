@@ -1,4 +1,4 @@
-function runMStd(filename,filesave,numpar,num,runcheck,thres)
+function runMStd(filename,filesave,numpar,num,runcheck)
 
 timings=zeros(1,num);
 addpath('../anglelib/')
@@ -18,10 +18,10 @@ dy=dx*EBSDtemp.scale;
 [M,N]=size(EBSDtemp.CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
-lm=max(midm-200,1);
-um=min(midm+200,M);
-ln=max(midn-200,1);
-un=min(midn+200,N);
+lm=max(midm-250,1);
+um=min(midm+250,M);
+ln=max(midn-250,1);
+un=min(midn+250,N);
 suby=lm:um;
 subx=ln:un;
 M=um-lm+1;
@@ -34,15 +34,15 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-nr=10;
-nc=10;
+nr=ceil(M/25);
+nc=ceil(N/25);
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
 %next=[[7,8,9,10,11];[14,16,18,20,22];[29,33,37,41,45];[58,66,74,82,90];[118,136,154,172,190];...
 %    [236,272,308,344,380];[500,550,600,650,700]];
-fac=[1/8,1/(4*sqrt(2)),1/4,1/(2*sqrt(2)),1/2,1/sqrt(2),1,sqrt(2),2,2*sqrt(2)];
-dts=[2^-3,2^-3,2^-3,2^-3,2^-4,2^-4,2^-4,2^-4,2^-5,2^-5,2^-5,2^-5];
+%fac=[1/8,1/(4*sqrt(2)),1/4,1/(2*sqrt(2)),1/2,1/sqrt(2),1,sqrt(2),2,2*sqrt(2)];
+dts=[2^-3,2^-3,2^-4,2^-4,2^-4,2^-4,2^-5,2^-5,2^-5,2^-5];
 fids=[25,25*sqrt(2),50,50*sqrt(2),100,100*sqrt(2),200,200*sqrt(2),400,400*sqrt(2)];
     
 numfids=numel(fids);
@@ -67,7 +67,6 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
     end
 end
-return
 
 score=zeros(1,numfids);
 gsizes=zeros(1,numfids);
@@ -80,53 +79,47 @@ for z=1:numfids
     end
     [~,I]=min(energies);
     var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
-    [vals]=matchmetric(var.mapall,var.dict);
-    score(z)=prctile(vals,1);
+    [val,~]=fidmetric(EBSD,CI,beta,var.mapall,var.dict);
+    score(z)=val;
     %mapall=var.mapall;
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
-save(['results/' filesave 'temp' num2str(iter)],'fid','score','gs');
-
-%if iter==1
-I=find(score<thres,1)-1;
-if isempty(I)
-    I=numfids;
-    startfid=fids(I);
-    gsstart=gsizes(I);
-    dt=2^-6;
-elseif I==0
-    startfid=6;
-    dt=1/4;
-    gsstart=20;
-else
-    startfid=fids(I);
-    dt=dts(I);
-    gsstart=gsizes(I);
-end
-dts(:)=dt;
-fids=next(I+1,:);
-
+ind=bestbreaks(score);
+% confidence=zeros(1,2);
+% %prob=zeros(1,2);
+% if numpar>1
+%     parpool([1 numpar])
+% for i=1:2
+%     fid=fids(ind(i));
+%     name=['results/' filesave num2str(round(fid))];
+%     [I,conval,~]=confidencemapmin(name,M,N,40,runcheck,numpar);
+%     confidence(i)=conval;
+% end
+%     poolobj = gcp('nocreate');
+%     delete(poolobj);
+%     
 % else
-%     I=find(score<thres,1)-1;
-%     if isempty(I)
-%         fid=fids(numfids);
-%         I=numfids;
-%         gs=gsizes(I);
-%     elseif I==0
-%         fid=startfid;
-%         gs=gsstart;
-% 
-%     else
-%         fid=fids(I);
-%         gs=gsizes(I);
+%     for i=1:2
+%         fid=fids(ind(i));
+%         name=['results/' filesave num2str(round(fid))];
+%         [I,conval,~]=confidencemapmin(name,M,N,40,runcheck,numpar);
+%         confidence(i)=conval;
 %     end
 % end
+% 
+% if confidence(2)>confidence(1)
+%     fid=fids(ind(2));
+%     gs=max(gsizes(ind(2))*1.2,400);
+% else
+%     fid=fids(ind(1));
+%     gs=max(gsizes(ind(1))*1.2,400);
+% end
 
-save(['results/' filesave 'temp'],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs');
-fid
-gs
+
+fids(ind)
+gsizes(ind)
 
 
 
@@ -138,13 +131,10 @@ for z=1:numfids
 end
 
 
-for tempfid=[12,25,50,100,200,400]
-    for g=1:runcheck
-        delete(['results/' filesave num2str(round(tempfid)) num2str(g) '.mat']);
-    end
-end
-
-
+for iters=1:2
+fid=fids(ind(iters));
+gs=max(gsizes(ind(iters))*.9,400);
+dt=dts(ind(iters));
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 
@@ -155,6 +145,7 @@ beta=logical(EBSDtemp.betas);
 codegenzaitzeff(M,N);
 nr=ceil(M/sqrt(gs));
 nc=ceil(N/sqrt(gs));
+smallK=ceil((nr*nc)/8);
 name=['results/' filesave num2str(round(fid))];
 
 if numpar>1
@@ -165,7 +156,7 @@ if numpar>1
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
-    
+    [I,conval,conmap]=confidencemapmin(name,M,N,smallK,num,numpar);
     poolobj = gcp('nocreate');
     delete(poolobj);
     
@@ -175,13 +166,12 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
+    [I,conval,conmap]=confidencemapmin(name,M,N,smallK,num,numpar);
     
 end
-[I,conval,conmap]=confidencemap2(name,M,N,num);
+w=5;
 [~,bndval,bndmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
-
-
 
 
 
@@ -191,9 +181,10 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta'],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs','timings');
+save(['results/' filesave 'beta' num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs','timings');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
 end
 
+end
