@@ -92,11 +92,10 @@ for z=1:numfids
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
-
+flags
 ind=bestbreaks(score(flags));
 tempind=1:numfids;
 tempind=tempind(flags);
-ind
 ind=tempind(ind);
 % confidence=zeros(1,2);
 % %prob=zeros(1,2);
