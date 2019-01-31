@@ -48,25 +48,25 @@ fids=[25,25*sqrt(2),50,50*sqrt(2),100,100*sqrt(2),200,200*sqrt(2),400,400*sqrt(2
 numfids=numel(fids);
 
 totalcheck=runcheck*numfids;
-% if numpar>1
-%     parpool([1 numpar])
-%     
-%     parfor pari=1:totalcheck
-%         fidz=fids(ceil(pari/runcheck));
-%         dt=dts(ceil(pari/runcheck));
-%         MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
-%     end
-%     
-%     poolobj = gcp('nocreate');
-%     delete(poolobj);
-%     
-% else
-%     for i=1:totalcheck
-%         fid=fids(ceil(i/runcheck));
-%         dt=dts(ceil(i/runcheck));
-%         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
-%     end
-% end
+if numpar>1
+    parpool([1 numpar])
+    
+    parfor pari=1:totalcheck
+        fidz=fids(ceil(pari/runcheck));
+        dt=dts(ceil(pari/runcheck));
+        MStd(EBSD,CI,beta,fidz,filesave,dt,dx,dy,nr,nc,mod(pari-1,runcheck)+1);
+    end
+    
+    poolobj = gcp('nocreate');
+    delete(poolobj);
+    
+else
+    for i=1:totalcheck
+        fid=fids(ceil(i/runcheck));
+        dt=dts(ceil(i/runcheck));
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,mod(i-1,runcheck)+1);
+    end
+end
 
 score=zeros(1,numfids);
 flags=zeros(1,numfids,'logical');
