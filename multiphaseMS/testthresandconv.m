@@ -48,8 +48,8 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=20;
-nc=20;
+nr=25;
+nc=25;
 codegenzaitzeff(M,N);
 fid=200;
 dt=2^-5;
@@ -66,7 +66,11 @@ toc;
 % prctile(vals,1)
 %     %mapall=var.mapall;
 % round(prctile(gsizes,5))
-
+figure
+[colorsbnd,bnds]=  bndmap(mapall,[],[]);
+[colors,oM]=crystalcolormaps(EBSD,1);
+    imagesc(colors);hold on
+    imagesc(colorsbnd,'AlphaData',bnds)
 %save(['results/AFbeta' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
 
 %save(['results/sim' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','kappa','energy')

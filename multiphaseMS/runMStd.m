@@ -18,10 +18,10 @@ dy=dx*EBSDtemp.scale;
 [M,N]=size(EBSDtemp.CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
-lm=max(midm-250,1);
-um=min(midm+250,M);
-ln=max(midn-250,1);
-un=min(midn+250,N);
+lm=max(midm-200,1);
+um=min(midm+200,M);
+ln=max(midn-200,1);
+un=min(midn+200,N);
 suby=lm:um;
 subx=ln:un;
 M=um-lm+1;
@@ -34,8 +34,8 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-nr=ceil(M/25);
-nc=ceil(N/25);
+nr=ceil(M/20);
+nc=ceil(N/20);
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
@@ -133,7 +133,7 @@ end
 
 for iters=1:2
 fid=fids(ind(iters));
-gs=max(gsizes(ind(iters))*.9,400);
+gs=max(gsizes(ind(iters))*.9,324);
 dt=dts(ind(iters));
 
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
