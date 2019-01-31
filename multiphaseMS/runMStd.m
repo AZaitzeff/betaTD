@@ -69,6 +69,7 @@ else
 end
 
 score=zeros(1,numfids);
+flags=zeros(1,numfids,'logical');
 gsizes=zeros(1,numfids);
 for z=1:numfids
     fid=fids(z);
@@ -79,14 +80,23 @@ for z=1:numfids
     end
     [~,I]=min(energies);
     var=load(['results/' filesave num2str(round(fid)) num2str(I)]);
-    [val,~]=fidmetric(EBSD,CI,beta,var.mapall,var.dict);
-    score(z)=val;
+    if var.flag
+        [val,~]=fidmetric(EBSD,CI,beta,var.mapall,var.dict);
+        score(z)=val;
+        flags(z)=1;
+    else
+        flags(z)=0;
+    end
+    flags(z)=var.flag;
     %mapall=var.mapall;
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
 
-ind=bestbreaks(score);
+ind=bestbreaks(score(flags));
+tempind=1:numfids;
+tempind=tempind(flags);
+ind=tempind(ind);
 % confidence=zeros(1,2);
 % %prob=zeros(1,2);
 % if numpar>1

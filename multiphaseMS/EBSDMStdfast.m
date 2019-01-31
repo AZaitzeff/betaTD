@@ -1,4 +1,6 @@
-function [mapall,dict,kappa,energy,sizecoords]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
+function [mapall,dict,kappa,energy,sizecoords,flag]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between)
+energy=inf;
+flag=1;
 numsub=400;
 dts=2.^linspace(log2(DT),log2(dtstop),4);%limit at dt goes to 0
 %lam=fid;
@@ -188,7 +190,8 @@ for dt=dts
         end
         
     if prctile(ratio(current),20)<.1 && t>1
-        break
+        flag=0;
+        return
     end
     
     end
