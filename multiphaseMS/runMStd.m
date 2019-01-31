@@ -91,11 +91,23 @@ for z=1:numfids
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
 end
-flags
-ind=bestbreaks(score(flags));
-tempind=1:numfids;
-tempind=tempind(flags);
-ind=tempind(ind);
+total=sum(flags);
+if total==0
+    ind=1;
+    numchoice=1;
+elseif total==1
+    ind=find(total);
+    numchoice=1;
+elseif total==2
+    ind=find(total);
+    numchoice=2;
+else
+    ind=bestbreaks(score(flags));
+    tempind=1:numfids;
+    tempind=tempind(flags);
+    ind=tempind(ind);
+    numchoice=2;
+end
 % confidence=zeros(1,2);
 % %prob=zeros(1,2);
 % if numpar>1
@@ -140,7 +152,7 @@ for z=1:numfids
 end
 
 
-for iters=1:2
+for iters=1:numchoice
 fid=fids(ind(iters));
 gs=max(gsizes(ind(iters))*.9,324);
 dt=dts(ind(iters));
