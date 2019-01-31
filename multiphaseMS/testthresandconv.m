@@ -3,18 +3,18 @@
 %startup
 
  addpath('../anglelib/')
- load('../data/AFoneEBSD')
+%load('../data/AFoneEBSD')
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-load('../data/AFbigEBSD')
+load('../data/RXEBSD')
 [M,N]=size(CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
-lm=max(midm-200,1);
-um=min(midm+200,M);
-ln=max(midn-200,1);
-un=min(midn+200,N);
+lm=max(midm-250,1);
+um=min(midm+250,M);
+ln=max(midn-250,1);
+un=min(midn+250,N);
 suby=lm:um;
 subx=ln:un;
 M=um-lm+1;
@@ -48,9 +48,9 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=10;
-nc=10;
-codegenzaitzeff(4000,4000);
+nr=20;
+nc=20;
+codegenzaitzeff(M,N);
 fid=200;
 dt=2^-5;
 %% 
