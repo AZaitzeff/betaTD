@@ -87,7 +87,6 @@ for z=1:numfids
     else
         flags(z)=0;
     end
-    flags(z)=var.flag;
     %mapall=var.mapall;
     gsizes(z)=round(prctile(var.gsizes,5));
     %save(['results/' filesave 'iter' num2str(round(fid))],'mapall');
