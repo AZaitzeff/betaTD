@@ -96,6 +96,7 @@ end
 ind=bestbreaks(score(flags));
 tempind=1:numfids;
 tempind=tempind(flags);
+ind
 ind=tempind(ind);
 % confidence=zeros(1,2);
 % %prob=zeros(1,2);
