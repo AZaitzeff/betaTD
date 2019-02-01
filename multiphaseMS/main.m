@@ -1,11 +1,26 @@
-%  names={'sim','AFone','RX','rand','mapcenter','mapedge','hardbot','hardmid','hardtop','sim2','AFbeta','AFbig'};
-%  for i=[12]
-%     for fid=[25,50,100]
-%         filename=names{i};
-%         name=names{i};
-%         runMStdsimple(filename,name,16,20,2^-4,fid,30);
-%     end
-%  end
+names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake'};
+i=1;
+for fid=[50,100]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+end
+
+for i=8:10
+    for fid=[50,100,200,300,400]
+         filename=names{i};
+         name=names{i};
+         runMStdsimple(filename,name,16,30,2^-5,fid,20,1);
+    end
+end
+
+% i=2;
+% for fid=[25,50,100]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,16,20,2^-4,fid,20);
+% end
+
 %  
  
 % for i=12:12
@@ -16,12 +31,12 @@
 %     end
 %  end
  
-names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake'};
-for i=[2:10 1]
-  filename=names{i};
-  name=names{i};
-  runMStd(filename,name,20,30,6);
-end
+% names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake'};
+% for i=[2:10 1]
+%   filename=names{i};
+%   name=names{i};
+%   runMStd(filename,name,20,30,6);
+% end
 
 %names={'sim','sim2f','sim3f','sim4f'};
 %for i=1:4
