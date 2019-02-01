@@ -6,6 +6,43 @@ for fid=[50,100]
      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
 end
 
+i=3;
+for fid=[50,100,200]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-5,fid,30,0);
+end
+
+i=4;
+for fid=[150,200,250,300]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-5,fid,30,0);
+end
+
+
+i=5;
+for fid=[50,100,150,200]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-5,fid,30,0);
+end
+
+
+i=6;
+for fid=[50,100,150,200]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-5,fid,30,0);
+end
+
+i=7;
+for fid=[50,100,150,200]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-5,fid,30,0);
+end
+
 for i=8:10
     for fid=[50,100,200,300,400]
          filename=names{i};
