@@ -191,7 +191,7 @@ else
     
 end
 w=5;
-[~,bndval,bndmap]=probmetric(name,w,num);
+[~,bndconval,bndconmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 
 
@@ -202,7 +202,7 @@ energy=vars.energy;
 
 betaEBSD=converttobetamap(EBSD,beta,dict,mapall);
 
-save(['results/' filesave 'beta' num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','bndval','bndmap','fid','score','gs','timings');
+save(['results/' filesave 'beta' num2str(round(fid))],'mapall','betaEBSD','dict','energy','conval','conmap','bndconval','bndconmap','fid','score','gs','timings');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
