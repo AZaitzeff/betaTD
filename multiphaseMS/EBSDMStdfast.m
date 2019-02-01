@@ -189,7 +189,7 @@ for dt=dts
             end
         end
         
-    if prctile(ratio(current),20)<.1 && t>1
+    if prctile(ratio(current),25)<.1 && t>1
         flag=0;
         return
     end

@@ -1,6 +1,6 @@
 function [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,map,K)
 
-    max_init=10;
+    max_init=16;
 
     numsub=400;
 

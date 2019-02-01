@@ -17,7 +17,7 @@
 %  end
  
 names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake'};
-for i=[2:10 1]
+for i=[4:10 1]
   filename=names{i};
   name=names{i};
   runMStd(filename,name,20,24,5);
