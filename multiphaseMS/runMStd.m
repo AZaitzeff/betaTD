@@ -34,8 +34,8 @@ codegenzaitzeff(M,N);
 %alpha=E313toq(alpha);
 %betas=EBSDtemp.betas(rows,cols);
 %dts=[2^-5 2^-5.33 2^-5.66 2^-6];
-nr=ceil(M/20);
-nc=ceil(N/20);
+nr=ceil(M/24);
+nc=ceil(N/24);
 %[mapallp,dictp,kappap,~]=initializeEBSDfast_mex(EBSD,CI,beta,nr,nc);
 %truebetaEBSD=converttobetamap(EBSD,beta,dictp,mapallp);
 
