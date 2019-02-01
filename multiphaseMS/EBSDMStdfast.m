@@ -188,6 +188,8 @@ for dt=dts
                 updateFID(k,1); 
             end
         end
+    t
+    prctile(ratio(current),20)
         
     if prctile(ratio(current),20)<.1 && t>1
         flag=0;

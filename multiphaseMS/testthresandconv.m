@@ -7,7 +7,7 @@
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-load('../data/RXEBSD')
+load('../data/AFbigEBSD')
 [M,N]=size(CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
@@ -51,8 +51,8 @@ dy=1/100;
 nr=25;
 nc=25;
 codegenzaitzeff(M,N);
-fid=200;
-dt=2^-5;
+fid=50;
+dt=2^-4;
 %% 
 for ztest =1:2
         
@@ -60,17 +60,17 @@ for ztest =1:2
 
 
 tic;
-[mapall,dict,energy,gsizes]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
+[mapall,dict,energy,gsizes,flags]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
 toc;
 % [vals]=matchmetric(mapall,dict);
 % prctile(vals,1)
 %     %mapall=var.mapall;
 % round(prctile(gsizes,5))
-figure
-[colorsbnd,bnds]=  bndmap(mapall,[],[]);
-[colors,oM]=crystalcolormaps(EBSD,1);
-    imagesc(colors);hold on
-    imagesc(colorsbnd,'AlphaData',bnds)
+% figure
+% [colorsbnd,bnds]=  bndmap(mapall,[],[]);
+% [colors,oM]=crystalcolormaps(EBSD,1);
+%     imagesc(colors);hold on
+%     imagesc(colorsbnd,'AlphaData',bnds)
 %save(['results/AFbeta' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','gsizes','energy')
 
 %save(['results/sim' num2str(fid) 'fid' num2str(ztest) ],'mapall','dict','kappa','energy')
