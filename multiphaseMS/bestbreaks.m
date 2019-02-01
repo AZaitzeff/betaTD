@@ -1,6 +1,13 @@
 function ind=bestbreaks(score)
 best=inf;
+copy=score;
 numfids=numel(score);
+
+score(1)=(copy(1)+copy(2))/2;
+score(end)=(copy(end)+copy(end))/2;
+for n=2:numfids-1
+   score(n)=median(copy(n-1:n+1)); 
+end
 ind=zeros(1,2);
 for i=1:numfids-2
     for j=i+1:numfids-1
