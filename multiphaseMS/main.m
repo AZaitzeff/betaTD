@@ -1,9 +1,9 @@
 names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake'};
 i=1;
-for fid=[50,100]
+for fid=[25,50,100]
      filename=names{i};
      name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+     runMStdsimple(filename,name,16,30,2^-4,fid,100,0);
 end
 
 i=3;
