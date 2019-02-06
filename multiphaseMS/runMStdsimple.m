@@ -54,7 +54,8 @@ if numpar>1
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
-    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+    [I,conval,conmap]=confidencemapmin(name,M,N,smallK,num,numpar);
+    
     
     poolobj = gcp('nocreate');
     delete(poolobj);
@@ -65,9 +66,9 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
-    [I,conval,conmap]=confidencemap(name,M,N,smallK,num,numpar);
+    [I,conval,conmap]=confidencemapmin(name,M,N,smallK,num,numpar);
 end
-
+[~,bndconval,bndconmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 
 
@@ -83,7 +84,7 @@ if small
 else
     finalname=['results/' filesave num2str(round(fid))];
 end
-save(finalname,'mapall','betaEBSD','dict','energy','conval','conmap','timings');
+save(finalname,'mapall','betaEBSD','dict','energy','conval','conmap','timings','bndconval','bndconmap');
 
 for i=1:num
     delete(['results/' filesave num2str(round(fid)) num2str(i) '.mat']);
