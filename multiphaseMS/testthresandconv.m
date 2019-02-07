@@ -7,7 +7,7 @@
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-load('../data/AFbigEBSD')
+load('../data/AF225EBSD')
 [M,N]=size(CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
