@@ -1,55 +1,55 @@
 names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake'};
-i=1;
-for fid=[50]
-     filename=names{i};
-     name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,100,0);
-end
-% 
-i=3;
-for fid=[50]
-     filename=names{i};
-     name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
-end
-% 
-i=4;
-for fid=[150]
-     filename=names{i};
-     name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
-end
-% 
-% 
-i=5;
-for fid=[100]
-     filename=names{i};
-     name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
-end
-% 
-% 
-i=6;
-for fid=[25,35,50]
-     filename=names{i};
-     name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
-end
-% 
-i=7;
-for fid=[50]
-     filename=names{i};
-     name=names{i};
-     runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
-end
-
-
-% i=9;
-% for fid=[100,150,200]
+% i=1;
+% for fid=[50]
 %      filename=names{i};
 %      name=names{i};
-%      runMStdsimple(filename,name,16,30,2^-4,fid,60,0);
+%      runMStdsimple(filename,name,16,30,2^-4,fid,100,0);
 % end
+% % 
+% i=3;
+% for fid=[50]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+% end
+% % 
+% i=4;
+% for fid=[150]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+% end
+% % 
+% % 
+% i=5;
+% for fid=[100]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+% end
+% % 
+% % 
+% i=6;
+% for fid=[25,35,50]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+% end
+% % 
+% i=7;
+% for fid=[50]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
+% end
+
+
+i=9;
+for fid=[100,150,200]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,16,30,2^-4,fid,60,0);
+end
 % 
 % i=10;
 % for fid=[100,150]
