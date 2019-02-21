@@ -45,7 +45,6 @@ nc=ceil(N/gs);
 name=['results/' filesave num2str(round(fid))];
 
 timings=zeros(1,num);
-smallK=ceil((nr*nc)/8);
 if numpar>1
     parpool([1 numpar])
     
@@ -54,7 +53,7 @@ if numpar>1
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
-    [I,conval,conmap]=confidencemapmin(name,M,N,smallK,num,numpar);
+    [I,conval,conmap]=confidencemapminmem(name,M,N,num,numpar);
     
     
     poolobj = gcp('nocreate');
@@ -66,7 +65,7 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
-    [I,conval,conmap]=confidencemapmin(name,M,N,smallK,num,numpar);
+    [I,conval,conmap]=confidencemapminmem(name,M,N,num,numpar);
 end
 w=5;
 [~,bndconval,bndconmap]=probmetric(name,w,num);

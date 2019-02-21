@@ -59,8 +59,8 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 % end
 
 
-i=11;
-for fid=[100,150,200,300]
+i=9;
+for fid=[100,150,200]
      filename=names{i};
      name=names{i};
      runMStdsimple(filename,name,8,16,2^-4,fid,40,1);
