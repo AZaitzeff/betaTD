@@ -53,7 +53,7 @@ if numpar>1
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
         timings(pari)=toc;
     end
-    [I,conval,conmap]=confidencemapminmem(name,M,N,num,numpar);
+    
     
     
     poolobj = gcp('nocreate');
@@ -65,9 +65,10 @@ else
         MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
-    [I,conval,conmap]=confidencemapminmem(name,M,N,num,numpar);
 end
+
 w=5;
+[I,conval,conmap]=confidencemapminmem(name,M,N,num);
 [~,bndconval,bndconmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
 

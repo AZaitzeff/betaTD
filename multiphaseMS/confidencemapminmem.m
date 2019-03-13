@@ -1,4 +1,4 @@
-function [I,conval,conmap]=confidencemapminmem(name,M,N,num,numpar)
+function [I,conval,conmap]=confidencemapminmem(name,M,N,num)
 addpath('../anglelib/')
 conmap=zeros(M,N);
 enevec=zeros(1,num);
@@ -9,28 +9,22 @@ end
 [~,I]=min(enevec);
 vars=load([name num2str(I)]);
 maindict=vars.dict;
-mainmap=vars.mapall;
+mainK=size(maindict,1);
+[~,~,~,maincoords,mainsizecoords,~]=  bndcoords(vars.mapall,mainK);
 total=M*N;
 for z=1:num
     if z~=I
         vars=load([name num2str(z)]);
         dict=vars.dict;
-        map=vars.mapall;
-        if numpar>1
-            parfor ind=1:total
-                minbeta=maindict(mainmap(ind),:);
-                betas=dict(map(ind),:);
-                conmap(ind)=conmap(ind)+b2bmetric(betas,minbeta)^2;
-                %conmap(ind)=(kap);
-            end
-        else
-            for ind=1:total
-                minbeta=maindict(mainmap(ind),:);
-                betas=dict(map(ind),:);
-                conmap(ind)=conmap(ind)+b2bmetric(betas,minbeta)^2;
-                %conmap(ind)=(kap);
+        K=size(dict,1);
+        [~,~,~,coords,sizecoords,~]=  bndcoords(vars.mapall,K);
+        for i=1:mainK
+            for j=1:K
+                ind = intersect(maincoords(i,1:mainsizecoords(i)),coords(j,1:sizecoords(j)));
+                conmap(ind)=conmap(ind)+b2bmetric(maindict(i,:),dict(j,:))^2;
             end
         end
+            
     end
 end
 conmap=conmap/(num-1);
