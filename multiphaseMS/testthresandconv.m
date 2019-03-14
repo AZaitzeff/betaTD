@@ -7,14 +7,14 @@
 % EBSD=EBSD(1:3:end,1:3:end,:);
 % CI=CI(1:3:end,1:3:end);
 %%
-load('../data/AF225EBSD')
+load('../data/AFbigEBSD')
 [M,N]=size(CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
-lm=max(midm-250,1);
-um=min(midm+250,M);
-ln=max(midn-250,1);
-un=min(midn+250,N);
+lm=max(midm-50,1);
+um=min(midm+50,M);
+ln=max(midn-50,1);
+un=min(midn+50,N);
 suby=lm:um;
 subx=ln:un;
 M=um-lm+1;
@@ -48,19 +48,19 @@ dy=1/100;
 [M,N,z]=size(EBSD);
 %nr=10;
 %nc=10;
-nr=25;
-nc=25;
+nr=20;
+nc=20;
 codegenzaitzeff(M,N);
-fid=50;
-dt=2^-4;
+fid=400;
+dt=2^-5;
 %% 
-for ztest =1:2
+for ztest =1:1
         
 
 
 
 tic;
-[mapall,dict,energy,gsizes,flags]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
+[mapall,dict,energy,gsizes,flags]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc,100);
 toc;
 % [vals]=matchmetric(mapall,dict);
 % prctile(vals,1)

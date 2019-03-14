@@ -1,4 +1,4 @@
-function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs,small)
+function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs,numsub,small)
 %fac=40
 %gs=50
 addpath('../anglelib/')
@@ -22,10 +22,10 @@ if small
     [M,N]=size(EBSDtemp.CI);
     midm=ceil(M/2);
     midn=ceil(N/2);
-    lm=max(midm-250,1);
-    um=min(midm+250,M);
-    ln=max(midn-250,1);
-    un=min(midn+250,N);
+    lm=max(midm-small,1);
+    um=min(midm+small,M);
+    ln=max(midn-small,1);
+    un=min(midn+small,N);
     suby=lm:um;
     subx=ln:un;
     M=um-lm+1;
@@ -50,7 +50,7 @@ if numpar>1
     
     parfor pari=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari);
+        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari,numsub);
         timings(pari)=toc;
     end
     

@@ -1,7 +1,7 @@
-function MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,num)
+function MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,num,numsub)
 
 
-[mapall,dict,energy,gsizes,flag]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
+[mapall,dict,energy,gsizes,flag]=EBSDimgseg_mex(EBSD,CI,beta,fid,dt,dx,dy,nr,nc,numsub);
 %[mapall,dict,energy,gsizes]=EBSDimgseg(EBSD,CI,beta,fid,dt,dx,dy,nr,nc);
 %on sim avg time C vs MAT
 

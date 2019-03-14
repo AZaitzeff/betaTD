@@ -1,8 +1,6 @@
-function [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,map,K)
+function [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,map,K,numsub)
 
     max_init=16;
-
-    numsub=400;
 
     dict=zeros(K,4);
     kappa=zeros(K,1);

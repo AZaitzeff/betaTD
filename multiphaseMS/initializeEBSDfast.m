@@ -1,4 +1,4 @@
-function [mapall,dict,kappa,mid]=initializeEBSDfast(EBSD,CI,beta,nr,nc)
+function [mapall,dict,kappa,mid]=initializeEBSDfast(EBSD,CI,beta,nr,nc,numsub)
 
 %subn=Ks(1)*10;
 %subm=Ks(2)*10;
@@ -56,4 +56,4 @@ EBSDflat=reshape(EBSD, [m*n,z]);
 EBSDflat=E313toq(EBSDflat);
 CIflat=reshape(CI, [m*n,1]);
 
-[dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,mapall,K);
+[dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,mapall,K,numsub);
