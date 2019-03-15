@@ -67,7 +67,7 @@ else
     end
 end
 
-w=5;
+w=2;
 [I,conval,conmap]=confidencemapminmem(name,M,N,num);
 [~,bndconval,bndconmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);

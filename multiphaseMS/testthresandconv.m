@@ -11,10 +11,10 @@ load('../data/AFbigEBSD')
 [M,N]=size(CI);
 midm=ceil(M/2);
 midn=ceil(N/2);
-lm=max(midm-50,1);
-um=min(midm+50,M);
-ln=max(midn-50,1);
-un=min(midn+50,N);
+lm=max(midm-100,1);
+um=min(midm+100,M);
+ln=max(midn-100,1);
+un=min(midn+100,N);
 suby=lm:um;
 subx=ln:un;
 M=um-lm+1;
