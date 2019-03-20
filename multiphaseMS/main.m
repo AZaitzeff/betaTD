@@ -1,9 +1,17 @@
 names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake','fine'};
-i=1;
-for fid=[200,400,600]
+
+i=6;
+for fid=[100]
      filename=names{i};
-     name=[names{i} 'dt6'];
-     runMStdsimple(filename,name,8,16,2^-6,fid,5,100,100);
+     name=[names{i} '8gs5dt'];
+     runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
+end
+
+i=1;
+for fid=[100,150,200]
+     filename=names{i};
+     name=[names{i} '8gs5dt'];
+     runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
 end
 % 
 % for fid=[200,400,600]
@@ -19,19 +27,19 @@ end
 %      runMStdsimple(filename,name,16,30,2^-4,fid,30,0);
 % end
 % % 
-i=4;
-for fid=[150]
-     filename=names{i};
-     name=[names{i} 'dt5'];
-     runMStdsimple(filename,name,8,16,2^-5,fid,5,100,0);
-end
-
-i=4;
-for fid=[150]
-     filename=names{i};
-     name=[names{i} 'dt6'];
-     runMStdsimple(filename,name,8,16,2^-6,fid,5,100,0);
-end
+% i=4;
+% for fid=[150]
+%      filename=names{i};
+%      name=[names{i} 'dt5'];
+%      runMStdsimple(filename,name,8,16,2^-5,fid,5,100,0);
+% end
+% 
+% i=4;
+% for fid=[150]
+%      filename=names{i};
+%      name=[names{i} 'dt6'];
+%      runMStdsimple(filename,name,8,16,2^-6,fid,5,100,0);
+% end
 % 
 % i=1;
 % for fid=[200,250,300]
