@@ -6,20 +6,20 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 %      name=[names{i} '8gs5dt'];
 %      runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
 % end
-% try
-% z=1;
-% for i=1:2
-%     for j=1:3
-%         for fid=[100,200]
-%              filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
-%              name=[filename '8gs5dt'];
-%              runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
-%         end
-%     end
-% end
-% catch ME
-%     ME.identifier
-% end
+try
+z=1;
+for i=1:2
+    for j=1:3
+        for fid=[100,200]
+             filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
+             name=[filename '8gs5dt'];
+             runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
+        end
+    end
+end
+catch ME
+    ME.identifier
+end
 % 
 % for fid=[200,400,600]
 %      filename=names{i};
