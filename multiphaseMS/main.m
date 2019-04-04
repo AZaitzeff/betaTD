@@ -8,12 +8,12 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 % end
 try
 z=1;
-for i=1:2
-    for j=1:3
-        for fid=[100,200]
+for i=1:3
+    for j=1:4
+        for fid=[100,150,200]
              filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
              name=[filename '8gs5dt'];
-             runMStdsimple(filename,name,4,16,2^-5,fid,10,200,0);
+             runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
         end
     end
 end
