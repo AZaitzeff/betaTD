@@ -6,15 +6,17 @@ threshold=prctile(kappa,50)/2;
 K=m*n;
 curK=K;
 active=K;
-contains=zeros(K,20);
-neighbors=zeros(K,20);
+
 contwidth=[K,20];
 neiwidth=[K,20];
+
+contains=zeros(contwidth);
+neighbors=zeros(neiwidth);
 map=1:K;
 point=map;
 contains(1:K,1)=map;
-contsize=ones(1,K);
-neisize=zeros(1,K);
+contsize=ones(K,1);
+neisize=zeros(K,1);
 total=2*(n-1)*(m-1)+m-1+n-1;
 values=zeros(1,total);
 ind=zeros(2,total);
@@ -86,7 +88,7 @@ for z =1:total
             active=active-1;
         end
     end
-    if curK*.9>active
+    if curK*.75>active
         simplify();
     end
 end
