@@ -2,9 +2,11 @@ function [I,conval,conmap]=confidencemapminmem(name,M,N,num)
 addpath('../anglelib/')
 conmap=zeros(M,N);
 enevec=zeros(1,num);
+maxK=0;
 for z=1:num
     vars=load([name num2str(z)]);
     enevec(z)=vars.energy;
+    maxK=max(maxK,size(vars.dict,1));
 end
 [~,I]=min(enevec);
 vars=load([name num2str(I)]);
