@@ -8,12 +8,12 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 % end
 try
 z=1;
-for i=1:3
-    for j=1:6
+for i=3:-1:2
+    for j=6:-1:1
         for fid=[100,150,200]
              filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
              name=[filename '8gs5dt'];
-             runMStdsimple(filename,name,8,16,2^-5,fid,10,200,0);
+             runMStdsimple(filename,name,16,16,2^-5,fid,10,200,0);
         end
     end
 end
@@ -86,21 +86,21 @@ end
 %      runMStdsimple(filename,name,4,16,2^-4,fid,40,400,0);
 % end
 
-try
-z=9;
-for i=1:1
-    for j=1:4
-
-     for fid=[100,150,200]
-          filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
-          name=filename;
-          runMStdsimple(filename,name,8,16,2^-4,fid,30,400,0);
-     end
-    end
-end
-catch ME
-    ME.identifier
-end
+% try
+% z=9;
+% for i=1:1
+%     for j=1:4
+% 
+%      for fid=[100,150,200]
+%           filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
+%           name=filename;
+%           runMStdsimple(filename,name,8,16,2^-4,fid,30,400,0);
+%      end
+%     end
+% end
+% catch ME
+%     ME.identifier
+% end
 % 
 % i=10;
 % for fid=[100,150]
