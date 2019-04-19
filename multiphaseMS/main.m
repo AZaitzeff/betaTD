@@ -35,10 +35,14 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 % end
 % % 
 i=4;
-for fid=[50,100,400]
+try
+for fid=[100,400]
      filename=names{i};
      name=names{i};
      runMStdsimple(filename,name,4,16,2^-4,fid,40,400,0);
+end
+catch ME
+ ME.identifier
 end
 % 
 % i=4;
