@@ -18,7 +18,9 @@ for i=2:3
    end
 end
 catch ME
+   ME.message
    ME.identifier
+   ME.stack
 end
 % 
 % for fid=[200,400,600]
