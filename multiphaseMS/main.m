@@ -13,7 +13,7 @@ for i=2:3
        if i==3 || j>3
             filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
             name=[filename '8gs5dt'];
-            runMStdsimple(filename,name,16,16,2^-5,200,10,200,0);
+            runMStdsimple(filename,name,8,16,2^-5,200,10,200,0);
        end
    end
 end
