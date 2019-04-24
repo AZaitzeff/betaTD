@@ -1,20 +1,50 @@
 names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake','fine'};
 
-% i=6;
-% for fid=[100]
-%      filename=names{i};
-%      name=[names{i} '8gs5dt'];
-%      runMStdsimple(filename,name,8,16,2^-5,fid,8,200,0);
-% end
  try
+% i=7;
+% for fid=[100,200]
+%      filename=names{i};
+%      name=names{i};
+%      runMStdsimple(filename,name,12,24,2^-4,fid,40,400,0);
+% end
+
+i=4;
+for fid=[150,200]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,10,20,2^-4,fid,40,400,0);
+end
+
+i=3;
+for fid=[50,100]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,10,20,2^-4,fid,40,400,0);
+end
+
+i=5;
+for fid=[100,150]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,10,20,2^-4,fid,30,400,0);
+end
+
+i=6;
+for fid=[35,50]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,10,20,2^-4,fid,10,200,0);
+end
+
+
+
+
  z=1;
- for i=2:3
+ for i=1:3
     for j=1:6
-        if i==3 || j>3
              filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
-             name=[filename '8gs5dt'];
-             runMStdsimple(filename,name,8,16,2^-5,200,10,200,0);
-        end
+             name=filename;
+             runMStdsimple(filename,name,10,20,2^-4,200,12,200,0);
     end
  end
  catch ME

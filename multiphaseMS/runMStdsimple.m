@@ -39,6 +39,7 @@ else
     [M,N]=size(CI);
     beta=logical(EBSDtemp.betas);
 end
+CI=double(CI>=.1)+(double(CI<.1).*double(CI>.03).*(CI-.03)/.07);
 codegenzaitzeff(M,N);
 nr=ceil(M/gs);
 nc=ceil(N/gs);
@@ -65,7 +66,7 @@ else
         timings(i)=toc;
     end
 end
-w=2;
+w=1;
 [I,conval,conmap]=confidencemapminC(name,M,N,num);
 [~,bndconval,bndconmap]=probmetric(name,w,num);
 vars=load(['results/' filesave num2str(round(fid)) num2str(I)]);
