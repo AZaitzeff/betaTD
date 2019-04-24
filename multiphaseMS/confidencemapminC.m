@@ -32,5 +32,5 @@ for z=1:num
     end
 end
 conmap=conmap/(num-1);
-conval=sqrt(total/sum(conmap(:)));
+conval=sqrt(sum(conmap(:))/total);
 end
