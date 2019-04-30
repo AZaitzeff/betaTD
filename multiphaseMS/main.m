@@ -8,12 +8,12 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 %      runMStdsimple(filename,name,12,24,2^-4,fid,40,400,0);
 % end
 
-% i=4;
-% for fid=[150,200]
-%      filename=names{i};
-%      name=names{i};
-%      runMStdsimple(filename,name,10,20,2^-4,fid,40,400,0);
-% end
+i=4;
+for fid=[50,100,400]
+     filename=names{i};
+     name=names{i};
+     runMStdsimple(filename,name,10,20,2^-4,fid,40,400,0);
+end
 % 
 % i=3;
 % for fid=[50,100]
@@ -39,19 +39,19 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 
 
 
- z=1;
- for i=1:3
-    for j=1:6
-             filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
-             name=filename;
-             runMStdsimple(filename,name,10,20,2^-4,200,8,200,0);
-    end
- end
- catch ME
-    ME.message
-    ME.identifier
-    ME.stack
-end
+%  z=1;
+%  for i=1:3
+%     for j=1:6
+%              filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
+%              name=filename;
+%              runMStdsimple(filename,name,10,20,2^-4,200,8,200,0);
+%     end
+%  end
+%  catch ME
+%     ME.message
+%     ME.identifier
+%     ME.stack
+% end
 % 
 % for fid=[200,400,600]
 %      filename=names{i};
@@ -73,11 +73,11 @@ end
 %     name=names{i};
 %     runMStdsimple(filename,name,4,16,2^-4,fid,40,400,0);
 %end
-%catch ME
-%   ME.message
-%   ME.identifier
-%   ME.stack
-%end
+catch ME
+  ME.message
+  ME.identifier
+  ME.stack
+end
 
 % i=4;
 % for fid=[150]
@@ -124,23 +124,23 @@ end
 %      runMStdsimple(filename,name,4,16,2^-4,fid,40,400,0);
 % end
 
- try
- z=9;
- for i=1:1
-     for j=1:4
- 
-      for fid=[100,150,200]
-           filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
-           name=filename;
-           runMStdsimple(filename,name,10,20,2^-4,fid,30,400,0);
-      end
-     end
- end
- catch ME
-    ME.message
-   ME.identifier
-   ME.stack
- end
+%  try
+%  z=9;
+%  for i=1:1
+%      for j=1:4
+%  
+%       for fid=[100,150,200]
+%            filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
+%            name=filename;
+%            runMStdsimple(filename,name,10,20,2^-4,fid,30,400,0);
+%       end
+%      end
+%  end
+%  catch ME
+%     ME.message
+%    ME.identifier
+%    ME.stack
+%  end
 % 
 % i=10;
 % for fid=[100,150]
