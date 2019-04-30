@@ -39,14 +39,23 @@ end
 
 
 
-%  z=1;
-%  for i=1:3
-%     for j=1:6
-%              filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
-%              name=filename;
-%              runMStdsimple(filename,name,10,20,2^-4,200,8,200,0);
-%     end
-%  end
+ z=1;
+ for i=1:3
+    for j=1:6
+             filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
+             name=filename;
+             runMStdsimple(filename,name,8,20,2^-4,100,12,200,0);
+    end
+ end
+ 
+  z=1;
+ for i=1:3
+    for j=1:6
+             filename=[names{z} 'row' num2str(i) 'col' num2str(j)];
+             name=filename;
+             runMStdsimple(filename,name,8,20,2^-4,200,12,200,0);
+    end
+ end
 %  catch ME
 %     ME.message
 %     ME.identifier
