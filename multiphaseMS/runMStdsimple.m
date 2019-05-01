@@ -3,7 +3,9 @@ function runMStdsimple(filename,filesave,numpar,num,dt,fid,gs,numsub,small)
 %gs=50
 addpath('../anglelib/')
 
-
+if dt<=0
+    dt=150/fid*2^-4;
+end
 if nargin<3
     numpar=10;
     num=10;
@@ -51,7 +53,8 @@ if numpar>1
     
     parfor pari=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,pari,numsub);
+        dttemp=dt*2^(rand()-1/2);
+        MStd(EBSD,CI,beta,fid,filesave,dttemp,dx,dy,nr,nc,pari,numsub);
         timings(pari)=toc;
     end
     
@@ -62,7 +65,8 @@ if numpar>1
 else
     for i=1:num
         tic;
-        MStd(EBSD,CI,beta,fid,filesave,dt,dx,dy,nr,nc,i);
+        dttemp=dt*2^(rand()-1/2);
+        MStd(EBSD,CI,beta,fid,filesave,dttemp,dx,dy,nr,nc,i);
         timings(i)=toc;
     end
 end
