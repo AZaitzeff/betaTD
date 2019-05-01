@@ -12,19 +12,19 @@ i=4;
 for fid=[150,175,200]
      filename=names{i};
      name=[names{i} 'dt4'];
-     runMStdsimple(filename,name,10,20,2^-4,fid,40,400,0);
+     runMStdsimple(filename,name,10,30,2^-4,fid,40,400,0);
 end
 i=4;
 for fid=[150,175,200]
      filename=names{i};
      name=[names{i} 'dt45'];
-     runMStdsimple(filename,name,10,20,2^(-4.5),fid,40,400,0);
+     runMStdsimple(filename,name,10,30,2^(-4.5),fid,40,400,0);
 end
 i=4;
 for fid=[150,175,200]
      filename=names{i};
      name=[names{i} 'dt5'];
-     runMStdsimple(filename,name,10,20,2^-5,fid,40,400,0);
+     runMStdsimple(filename,name,10,30,2^-5,fid,40,400,0);
 end
 % 
 % i=3;
