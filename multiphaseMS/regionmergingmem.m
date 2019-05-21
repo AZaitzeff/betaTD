@@ -30,7 +30,7 @@ for j=1:n
             neighbors(ind1,neisize(ind1))=ind2;
             neisize(ind2)=neisize(ind2)+1;
             neighbors(ind2,neisize(ind2))=ind1;
-            values(z)=b2bmetric(dict(ind1,:),dict(ind2,:));
+            values(z)=b2bmetric(dict(:,ind1),dict(:,ind2));
             ind(1,z)=ind1;
             ind(2,z)=ind2;
             z=z+1;
@@ -41,7 +41,7 @@ for j=1:n
             neighbors(ind1,neisize(ind1))=ind2;
             neisize(ind2)=neisize(ind2)+1;
             neighbors(ind2,neisize(ind2))=ind1;
-            values(z)=b2bmetric(dict(ind1,:),dict(ind2,:));
+            values(z)=b2bmetric(dict(:,ind1),dict(:,ind2));
             ind(1,z)=ind1;
             ind(2,z)=ind2;
             z=z+1;
@@ -69,7 +69,7 @@ for z =1:total
             area2=contsize(r2);
             area=min(area1,area2);
             perterm=per*gs*mid;
-            val=b2bmetric(dict(x1,:),dict(x2,:));
+            val=b2bmetric(dict(:,x1),dict(:,x2));
             fidterm=val*fid*area*(gs*mid)^2;
             if fidterm<=perterm
                 if area1>=area2
@@ -102,14 +102,14 @@ for k=1:K
     end
 end
 newK=sum(current);
-newdict=zeros(newK,4);
+newdict=zeros(4,newK);
 newkappa=zeros(newK,1);
 newk=1;
 newmap=1:K;
 for k=1:K
     if current(k)
         newmap(k)=newk;
-        newdict(newk,:)=dict(k,:);
+        newdict(:,newk)=dict(:,k);
         newkappa(newk)=kappa(k);
         newk=newk+1;
     end

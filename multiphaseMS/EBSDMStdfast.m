@@ -8,15 +8,16 @@ T=alphatobetatrans();
 Pm=getsymmetries('cubic');
 Pall=zeros(4,4,144);
 for i=1:144
-    Pall(:,:,i)=T(:,:,mod(i-1,6)+1)'*Pm(:,:,ceil(i/6));
+    Pall(:,:,i)=Pm(:,:,ceil(i/6))*T(:,:,mod(i-1,6)+1)';
 end
+
 K=max(mapall(:));
 totalK=K;
 current=ones(1,K,'logical');
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
-EBSDflat=E313toq(EBSDflat);
+EBSDflat=E313toq(EBSDflat)';
 MAXITER=125;
 fac=1/(50*(dx+dy));
 [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
@@ -108,8 +109,8 @@ for dt=dts
                     
                 end
             end
-            %imagesc(mapall);colorbar
-            %pause(1)
+            imagesc(mapall);colorbar
+            pause(1)
         end
 
 
@@ -148,12 +149,12 @@ for dt=dts
                             changecounter(k)=0;
                             if sum(CI(indices))>1e-4
                                 newind=datasamplez(indices,numsub,CI(indices));
-                                EBSDtemp=EBSDflat(newind,:);
+                                EBSDtemp=EBSDflat(:,newind);
                                 cmask=beta(newind);
-                                alphaEBSD=EBSDtemp(~cmask,:);
-                                betaEBSD=EBSDtemp(cmask,:);
-                                [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
-                                dict(k,:)=newg1;
+                                alphaEBSD=EBSDtemp(:,~cmask);
+                                betaEBSD=EBSDtemp(:,cmask);
+                                [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(:,k),kappa(k));
+                                dict(:,k)=newg1;
                                 kappa(k)=kap;
                             end  
                         end
@@ -204,12 +205,12 @@ for k=1:K
     indices=coords(k,1:csize);
     if sum(CI(indices))>1e-4
         newind=datasamplez(indices,numsub,CI(indices));
-        EBSDtemp=EBSDflat(newind,:);
+        EBSDtemp=EBSDflat(:,newind);
         cmask=beta(newind);
-        alphaEBSD=EBSDtemp(~cmask,:);
-        betaEBSD=EBSDtemp(cmask,:);
-        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(k,:),kappa(k));
-        dict(k,:)=newg1;
+        alphaEBSD=EBSDtemp(:,~cmask);
+        betaEBSD=EBSDtemp(:,cmask);
+        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(:,k),kappa(k));
+        dict(:,k)=newg1;
         kappa(k)=kap;
     end  
 end
@@ -242,10 +243,10 @@ for k=1:K
         alphacoord=indices(~bmask);
         betacoord=indices(bmask);
         if ~isempty(alphacoord)
-            energy=energy+sum(fid*CI(alphacoord).*alpbmetric(EBSDflat(alphacoord,:),dict(k,:)));
+            energy=energy+sum(fid*CI(alphacoord).*alpbmetric(EBSDflat(:,alphacoord),dict(:,k)));
         end
         if ~isempty(betacoord)
-            energy=energy+sum(fid*CI(betacoord).*b2bmetric(EBSDflat(betacoord,:),dict(k,:)));
+            energy=energy+sum(fid*CI(betacoord).*b2bmetric(EBSDflat(:,betacoord),dict(:,k)));
         end
     end
 end
@@ -285,7 +286,7 @@ end
                 
                 bndsK(newk,:)=bndsK(kz,:);
                 map(kz)=newk;
-                dict(newk,:)=dict(kz,:);
+                dict(:,newk)=dict(:,kz);
                 kappa(newk)=kappa(kz);
                 ratio(newk)=ratio(kz);
                 
@@ -313,7 +314,7 @@ end
         minmaxrowcol(newk:K,:)=[];
 
         bndsK(newk:K,:)=[];
-        dict(newk:K,:)=[];
+        dict(:,newk:K)=[];
         kappa(newk:K)=[];
         ratio(newk:K)=[];
         
@@ -340,10 +341,10 @@ end
             alphacoord=linind(~bmask);
             betacoord=linind(bmask);
             if ~isempty(alphacoord)
-                mask(slinind(~bmask))=fid*CI(alphacoord).*alpbmetric(EBSDflat(alphacoord,:),dict(k,:));
+                mask(slinind(~bmask))=fid*CI(alphacoord).*alpbmetric(EBSDflat(:,alphacoord),dict(:,k));
             end
             if ~isempty(betacoord)
-                mask(slinind(bmask))=fid*CI(betacoord).*b2bmetric(EBSDflat(betacoord,:),dict(k,:));
+                mask(slinind(bmask))=fid*CI(betacoord).*b2bmetric(EBSDflat(:,betacoord),dict(:,k));
             end
             if smooth
                 newu=TSz(mask,min(dt/16,2^-12),nt,dx,dy,xdir,ydir,xsizes,ysizes,m,n,1);

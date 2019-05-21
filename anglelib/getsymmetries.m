@@ -1,48 +1,14 @@
 function Pm=getsymmetries(s1)
     %cubic
     if strcmp( s1,'cube') || strcmp( s1,'cubic')
-        sym= [ 0, 0, 0, 1.;
-                        1., 0., 0., 0;
-                        0, 1., 0., 0;
-                        0, 0, 1., 0;
-                        sqrt(2)/2, 0, 0, sqrt(2)/2;
-                        0, sqrt(2)/2, 0, sqrt(2)/2;
-                        0, 0, sqrt(2)/2, sqrt(2)/2;
-                        -sqrt(2)/2, 0,  0, sqrt(2)/2;
-                        0, -sqrt(2)/2, 0, sqrt(2)/2;
-                        0, 0, -sqrt(2)/2, sqrt(2)/2;
-                        sqrt(2)/2, sqrt(2)/2, 0, 0;
-                        -sqrt(2)/2, sqrt(2)/2, 0, 0;
-                        0, sqrt(2)/2, sqrt(2)/2, 0;
-                        0, -sqrt(2)/2, sqrt(2)/2, 0;
-                        sqrt(2)/2, 0, sqrt(2)/2, 0;
-                        -sqrt(2)/2, 0, sqrt(2)/2, 0;
-                        1/2, 1/2, 1/2, 1/2;
-                        -1/2, -1/2, -1/2, 1/2;
-                        -1/2, 1/2, 1/2, 1/2;
-                        1/2, -1/2, 1/2, 1/2;
-                        1/2, 1/2, -1/2, 1/2;
-                        1/2, -1/2, -1/2, 1/2;
-                        -1/2, 1/2, -1/2, 1/2;
-                        -1/2, -1/2, 1/2,1/2;];
+        sym = CubSymmetries();
     %Hexigon
     else
-        sym= [ 0, 0, 0, 1.;
-                        1., 0., 0., 0;
-                        0, 1., 0., 0;
-                        0, 0, 1., 0;
-                        0.,0.,1/2,sqrt(3)/2;
-                        0.,0.,-1/2,sqrt(3)/2;
-                        0.,0.,sqrt(3)/2,1/2;
-                        0.,0.,-sqrt(3)/2,1/2;
-                        1/2,sqrt(3)/2,0.,0.;
-                        1/2,-sqrt(3)/2,0.,0.;
-                        sqrt(3)/2,1/2,0.,0.;
-                        sqrt(3)/2,-1/2,0.,0.;];
+        sym = HexSymmetries();
     end
-    N=size(sym,1);
+    N=size(sym,2);
     Pm=zeros(4,4,N);
     for i=1:N
-        Pm(:,:,i)=quatmatrix(sym(i,:)');
+        Pm(:,:,i)=quatmatrix2(sym(:,i));
     end
 end

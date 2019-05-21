@@ -10,11 +10,11 @@ mid=(rd+cd)/2;
 mapall=zeros(m,n);
 rows=linspace(0,m,nr+1);
 rspace=rows(2)-rows(1);
-rows(2:end-1)=rows(2:end-1)+(rand(1,nr-1)-.5)*rspace/2;
+rows(2:end-1)=rows(2:end-1);%+(rand(1,nr-1)-.5)*rspace/2;
 rows=round(rows);
 cols=linspace(0,n,nc+1);
 cspace=cols(2)-cols(1);
-cols(2:end-1)=cols(2:end-1)+(rand(1,nc-1)-.5)*cspace/2;
+cols(2:end-1)=cols(2:end-1);%+(rand(1,nc-1)-.5)*cspace/2;
 cols=round(cols);
 for i=1:nr
     row=(rows(i)+1):rows(i+1);
@@ -53,7 +53,7 @@ end
 %smallmap=(x-1)*Ks(2)+y';
 %mapall = imresize(smallmap, [m n], 'nearest');
 EBSDflat=reshape(EBSD, [m*n,z]);
-EBSDflat=E313toq(EBSDflat);
+EBSDflat=E313toq(EBSDflat)';
 CIflat=reshape(CI, [m*n,1]);
 
 [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,mapall,K,numsub);

@@ -1,5 +1,5 @@
 function n=invquat(q)
     n=-q;
-    n(4)=q(4);
+    n(1)=q(1);
 end
     

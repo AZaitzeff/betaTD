@@ -1,4 +1,5 @@
 function [best,dist]=alpbbeta(alpha,beta)
+    %TO DO Fix
     T=alphatobetatrans();
     Pm=getsymmetries('cubic');
     numB=size(T,3);
@@ -9,7 +10,7 @@ function [best,dist]=alpbbeta(alpha,beta)
     
     for i=1:numB
         for j=1:numS
-            tempdist=acos(abs((Pm(:,:,j)'*T(:,:,i)*alpha')'*(beta')))';
+            tempdist=acos(abs((alpha*T(:,:,i))'*(beta*Pm(:,:,j))'));
             tempbetas=(Pm(:,:,j)'*T(:,:,i)*alpha')';
             best(tempdist<dist,:)=tempbetas(tempdist<dist,:);
             dist(tempdist<dist)=tempdist(tempdist<dist);
