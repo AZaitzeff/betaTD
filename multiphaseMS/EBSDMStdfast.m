@@ -17,7 +17,7 @@ current=ones(1,K,'logical');
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
 EBSDflat=reshape(EBSD,[M*N,z]);
-EBSDflat=E313toq(EBSDflat)';
+EBSDflat=E313toq(EBSDflat');
 MAXITER=125;
 fac=1/(50*(dx+dy));
 [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
@@ -109,8 +109,8 @@ for dt=dts
                     
                 end
             end
-            imagesc(mapall);colorbar
-            pause(1)
+            %imagesc(mapall);colorbar
+            %pause(1)
         end
 
 
@@ -154,6 +154,15 @@ for dt=dts
                                 alphaEBSD=EBSDtemp(:,~cmask);
                                 betaEBSD=EBSDtemp(:,cmask);
                                 [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(:,k),kappa(k));
+                                
+                                vala=alpbmetric(alphaEBSD,newg1);
+                                valb=b2bmetric(betaEBSD,newg1);
+                                tol=median([vala valb]);
+                                maska=vala<tol;
+                                maskb=valb<tol;
+                                alpha2=alphaEBSD(:,maska);
+                                beta2=betaEBSD(:,maskb);
+                                [newg1, kap, ~] = VMFEMzfast(alpha2, Pall,beta2, Pm,1,newg1,kap);
                                 dict(:,k)=newg1;
                                 kappa(k)=kap;
                             end  
@@ -210,6 +219,14 @@ for k=1:K
         alphaEBSD=EBSDtemp(:,~cmask);
         betaEBSD=EBSDtemp(:,cmask);
         [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(:,k),kappa(k));
+        vala=alpbmetric(alphaEBSD,newg1);
+        valb=b2bmetric(betaEBSD,newg1);
+        tol=median([vala valb]);
+        maska=vala<tol;
+        maskb=valb<tol;
+        alpha2=alphaEBSD(:,maska);
+        beta2=betaEBSD(:,maskb);
+        [newg1, kap, ~] = VMFEMzfast(alpha2, Pall,beta2, Pm,1,newg1,kap);
         dict(:,k)=newg1;
         kappa(k)=kap;
     end  

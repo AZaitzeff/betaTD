@@ -6,7 +6,7 @@ maxK=0;
 for z=1:num
     vars=load([name num2str(z)]);
     enevec(z)=vars.energy;
-    maxK=max(maxK,size(vars.dict,1));
+    maxK=max(maxK,size(vars.dict,2));
 end
 [~,I]=min(enevec);
 vars=load([name num2str(I)]);
@@ -15,7 +15,7 @@ mainmap=vars.mapall;
 total=M*N;
 
 vectorType1 = coder.typeof(1, [M N], [false false]);
-vectorType3 = coder.typeof(1, [maxK 4], [true false]);
+vectorType3 = coder.typeof(1, [4 maxK], [false true]);
 
 %vectorType3 = coder.typeof(1, [K 4], [true false]);
 %vectorType4 = coder.typeof(1, [K 1], [true false]);

@@ -41,7 +41,7 @@ else
     [M,N]=size(CI);
     beta=logical(EBSDtemp.betas);
 end
-CI=double(CI>=.1)+(double(CI<.1).*double(CI>.03).*(CI-.03)/.07);
+CI=CIfunc(CI);
 codegenzaitzeff(M,N);
 nr=ceil(M/gs);
 nc=ceil(N/gs);
@@ -66,7 +66,7 @@ else
     for i=1:num
         tic;
         dttemp=dt*2^(rand()-1/2);
-        MStd(EBSD,CI,beta,fid,filesave,dttemp,dx,dy,nr,nc,i);
+        MStd(EBSD,CI,beta,fid,filesave,dttemp,dx,dy,nr,nc,i,numsub);
         timings(i)=toc;
     end
 end

@@ -1,5 +1,12 @@
 function T=betatoalphatrans()
-    D = [0.5406 -0.7046 0.0600 -0.4558]'/norm([0.5406 0.7046 0.0600 0.4558]);
+    phi1=3*pi/4;
+    theta=pi/2;
+    phi2=65*pi/36;
+    D=zeros(4,1);
+    D(1)=cos((phi1+phi2)/2)*cos(theta/2);
+    D(2)=cos((phi1-phi2)/2)*sin(theta/2);
+    D(3)=sin((phi1-phi2)/2)*sin(theta/2);
+    D(4)=sin((phi1+phi2)/2)*cos(theta/2);
 %     cubsym= [ 0, 0, 0, 1.;
 %             0., 0., 1., 0;
 %             0., 1., 0., 0;

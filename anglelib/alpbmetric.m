@@ -13,7 +13,7 @@ function dist=alpbmetric(alpha,beta)
                 if val(n)>=1
                     dist(n)=0;
                 else
-                    dist(n)=min(dist(n),acos(val(n)));
+                    dist(n)=min(dist(n),2*acos(val(n)));
                 end
             end
         end

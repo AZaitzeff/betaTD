@@ -53,7 +53,7 @@ end
 %smallmap=(x-1)*Ks(2)+y';
 %mapall = imresize(smallmap, [m n], 'nearest');
 EBSDflat=reshape(EBSD, [m*n,z]);
-EBSDflat=E313toq(EBSDflat)';
+EBSDflat=E313toq(EBSDflat');
 CIflat=reshape(CI, [m*n,1]);
 
 [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,mapall,K,numsub);

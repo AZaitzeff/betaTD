@@ -1,4 +1,5 @@
-function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
+function [Mu, Kappa, logL]=VMFEMzfaster(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
+    %not as fast
     %to do throw out (by weighting) angles not near central cluster
     Pm1 = cat(3, Pm1, -Pm1);
     Pm2 = cat(3, Pm2, -Pm2);
@@ -33,7 +34,7 @@ function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
         
 
         if Num_of_init>1
-            Mu = zeros(p,1);
+            Mu = zeros( p,1);
             mu = randn(p,1);
             mu = mu/norm(mu,2);
             Mu(:,1) = mu(:);
@@ -53,32 +54,41 @@ function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
                 R1(:,j) = VMFDensityfast(X1', (Mu(:,1)'*Pm1(:,:,j)), Kappa);
             end
             % Normalization
-            Rdenom = sum(R1,2);
-            R1 = R1 ./ repmat(Rdenom, [1,No1]);
+            for i=1:N1
+                R1(i,:)=R1(i,:)/sum(R1(i,:));
+            end
+           
             %%% M-step
             % estimate W
 
                 % estimate Mu
             tmpGamma1 = zeros(No1, p);
-
             for j=1:No1
-                tmpGamma1(j,:) = sum((X1'*Pm1(:,:,j)').*repmat(R1(:,j), [1 4]),1);
+                temp=(X1'*Pm1(:,:,j)');
+                for lp=1:p                   
+                    tmpGamma1(j,lp) = sum(temp(:,lp).*R1(:,j));
+                end
             end
+
             for j=1:No2
                 R2(:,j) = VMFDensityfast(X2', (Mu(:,1)'*Pm2(:,:,j)), Kappa);
             end
 
             % Normalization
-            Rdenom = sum(R2,2);
-            R2 = R2 ./ repmat(Rdenom, [1,No2]);
-
-            tmpGamma2 = zeros(No2, p);
-            for j=1:No2
-                tmpGamma2(j,:) = sum((X2'*Pm2(:,:,j)').*repmat(R2(:,j), [1 4]),1);
+            for i=1:N2
+                R2(i,:)=R2(i,:)/sum(R2(i,:));
             end
 
-            Gamma=sum(tmpGamma1,1)+sum(tmpGamma2,1);
+            tmpGamma2 = zeros(No2, p);
             
+            for j=1:No2
+                temp=(Pm2(:,:,j)*X2)';
+                for lp=1:p
+                    tmpGamma2(j,lp) = sum(temp(:,lp).*R2(:,j));
+                end
+            end
+            
+            Gamma=sum(tmpGamma1,1)+sum(tmpGamma2,1);
             Mu(:,1) = Gamma / norm(Gamma,2);
             % estimate Kappa
             Kappa = invAp(norm(Gamma,2)/N, p, xAp, yAp);
@@ -101,6 +111,7 @@ function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
             L_All(init) = L(ite);
             
             % Check stopping criteria
+            
             if(ite>=2)
                 if(abs(L(ite)-L(ite-1))<0.05)
                     break;
