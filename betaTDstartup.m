@@ -17,13 +17,13 @@ setMTEXpref('zAxisDirection','outOfPlane');
 %% Specify File Names (CHANGE)
 
 %user created nickname
-nickname= 'scanA'; 
+nickname= 'scanC'; 
 
 % path to files
 pname = '/Users/azaitzeff/Documents/Research/Ti64';
 
 % which file to be imported
-fname = [pname '/Ti64_1100C_0p5hr_scan20190525A']; 
+fname = [pname '/Ti64_1100C_0p5hr_scan20190525C.ang']; 
 %% Import the Data
 
 % create an EBSD variable containing the data

@@ -4,7 +4,7 @@ K=size(dict,1);
 colors=ones(M,N,3);
 bnds=zeros(M,N);
 map=zeros(K,K);
-thres=thres/360*pi;
+thres=thres/180*pi;
 if numel(thres)==0
 for j=1:N
     for i =1:M

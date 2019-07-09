@@ -5,7 +5,7 @@ function runMStdpilchank(filename,filesave,dt,fids,small,numwanted)
 
 
 num=numel(fids);
-EBSDtemp=load(['../data/' filename 'EBSD.mat']);
+EBSDtemp=load(['data/' filename 'EBSD.mat']);
 
 
 dx=1/100;
