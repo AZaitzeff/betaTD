@@ -30,16 +30,18 @@ names={'AFbig','R1','R2','AFone','RX','rand','sim','AFbeta','AF225','AFpancake',
 %      runMStdsimple(filename,name,10,20,2^-4,fid,30,400,0);
 % end
 % 
-z=1;
-for fid=[100]
-     filename=[names{z} 'row' num2str(2) 'col' num2str(2)];
-     name=filename;
-     runMStdsimple(filename,name,2,20,2^-4,fid,15,200,0);
-end
+% z=1;
+% for fid=[100]
+%      filename=[names{z} 'row' num2str(2) 'col' num2str(2)];
+%      name=filename;
+%      runMStdsimple(filename,name,2,20,2^-4,fid,100,200,0);
+% end
 
 
+%runMStdpilchank('sim2','sim2',2^-4,[10,20,40],0,100);
+runMStdpilchank('Merged','Merged',2^-4,[12,25,50],0,150);
 
-
+%runMStdsimple('Merged','Merged',2,20,2^-4,fid,100,200,0);
 %  z=1;
 %  for i=2:2
 %     for j=3:3

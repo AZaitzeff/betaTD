@@ -1,25 +1,19 @@
 function [mapall,dict,kappa,energy,sizecoords,flag]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between,numsub)
 energy=inf;
-flag=1;
+flag=1;%if flag equals zero something dt is too large
 dts=2.^linspace(log2(DT),log2(dtstop),4);%limit at dt goes to 0
-%lam=fid;
 
-T=alphatobetatrans();
-Pm=getsymmetries('cubic');
-Pall=zeros(4,4,144);
-for i=1:144
-    Pall(:,:,i)=Pm(:,:,ceil(i/6))*T(:,:,mod(i-1,6)+1)';
-end
 
-K=max(mapall(:));
+K=size(dict,2);
 totalK=K;
 current=ones(1,K,'logical');
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
-EBSDflat=reshape(EBSD,[M*N,z]);
-EBSDflat=E313toq(EBSDflat');
+EBSDflat=E313toq(reshape(EBSD,[M*N,z])');
+
 MAXITER=125;
-fac=1/(50*(dx+dy));
+fac=1/(50*(dx+dy));% variable 
+
 [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
 ratio=zeros(K,1);
 for k=1:K
@@ -42,7 +36,7 @@ fidregKsz=zeros(K,1);
 bndsK=zeros(K,4);
 
 for dt=dts
-    %fid=lam*2^(log(dtstop/dt)/2);
+    
     sqrtdt=sqrt(dt);
     w=ceil(fac*600*sqrtdt);
 
@@ -54,6 +48,7 @@ for dt=dts
     for k=1:K
         updateFID(k,1);
     end
+    
     for t=1:MAXITER
         %t
         curmin(:)=2*fid;
@@ -72,7 +67,7 @@ for dt=dts
 
             for k=1:K
                 fullsz=fidregKsz(k);
-                if active(k) && fullsz>0
+                if active(k) && fullsz>0 %solves the heat equation to do the convolution
 
                     slinind=SindKsz(k,1:fullsz);
                     linind=BindKsz(k,1:fullsz);
@@ -94,7 +89,7 @@ for dt=dts
 
             end
 
-            for k=1:K
+            for k=1:K %Thresholds
                 if current(k)
                     fullsz=fidregKsz(k);
                     linind=BindKsz(k,1:fullsz);
@@ -109,7 +104,7 @@ for dt=dts
                     
                 end
             end
-            %imagesc(mapall);colorbar
+            %imagesc(mapall);colorbar%for testing
             %pause(1)
         end
 
@@ -134,7 +129,7 @@ for dt=dts
                     indices=coordsa(k,1:csize);
                     change=numel(setxor(indices,oldindices));
                     perchange=(change/csize);
-                    if perchange<.01 || change<10
+                    if perchange<.005 || change<4 % see which regions have not changed (this is for speed alone)
                         activecounter=activecounter-active(k);
                         active(k)=0;
 
@@ -145,24 +140,10 @@ for dt=dts
                         activecounter=activecounter+1-active(k);
                         active(k)=1;
 
-                        if valcng>.2
+                        if valcng>.2 %updates betas
                             changecounter(k)=0;
                             if sum(CI(indices))>1e-4
-                                newind=datasamplez(indices,numsub,CI(indices));
-                                EBSDtemp=EBSDflat(:,newind);
-                                cmask=beta(newind);
-                                alphaEBSD=EBSDtemp(:,~cmask);
-                                betaEBSD=EBSDtemp(:,cmask);
-                                [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(:,k),kappa(k));
-                                
-                                vala=alpbmetric(alphaEBSD,newg1);
-                                valb=b2bmetric(betaEBSD,newg1);
-                                tol=median([vala valb]);
-                                maska=vala<tol;
-                                maskb=valb<tol;
-                                alpha2=alphaEBSD(:,maska);
-                                beta2=betaEBSD(:,maskb);
-                                [newg1, kap, ~] = VMFEMzfast(alpha2, Pall,beta2, Pm,1,newg1,kap);
+                                [newg1,kap]=estimatebeta(csize,CI(indices),EBSDflat(:,indices),beta(indices),dict(:,k),kappa(k),numsub);
                                 dict(:,k)=newg1;
                                 kappa(k)=kap;
                             end  
@@ -213,20 +194,7 @@ for k=1:K
     csize=sizecoords(k);
     indices=coords(k,1:csize);
     if sum(CI(indices))>1e-4
-        newind=datasamplez(indices,numsub,CI(indices));
-        EBSDtemp=EBSDflat(:,newind);
-        cmask=beta(newind);
-        alphaEBSD=EBSDtemp(:,~cmask);
-        betaEBSD=EBSDtemp(:,cmask);
-        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,dict(:,k),kappa(k));
-        vala=alpbmetric(alphaEBSD,newg1);
-        valb=b2bmetric(betaEBSD,newg1);
-        tol=median([vala valb]);
-        maska=vala<tol;
-        maskb=valb<tol;
-        alpha2=alphaEBSD(:,maska);
-        beta2=betaEBSD(:,maskb);
-        [newg1, kap, ~] = VMFEMzfast(alpha2, Pall,beta2, Pm,1,newg1,kap);
+        [newg1,kap]=estimatebeta(csize,CI(indices),EBSDflat(:,indices),beta(indices),dict(:,k),kappa(k),numsub);
         dict(:,k)=newg1;
         kappa(k)=kap;
     end  
