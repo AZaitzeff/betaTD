@@ -1,7 +1,6 @@
 function runMStdpilchank(filename,filesave,dt,fids,small,numwanted)
 %fac=40
 %gs=50
-addpath('../anglelib/')
 
 
 
@@ -9,8 +8,6 @@ num=numel(fids);
 EBSDtemp=load(['../data/' filename 'EBSD.mat']);
 
 
-
-addpath('../anglelib/')
 dx=1/100;
 dy=dx*EBSDtemp.scale;
 
@@ -39,7 +36,6 @@ else
 end
  CI=CIfunc(CI);
 
-addpath('../pilchank/')
 vectorType1 = coder.typeof(1, [M N], [false false]);
 vectorType1l = coder.typeof(1==1, [M N], [false false]);
 vectorType2 = coder.typeof(1, [M N 3], [false false false]);
