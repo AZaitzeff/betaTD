@@ -1,5 +1,13 @@
 function [Mu, Kappa, logL]=VMFEMzfast(X1, Pm1, X2, Pm2,Num_of_init,Mu,Kappa)
-    %to do throw out (by weighting) angles not near central cluster
+    %{
+    Finds the mean of the orientation (S^4) X1 given symmetries Pm1 via Expectation Maximation on the VMF distribution. 
+    You can use random initial points (Num_of_init>1) or choose initial mean (Num_of_init=1, non-empty Mu and Kappa)
+
+    Adapted from 
+    Chen, Y. H., Wei, D., Newstadt, G., DeGraef, M., Simmons, J., & Hero, A. 
+    (2015, July).
+    Statistical estimation and clustering of group-invariant orientation parameters.
+    %}
     Pm1 = cat(3, Pm1, -Pm1);
     Pm2 = cat(3, Pm2, -Pm2);
     %%% Duplicate the Euler Angles

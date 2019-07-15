@@ -1,5 +1,4 @@
 function [I,score,probmap]=probmetric(name,w,num)
-addpath('../anglelib/')
 SE = strel('disk',w,4);
 enevec=zeros(1,num);
 for z=1:num

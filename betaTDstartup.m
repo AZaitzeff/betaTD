@@ -8,7 +8,7 @@ addpath('anglelib/')
 CS = {... 
   'notIndexed',...
   crystalSymmetry('622', [2.95 2.95 4.68], 'X||a', 'Y||b*', 'Z||c', 'mineral', 'Titanium (Alpha)', 'color', 'light blue'),...
-  crystalSymmetry('432', [3.31 3.31 3.31], 'mineral', 'Titanium (Beta)', 'color', 'light green')};
+  crystalSymmetry('432', [3.31 3.31 3.31], 'mineral', 'Titanium (Beta)', 'color', 'light green')}; %Make sure phase 1 is Alpha
 
 % plotting convention
 setMTEXpref('xAxisDirection','north');
@@ -17,13 +17,13 @@ setMTEXpref('zAxisDirection','outOfPlane');
 %% Specify File Names (CHANGE)
 
 %user created nickname
-nickname= 'scanC'; 
+nickname= 'scanB'; 
 
 % path to files
 pname = '/Users/azaitzeff/Documents/Research/Ti64';
 
 % which file to be imported
-fname = [pname '/Ti64_1100C_0p5hr_scan20190525C.ang']; 
+fname = [pname '/Ti64_1100C_0p5hr_scan20190525B.ang']; 
 %% Import the Data
 
 % create an EBSD variable containing the data

@@ -1,4 +1,7 @@
 function [colors,bnds]=  bndmap(mapall,dict,thres)
+%{
+Used for plotting
+%}
 K=size(dict,1);
 [M,N]=size(mapall);
 colors=ones(M,N,3);

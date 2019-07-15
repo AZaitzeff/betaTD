@@ -1,6 +1,6 @@
 function [ebsdGrid,newId] = gridifyz(ebsd,ext,varargin)
 % extend EBSD data to an grid
-%
+% Adapted from Mtex
 % Description
 % This function transforms EBSD on non regular grids into regular grids. No
 % interpolation is done herby. Grid points in the regular grid that do not

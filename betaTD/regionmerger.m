@@ -1,12 +1,16 @@
-function [newmapall,newdict,newkappa,newK]=regionmerger(mapall,EBSD,CI,beta,dict,kappa,fid,dt,dx,dy,nt,numsub,betatol)
+function [newmapall,newdict,newkappa,newK]=regionmerger(mapall,EBSD,CI,beta,dict,kappa,fid,dt,dx,dy,nt,numsub,betatol,conservative)
     if betatol>.75
         betatol=betatol/180*pi;
     end
+    
+if nargin<14
+    conservative=.95;
+end
     fac=1/(50*(dx+dy));
     K=size(dict,2);
     [neigharray,sizeneigh]=  findneigh(mapall,K);
     
-    totneigh=sum(sizeneigh)/2;
+    totneigh=sum(sizeneigh(:))/2;
     neighdist=zeros(totneigh,3);
     z=1;
     for k=1:K
@@ -97,7 +101,7 @@ function [newmapall,newdict,newkappa,newK]=regionmerger(mapall,EBSD,CI,beta,dict
         k1tok2=findbndenergy(k1,k2);
         k2tok1=findbndenergy(k2,k1);
         k1plusk2=findcombinedenergy(k1,k2);
-        if k1plusk2<(k1tok2+k2tok1)*.9
+        if k1plusk2<(k1tok2+k2tok1)*conservative
             root=findroot(map,k1);
             map(k2)=root;
             active(k2)=0;

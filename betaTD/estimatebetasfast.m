@@ -1,6 +1,8 @@
 function [dict,kappa]=estimatebetasfast(EBSDflat,CIflat,beta,map,K,numsub)
-
-    max_init=8;
+    
+   %{
+    Given regions finds the beta mean of each one
+   %}
 
     dict=zeros(4,K);
     kappa=zeros(1,K);
@@ -15,24 +17,16 @@ for i=1:144
 end
 [~,~,~,coords,sizecoords,~]=  bndcoords(map,K);
 for k=1:K
-    indices=coords(k,1:sizecoords(k));
-    if numel(indices)>10
+    N=sizecoords(k);
+    indices=coords(k,1:N);
+    
+    if N>10
         CItemp=CIflat(indices);
         if sum(CIflat(indices))==0
             CItemp=CItemp+1;
         end
-        newind=datasamplez(indices,numsub,CItemp);
-        EBSDtemp=EBSDflat(:,newind);
-        mask=beta(newind);
-        alphaEBSD=EBSDtemp(:,~mask);
-        betaEBSD=EBSDtemp(:,mask);
-        [mu, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,max_init,[1;0;0;0],1);
-        %misoriena=alpbmetric(alphaEBSD,mu);
-        %misorienb=b2bmetric(betaEBSD,mu);
-        %tol=1.5*median([misoriena misorienb]);
-        %maska=misoriena<tol;
-        %maskb=misorienb<tol;
-        %[mu, kap, ~] = VMFEMzfast(alphaEBSD(:,maska), Pall,betaEBSD(:,maskb), Pm,1,mu,kap);
+        [mu,kap]=estimatebeta(N,CItemp,EBSDflat(:,indices),beta(indices),[],[],numsub);
+        
         dict(:,k)=mu;
         kappa(k)=kap;
     else

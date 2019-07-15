@@ -1,6 +1,8 @@
 function [mapall,dict,kappa,energy,sizecoords,flag]=EBSDMStdfast(mapall,EBSD,CI,beta,dict,kappa,fid,DT,dx,dy,dtstop,nt,between,numsub)
+%This function is the main workhorse of the code
+
 energy=inf;
-flag=1;%if flag equals zero something dt is too large
+flag=1;%if flag equals zero dt is too large
 dts=2.^linspace(log2(DT),log2(dtstop),4);%limit at dt goes to 0
 
 

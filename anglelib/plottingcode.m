@@ -11,7 +11,7 @@ if ~exist(['figures/' filename],'dir')
 end
 
 
-EBSDtemp=load(['../data/' filename 'EBSD.mat']);
+EBSDtemp=load(['data/' filename 'EBSD.mat']);
 EBSD=EBSDtemp.EBSD(1:step:end,1:step:end,:);
 CI=EBSDtemp.CI(1:step:end,1:step:end);
 [m,n]=size(CI);

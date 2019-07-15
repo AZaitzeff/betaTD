@@ -1,4 +1,9 @@
 function [newg1,kap]=estimatebeta(N,CI,EBSDflat,beta,g1,kappa,numsub)
+    %{
+    Finds the beta mean given beta and alpha orientations
+    %}
+
+
     T=alphatobetatrans();%load the symmetries
     Pm=getsymmetries('cubic');
     Pall=zeros(4,4,144);
@@ -10,7 +15,12 @@ function [newg1,kap]=estimatebeta(N,CI,EBSDflat,beta,g1,kappa,numsub)
     cmask=beta(newind);
     alphaEBSD=EBSDtemp(:,~cmask);
     betaEBSD=EBSDtemp(:,cmask);
-    [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,g1,kappa);
+    if numel(g1)>2
+        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,1,g1,kappa);
+    else
+        max_init=8;
+        [newg1, kap, ~] = VMFEMzfast(alphaEBSD, Pall,betaEBSD, Pm,max_init,[1;0;0;0],50);
+    end
     vala=alpbmetric(alphaEBSD,newg1);
     valb=b2bmetric(betaEBSD,newg1);
     tol=median([vala valb]);

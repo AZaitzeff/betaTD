@@ -1,5 +1,4 @@
 function [I,conval,conmap]=confidencemapminC(name,M,N,num)
-addpath('../anglelib/')
 conmap=zeros(M,N);
 enevec=zeros(1,num);
 maxK=0;
