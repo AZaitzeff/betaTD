@@ -6,7 +6,7 @@ addpath('anglelib/')
 % 1: beta grains around 50 by 50 pixels or smaller
 % 2: beta grains around 100 by 100 pixels (a good pick if you do not know)
 % 3: beta grains around 200 by 200 pixels or larger
-sizepar=2; %change
+sizepar=1; %change
 mex=0; % If have matlab coder, you can change this to 1.
 
 runbetatdpilchank(nickname,nickname,sizepar,mex);

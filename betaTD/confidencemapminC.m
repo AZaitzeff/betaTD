@@ -16,10 +16,6 @@ total=M*N;
 vectorType1 = coder.typeof(1, [M N], [false false]);
 vectorType3 = coder.typeof(1, [4 maxK], [false true]);
 
-%vectorType3 = coder.typeof(1, [K 4], [true false]);
-%vectorType4 = coder.typeof(1, [K 1], [true false]);
-%codegen regionmerging -args {vectorType1,vectorType3,vectorType4,[1 1],1}
-%codegen EBSDMStdfast -args {vectorType1,vectorType2,vectorType1,vectorType1l,vectorType3,vectorType4,1,1,1,1,1,1,1}
 codegen calc2norms -args {vectorType1,vectorType3,vectorType1,vectorType3,vectorType1,1}
 
 for z=1:num

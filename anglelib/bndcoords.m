@@ -11,9 +11,6 @@ sizebd=ceil(4*sqrt(M)*sqrt(N)/K);
 
 xbdcor=zeros(K,sizebd);
 ybdcor=zeros(K,sizebd);
-%coder.varsize('xbdcor','ybdcor','coords');
-%bdcor=zeros(1,sizebd);
-%neighbors=zeros(K,K);
 minmaxrowcol=zeros(K,4);%min row,max row, min col, max col
 minmaxrowcol(:,1)=M;
 minmaxrowcol(:,2)=0;
