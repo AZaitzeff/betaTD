@@ -10,4 +10,4 @@ propbeta = RMatOfQuat(mu);
 Rmat = bestparentmatrix(m,n,smallflatq,beta,propbeta,1);
 
 %your code here
-%smoothed = smoothBetaInterp(propbeta, Rmat);
+smoothed = smoothBetaInterp(propbeta, Rmat);
