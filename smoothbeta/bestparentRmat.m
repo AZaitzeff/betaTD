@@ -5,11 +5,11 @@ function [best,dist]=bestparentRmat(alpha,beta,isbeta)
     numB=size(T,3);
     numS=size(Pm,3);
     dist=1.5;
-    best=zeros(1,4);
+    best=zeros(4,1);
     if isbeta
         for j=1:numS
             tempdist=2*acos(abs((beta'*Pm(:,:,j))*(alpha)));
-            tempbetas=alpha'*Pm(:,:,j)';
+            tempbetas=alpha*Pm(:,:,j);
             if tempdist<dist
                 best=tempbetas;
                 dist=tempdist;
@@ -20,7 +20,7 @@ function [best,dist]=bestparentRmat(alpha,beta,isbeta)
         for i=1:numB
             for j=1:numS
                 tempdist=2*acos(abs((beta'*Pm(:,:,j))*(alpha'*T(:,:,i))'));
-                tempbetas=alpha'*T(:,:,i)*Pm(:,:,j)';
+                tempbetas=Pm(:,:,j)*T(:,:,i)'*alpha;
                 if tempdist<dist
                     best=tempbetas;
                     dist=tempdist;
