@@ -16,3 +16,4 @@ end
 %your code here
 [smoothed,~,~]=so3implicitfid(10,1/100,Rmat,uin,100);
 end
+

@@ -22,19 +22,19 @@ for cursize=2 .^ (3:max_power)
     end
     
     % some info about each interpolation step
-%     fprintf('took %d steps at size %d\n', numsteps, cursize);
-%     fprintf('percent diff f : %f\n', sum(abs(f_size - u), 'all') / sum(abs(f_size), 'all'));
+    fprintf('took %d steps at size %d\n', numsteps, cursize);
+    fprintf('percent diff f : %f\n', sum(abs(f_size - u), 'all') / sum(abs(f_size), 'all'));
 %     fprintf('percent diff f0: %f\n', sum(abs(f0_size - u), 'all') / sum(abs(f0_size), 'all'));
 end
 
-% subplot(1,2,1); visso3(f_size); subplot(1,2,2); visso3(u);
 end
 
 function q=orthogonalize(u)
     q = zeros(size(u));
     for i=1:size(u,3)
         for j=1:size(u,4)
-            q(:,:,i,j) = gramschmidt(u(:,:,i,j));
+            [Q,~] = qr(u(:,:,i,j));
+            q(:,:,i,j) = Q;
         end
     end
 end
