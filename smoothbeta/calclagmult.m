@@ -7,7 +7,7 @@ function [g,e]=calclagmult(u, f, lam)
     [fdx, bdx] = xdiff(ub);
     [fdy, bdy] = ydiff(ub);
 
-    e = sum(fdx .^ 2 + lam * (f - u) .^ 2, 'all'); 
+    e = sum(fdx(:) .^ 2 + lam * (f(:) - u(:)) .^ 2); 
     g = -0.5 * (transpixelmult(fdx) + transpixelmult(bdx) +...
         transpixelmult(fdy) + transpixelmult(bdy));
     

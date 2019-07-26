@@ -9,7 +9,7 @@ function [best,dist]=bestparentRmat(alpha,beta,isbeta)
     if isbeta
         for j=1:numS
             tempdist=2*acos(abs((beta'*Pm(:,:,j))*(alpha)));
-            tempbetas=alpha*Pm(:,:,j);
+            tempbetas=Pm(:,:,j)*alpha;
             if tempdist<dist
                 best=tempbetas;
                 dist=tempdist;
