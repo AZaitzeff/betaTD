@@ -1,5 +1,4 @@
 function [best,dist]=bestparentRmat(alpha,beta,isbeta)
-    alpha=QuatOfRMat(alpha);
     beta=QuatOfRMat(beta);
     T=alphatobetatrans();
     Pm=getsymmetries('cubic');
