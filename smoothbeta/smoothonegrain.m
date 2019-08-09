@@ -14,6 +14,6 @@ for i=1:m
     end
 end
 %your code here
-[smoothed,~,~]=so3implicitfid(10,1/100,Rmat,uin,100);
+[smoothed,~,~]=so3implicitfid(100,1/100,Rmat,uin,100);
 end
 

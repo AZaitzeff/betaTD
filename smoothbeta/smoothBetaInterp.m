@@ -1,4 +1,4 @@
-function u=smoothBetaInterp(guess, f)
+function u=smoothBetaInterp(guess, f, weights)
 
 max_power = log2(size(f,3));
 
@@ -17,7 +17,7 @@ for cursize=2 .^ (3:max_power)
     ei = 1;
     
     while numsteps < 5000  && (ei - ef) > 1e-6
-        [u, ei, ef] = so3implicitfid(1, 1/(cursize^2), f_size, u, 100);
+        [u, ei, ef] = so3implicitfid(1, 1/(cursize^2), f_size, u, 100, weights);
         numsteps = numsteps + 1;
     end
     
