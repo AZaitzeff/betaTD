@@ -1,6 +1,12 @@
-function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam)
+function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam, w)
+    % Spatially dependent weight variable
+    if nargin > 5
+        weights = w;
+    else
+        weights = ones(size(f, 3), size(f, 4));
+    end
+    
     ei = 0;
-    ef = 0;
 
     m = size(f,3);
     n = size(f,4);
@@ -13,24 +19,17 @@ function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam)
     % Coefficient matrix for taking -laplacian:
     % M = f;
     [x,y]=meshgrid(1:n,1:m);
-%     x=x';
-%     y=y';
+    x=x';
+    y=y';
     M = 4-wx.^(x-1)-wx.^(1-x)-wy.^(y-1)-wy.^(1-y);
 
     M=M*max(n^2,m^2);        % Divide by dx^2.
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    
-%     u = zeros(3,3,m,n);
-%     for i = 1:m
-%         for j = 1:n
-%             u(:,:,i,j) = eye(3);
-%         end
-%     end
     u = uin;
     
     for t = 1:nt
         % calculate lagrange multiplier
-        [lagrange,e] = calclagmult(u, f, lam);
+        [lagrange,e] = calclagmult(u, f, lam, weights);
         rhs = u - dt * pixelmult(u, lagrange);
         
         if t == 1
@@ -38,7 +37,13 @@ function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam)
         end
         
         % fidelity term
-        rhs = rhs + dt * lam * (f - u);
+        fid = (f - u);
+        for i=1:m
+            for j=1:n
+                fid(:,:,i,j) = fid(:,:,i,j) * weights(i,j);
+            end
+        end
+        rhs = rhs + dt * lam * fid;
         
         % laplacian term
         for i=1:3
@@ -64,5 +69,5 @@ function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam)
         u = rhs;
     end
     
-    [~, ef] = calclagmult(u, f, lam);
+    [~, ef] = calclagmult(u, f, lam, weights);
 end

@@ -1,4 +1,4 @@
-function [g,e]=calclagmult(u, f, lam)
+function [g,e]=calclagmult(u, f, lam, weights)
     % Computes the lagrange multiplier, g.
     % (Also computes the current value of the energy function using the forward
     % difference, but this is just out of convenience)
@@ -11,10 +11,10 @@ function [g,e]=calclagmult(u, f, lam)
     g = -0.5 * (transpixelmult(fdx) + transpixelmult(bdx) +...
         transpixelmult(fdy) + transpixelmult(bdy));
     
-    g = g + fidelcorrection(u, f, lam);
+    g = g + fidelcorrection(u, f, lam, weights);
 end
 
-function o=fidelcorrection(u, f, lam)
+function o=fidelcorrection(u, f, lam, weights)
     assert(isequal(size(u),size(f)));
     o = zeros(size(u));
     if lam == 0
@@ -28,6 +28,7 @@ function o=fidelcorrection(u, f, lam)
             o(:,:,i,j) = (u(:,:,i,j)' * f(:,:,i,j) ... 
                           + f(:,:,i,j)' * u(:,:,i,j)) * 0.5 ...
                          - eye(3);
+            o(:,:,i,j) = o(:,:,i,j) * weights(i,j);
         end
     end
     o = o * lam;
