@@ -1,5 +1,23 @@
 function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam, w)
-    % Spatially dependent weight variable
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    % Computes the smooth approximation of f using gradient descent
+    % Arguments:
+    %   nt  - integer - number of time steps
+    %   dt  - double  - size of each time step
+    %   f   - 3 x 3 x n x m double array - SO(3) valued target "image"
+    %   uin - 3 x 3 x n x m double array - SO(3) valued initial guess
+    %   lam - double  - non spatially varying fidelity weight
+    %   w   - n x m double array - spatially varying fidelity weight
+    %           (optional)
+    %
+    % Note: lam and w eventually just get multiplied together, this is just
+    %     a holdover from before when there was no spatially varying weight
+    %
+    % Returns: u - 3 x 3 x n x m double array - SO(3) valued result of
+    %     gradient descent
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
     if nargin > 5
         weights = w;
     else
@@ -8,8 +26,8 @@ function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam, w)
     
     ei = 0;
 
-    m = size(f,3);
-    n = size(f,4);
+    n = size(f,3);
+    m = size(f,4);
 
     I=sqrt(-1);
     wx=exp(I*2*pi/n);       % nth root of unity.
@@ -38,8 +56,8 @@ function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam, w)
         
         % fidelity term
         fid = (f - u);
-        for i=1:m
-            for j=1:n
+        for i=1:n
+            for j=1:m
                 fid(:,:,i,j) = fid(:,:,i,j) * weights(i,j);
             end
         end
