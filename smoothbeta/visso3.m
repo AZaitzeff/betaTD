@@ -15,7 +15,7 @@ function [im, oM]=visso3(u)
 % imagesc(squeeze(u(1,1,:,:))); colorbar
 
 addpath('../anglelib/')
-addpath('../../mtex-5.1.1/')
+%addpath('../../mtex-5.1.1/')
 
 [c,d,m,n] = size(u);
 assert(c == 3 & d == 3);
@@ -23,6 +23,6 @@ assert(c == 3 & d == 3);
 bungeimage = permute(reshape(BungeOfRMat(reshape(u, [3,3,m*n]), 'radians'), [3,m,n]), [2 3 1]);
 
 [im, oM] = crystalcolormaps(bungeimage, 0);
-imagesc(im);
+%imagesc(im);
 
 end

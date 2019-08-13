@@ -29,7 +29,7 @@ function [u,ei,ef]=so3implicitfid(nt,dt,f,uin,lam, w)
     n = size(f,3);
     m = size(f,4);
 
-    I=sqrt(-1);
+    I=1j;
     wx=exp(I*2*pi/n);       % nth root of unity.
     wy=exp(I*2*pi/m);       % mth root of unity.
 
