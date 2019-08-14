@@ -3,8 +3,8 @@ n=numel(binseq);
 sizearray=[4,M];
 intervals = zeros(sizearray);
 sizes=zeros(sizearray(1),1);
-%coder.varsize('intervals',[],[1,1]);
-%coder.varsize('sizes',[],[1,0]);
+coder.varsize('intervals',[],[1,1]);
+coder.varsize('sizes',[],[1,0]);
 count = 0; % Number of patches.
 
 pos = 1;

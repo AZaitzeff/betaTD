@@ -1,4 +1,4 @@
-function smoothed=smoothonegrain(EBSD,CI,beta,nt,dt,fid)
+function smoothed=smoothonegrain(EBSD,CI,beta,nt,dt,fid,w)
 
 
 [m,n,~]=size(EBSD);
@@ -14,6 +14,6 @@ for i=1:m
     end
 end
 %your code here
-[smoothed,~,~]=so3implicitfid(nt,dt,Rmat,uin,fid);
+[smoothed,~,~]=so3implicitfid(nt,dt,Rmat,uin,fid,w);
 end
 

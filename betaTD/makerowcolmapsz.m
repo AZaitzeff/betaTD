@@ -2,8 +2,8 @@ function [xdir,ydir,xsizes,ysizes]=makerowcolmapsz(mask,m,n)
 sizex=[8*m,n+1];
 xdir = zeros(sizex);
 xsizes=zeros(sizex(1),1);
-%coder.varsize('xdir',[],[1,1]);
-%coder.varsize('xsizes',[],[1 0]);
+coder.varsize('xdir',[],[1,1]);
+coder.varsize('xsizes',[],[1 0]);
 step=1;
 for i=1:m
     [arrays,count,sizes]=decomposez(mask(i,:),sizex(2));
@@ -36,8 +36,8 @@ end
 sizey=[8*n,m+1];
 ydir = zeros(sizey);
 ysizes=zeros(sizey(1),1);
-%coder.varsize('ydir',[],[1,1]);
-%coder.varsize('ysizes',[],[1 0]);
+coder.varsize('ydir',[],[1,1]);
+coder.varsize('ysizes',[],[1 0]);
 step=1;
 for j=1:n
     [arrays,count,sizes]=decomposez(mask(:,j),sizey(2));
