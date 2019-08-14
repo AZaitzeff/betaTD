@@ -1,4 +1,5 @@
 addpath('../betaTD')
+addpath('../anglelib/')
 numsub=400;
 dx=1/100;
 dy=dx;
@@ -14,17 +15,18 @@ dtsm=1/10000;
 ntsm=100;
 
 
-[M,N]=size(mapall);
-[~,~,z]=size(EBSD);
-EBSDflat=E313toq(reshape(EBSD,[M*N,z])');
-[xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
-k=2; %k goes from 1 to 14
-csize=sizecoords(k);
-indices=coords(k,1:csize);
-[u,uin,wsm]=estso3smoothonegrain(M,N,indices,csize,EBSDflat,beta,CI,smoothEBSD,ntsm,dtsm,fid);
-[im2, oM]=visso3(uin);
-[im, oM]=visso3(u);
-imagesc([im im2])
+% [M,N]=size(mapall);
+% [~,~,z]=size(EBSD);
+% EBSDflat=E313toq(reshape(EBSD,[M*N,z])');
+% [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
+% k=4; %k goes from 1 to 14
+% csize=sizecoords(k);
+% indices=coords(k,1:csize);
+% [u,uin,Rmat,wsm]=estso3smoothonegrain(M,N,indices,csize,EBSDflat,beta,CI,smoothEBSD,ntsm,dtsm,fid);
+% [im2, oM]=visso3(uin);
+% [im3, oM]=visso3(Rmat);
+% [im, oM]=visso3(u);
+% imagesc([im3 im2 im])
 
 % vectorType1 = coder.typeof(1, [M N], [false false]);
 % vectorType3 = coder.typeof(1, [4 M*N], [false false]);

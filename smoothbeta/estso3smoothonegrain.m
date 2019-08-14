@@ -1,4 +1,4 @@
-function [u,uin,wsm]=estso3smoothonegrain(M,N,indices,csize,EBSDflat,beta,CI,smoothEBSD,nt,dt,lam)                                
+function [newu]=estso3smoothonegrain(M,N,indices,csize,EBSDflat,beta,CI,smoothEBSD,nt,dt,lam)                                
 
 [ms,ns]=ind2sub([M,N],indices);
 minysm=min(ms);
