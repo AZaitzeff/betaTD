@@ -4,15 +4,13 @@ energy=inf;
 flag=1;%if flag equals zero dt is too large
 dts=2.^linspace(log2(DT),log2(dtstop),4);%limit at dt goes to 0
 
-
-
 totalK=K;
 current=ones(1,K,'logical');
 [M,N]=size(mapall);
 [~,~,z]=size(EBSD);
 EBSDflat=E313toq(reshape(EBSD,[M*N,z])');
 
-MAXITER=125;
+MAXITER=150;
 fac=1/(50*(dx+dy));% variable 
 
 [xbdcor,ybdcor,sizebdcor,coords,sizecoords,minmaxrowcol]=  bndcoords(mapall,K);%Gets coordinates
@@ -34,6 +32,29 @@ SindKsz=zeros(numelemts);
 fidregKsz=zeros(K,1);
 
 bndsK=zeros(K,4);
+
+sizesm=size(coords);
+sizecoordsm=sizecoords;
+coordsm=coords;
+smoothEBSDsm=zeros(4,sizesm(2),K);
+for k=1:K
+    smoothEBSDsm(:,1:sizecoordsm(k),k)=smoothEBSD(:,coordsm(k,1:sizecoordsm(k)));
+end
+
+for k=1:K
+    csize=sizecoords(k);
+    indices=coords(k,1:csize);
+    [u,newcoords,newsize]=estso3smoothonegrain(M,N,indices,EBSDflat,beta,CI,coordsm(k,1:sizecoordsm(k)),squeeze(smoothEBSDsm(:,:,k)),ntsm,dtsm,fid);
+    if sizesm(2)<newsize
+        sizesm(2)=ceil(newsize*1.1);
+        [coordsm,sizecoordsm]=growarray(coordsm,sizecoordsm,K,sizesm,-1,1);
+        [smoothEBSDsm]=growarraybig(smoothEBSDsm,sizecoordsm,K,sizesm);
+    end
+
+    sizecoordsm(k)=newsize;
+    coordsm(k,1:newsize)=newcoords;
+    smoothEBSDsm(:,1:sizecoordsm(k),k)=u;
+end
 
 for dt=dts
     
@@ -121,7 +142,7 @@ for dt=dts
             if current(k)
                 csize=sizecoordsa(k);
 
-                if csize>10
+                if csize>20
 
 
                     oldcsize=sizecoords(k);
@@ -142,10 +163,18 @@ for dt=dts
 
                         if valcng>.2 %updates betas
                             changecounter(k)=0;
-                            
                             if sum(CI(indices))>1e-4
-                            [u]=estso3smoothonegrain(M,N,indices,csize,EBSDflat,beta,CI,smoothEBSD,ntsm,dtsm,fid);
-                            smoothEBSD(:,indices)=u;
+                            [u,newcoords,newsize]=estso3smoothonegrain(M,N,indices,EBSDflat,beta,CI,coordsm(k,1:sizecoordsm(k)),squeeze(smoothEBSDsm(:,:,k)),ntsm,dtsm,fid);
+                            if sizesm(2)<newsize
+                                sizesm(2)=ceil(newsize*1.1);
+                                [coordsm,sizecoordsm]=growarray(coordsm,sizecoordsm,K,sizesm,-1,1);
+                                [smoothEBSDsm]=growarraybig(smoothEBSDsm,sizecoordsm,K,sizesm);
+                            end
+
+                            sizecoordsm(k)=newsize;
+                            coordsm(k,1:newsize)=newcoords;
+                            smoothEBSDsm(:,1:sizecoordsm(k),k)=u;
+                            
                                 
                             
                             end  
@@ -186,10 +215,10 @@ for dt=dts
         flag=0;
         return
     end
-    
     end
     simplify();
     MAXITER=ceil(MAXITER/2);
+    
 end
 
 % for k=1:K
@@ -205,6 +234,12 @@ end
 for k=1:K
     updatebnds(k);
     updateFID(k,0); 
+end
+
+for k=1:K
+    index=coords(k,1:sizecoords(k));
+    indexmap=buildindexmap(index,coordsm(k,1:sizecoordsm(k)));
+    smoothEBSD(:,index)=smoothEBSDsm(:,indexmap,k);
 end
 
 % energy=0;
@@ -254,6 +289,11 @@ end
                 sc=sizecoords(kz);
                 sizecoords(newk)=sc;
                 coords(newk,1:sc)=coords(kz,1:sc);
+
+                sc=sizecoordsm(kz);
+                sizecoordsm(newk)=sc;
+                coordsm(newk,1:sc)=coordsm(kz,1:sc);
+                smoothEBSDsm(:,1:sc,newk)=smoothEBSDsm(:,1:sc,kz);
                 
                 num=fidregKsz(kz);
                 fidregKsz(newk)=num;
@@ -283,6 +323,10 @@ end
 
         sizecoords(newk:K)=[];
         coords(newk:K,:)=[];
+
+        sizecoordsm(newk:K)=[];
+        coordsm(newk:K,:)=[];
+        smoothEBSDsm(:,:,newk:K)=[];
 
         fidregKsz(newk:K)=[];
         fidK(newk:K,:)=[];
@@ -323,15 +367,17 @@ end
             if ~isempty(alphacoord)
                 slin=slinind(~bmask);
                 nfid=sum(~bmask);
+                indexmap=buildindexmap(alphacoord,coordsm(k,1:sizecoordsm(k)));
                 for ifid=1:nfid
-                    mask(slin(ifid))=fid*CI(alphacoord(ifid)).*alpbmetric(EBSDflat(:,alphacoord(ifid)),smoothEBSD(:,alphacoord(ifid)));
+                    mask(slin(ifid))=fid*CI(alphacoord(ifid)).*alpbmetric(EBSDflat(:,alphacoord(ifid)),smoothEBSDsm(:,indexmap(ifid),k));
                 end
             end
             if ~isempty(betacoord)
                 slin=slinind(bmask);
                 nfid=sum(bmask);
+                indexmap=buildindexmap(betacoord,coordsm(k,1:sizecoordsm(k)));
                 for ifid=1:nfid
-                    mask(slin(ifid))=fid*CI(betacoord(ifid)).*alpbmetric(EBSDflat(:,betacoord(ifid)),smoothEBSD(:,betacoord(ifid)));
+                    mask(slin(ifid))=fid*CI(betacoord(ifid)).*b2bmetric(EBSDflat(:,betacoord(ifid)),smoothEBSDsm(:,indexmap(ifid),k));
                 end
             end
             if smooth
