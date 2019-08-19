@@ -22,13 +22,14 @@ CI=CIfunc(CI);
  vectorType1l = coder.typeof(1==1, [M N], [false false]);
  vectorType2 = coder.typeof(1, [M N 3], [false false false]);
  
- codegen EBSDMStdsmooth -args {vectorType1,vectorType2,vectorType1,vectorType1l,vectorType3,1,1,1,1,1,1,1,1,1,1}
+ codegen EBSDMStdsmooth -args {vectorType1,vectorType2,vectorType1,vectorType1l,vectorType3,1,1,1,1,1,1,1,1,1,1,1}
 
 %%
 fid=75;
+fidsm=75;
 dtsm=1/1000;
 ntsm=100;
-[mapall2,smoothEBSD2,energy,flag]=EBSDMStdsmooth_mex(mapall,EBSD,CI,beta,smoothEBSD,K,fid,DT,dx,dy,dtstop,nt,between,ntsm,dtsm);
+[mapall2,smoothEBSD2,energy,flag]=EBSDMStdsmooth_mex(mapall,EBSD,CI,beta,smoothEBSD,K,fid,DT,dx,dy,dtstop,nt,between,ntsm,dtsm,fidsm);
 plotsmoothwbnds(mapall,smoothEBSD)
 figure
 plotsmoothwbnds(mapall2,smoothEBSD2)

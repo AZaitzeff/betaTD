@@ -1,4 +1,4 @@
-function [mapall,smoothEBSD,energy,flag]=EBSDMStdsmooth(mapall,EBSD,CI,beta,smoothEBSD,K,fid,DT,dx,dy,dtstop,nt,between,ntsm,dtsm)
+function [mapall,smoothEBSD,energy,flag]=EBSDMStdsmooth(mapall,EBSD,CI,beta,smoothEBSD,K,fid,DT,dx,dy,dtstop,nt,between,ntsm,dtsm,fidsm)
 %This function is the main workhorse of the code
 energy=inf;
 flag=1;%if flag equals zero dt is too large
@@ -164,7 +164,7 @@ for dt=dts
                         if valcng>.2 %updates betas
                             changecounter(k)=0;
                             if sum(CI(indices))>1e-4
-                            [u,newcoords,newsize]=estso3smoothonegrain(M,N,indices,EBSDflat,beta,CI,coordsm(k,1:sizecoordsm(k)),squeeze(smoothEBSDsm(:,:,k)),ntsm,dtsm,fid);
+                            [u,newcoords,newsize]=estso3smoothonegrain(M,N,indices,EBSDflat,beta,CI,coordsm(k,1:sizecoordsm(k)),squeeze(smoothEBSDsm(:,:,k)),ntsm,dtsm,fidsm);
                             if sizesm(2)<newsize
                                 sizesm(2)=ceil(newsize*1.1);
                                 [coordsm,sizecoordsm]=growarray(coordsm,sizecoordsm,K,sizesm,-1,1);
