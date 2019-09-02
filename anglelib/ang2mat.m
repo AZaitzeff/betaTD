@@ -82,10 +82,12 @@ else
     end
     
 
+%CIa=newalpha.prop.confidenceindex;%for osc files
 CIa=newalpha.prop.ci;
 CIa(isnan(CIa))=0;
 
-IQa=newalpha.prop.iq;
+%IQa=newalpha.prop.imagequality;%for osc files
+CIa=newalpha.prop.iq;
 IQa(isnan(IQa))=0;
 
 if LOGbeta
