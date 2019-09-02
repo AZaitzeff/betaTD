@@ -9,7 +9,7 @@ addpath('anglelib/')
 sizepar=2; %change
 mex=0; % If have matlab coder, you can change this to 1.
 
-%nickname='AF15';
+nickname='AF15';
 %runbetatdpilchak(nickname,nickname,sizepar,mex);
 
 
