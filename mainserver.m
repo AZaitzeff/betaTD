@@ -10,13 +10,13 @@ sizepar=2; %change
 mex=0; % If have matlab coder, you can change this to 1.
 
 nickname='AF15';
-%runbetatdpilchak(nickname,nickname,sizepar,mex);
+runbetatdpilchak(nickname,nickname,sizepar,mex);
 
 
-fids=[75,100,125,150];
-for fid=fids
-    runbetatd(nickname,nickname,10,20,fid,2^-4,30); %Different method that uses
-end
+%fids=[75,100,125,150];
+%for fid=fids
+%    runbetatd(nickname,nickname,10,20,fid,2^-4,30); %Different method that uses
+%end
 %random initialization. 
 
 
