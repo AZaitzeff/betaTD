@@ -15,7 +15,7 @@ nickname='AF15';
 
 fids=[75,100,125,150];
 for fid=fids
-    runbetatd(nickname,nickname,4,20,fid,2^-4,30); %Different method that uses
+    runbetatd(nickname,[nickname 'sm'],4,20,fid,2^-(4.5),20); %Different method that uses
 end
 %random initialization. 
 
