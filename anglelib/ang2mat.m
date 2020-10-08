@@ -3,16 +3,22 @@ addpath('..')
 %pname = '/Users/azaitzeff/Documents/Research/Ti64/';
 % which files to be imported
 %fname = [pname fileload];
-alpha=ebsd('Titanium (Alpha)');
-if ind
+if numel(ebsd.indexedPhasesId)==2
+    alpha=ebsd('Titanium (Alpha)');
+    if ind
 
-    beta=ebsd('Titanium - Beta');
+        beta=ebsd('Titanium - Beta');
+    else
+        beta=ebsd('Titanium (Beta)');
+    end
+
+    LOGbeta=isempty(beta);
+    LOGalpha=isempty(alpha);
 else
-    beta=ebsd('Titanium (Beta)');
+    LOGalpha=0;
+    LOGbeta=1;
 end
 
-LOGbeta=isempty(beta);
-LOGalpha=isempty(alpha);
 if ~LOGbeta && ~LOGalpha
 
 
